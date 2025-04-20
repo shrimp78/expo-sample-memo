@@ -9,8 +9,6 @@ export default function Layout() {
 
         <Stack.Screen name="index" options={{ headerShown: false }} />
 
-        {/* ホーム */}
-        <Stack.Screen name="home/index" options={{ headerTitle: 'ホーム' }} />
       </Stack>
     </GluestackUIProvider>
   )
