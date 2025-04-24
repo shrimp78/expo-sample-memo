@@ -12,7 +12,7 @@ export default function Layout() {
         <Stack.Screen name="home/index" options={{ headerTitle: 'ホーム' }} />
 
         {/* アイテム */}
-        <Stack.Screen name="item/index" options={{ headerTitle: 'アイテム' }} />
+        <Stack.Screen name="items/index" options={{ headerTitle: 'アイテム' }} />
       </Stack>
     </GluestackUIProvider>
   );
