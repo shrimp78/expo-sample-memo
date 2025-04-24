@@ -1,22 +1,24 @@
-import { router} from 'expo-router'
-import { View,ScrollView, StyleSheet } from 'react-native'
-import { ListItem} from '@rneui/themed';
+import { router } from 'expo-router';
+import { View, ScrollView, StyleSheet } from 'react-native';
+import { ListItem } from '@rneui/themed';
 
 export default function HomeScreen() {
+  const handleAllItemsPress = () => {
+    router.push('/item/index');
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView}>
         {/* 全てのメモ */}
-        <ListItem>
+        <ListItem onPress={handleAllItemsPress}>
           <ListItem.Content>
-            <ListItem.Title>
-              全てのアイテム
-            </ListItem.Title>
+            <ListItem.Title>全てのアイテム</ListItem.Title>
           </ListItem.Content>
         </ListItem>
       </ScrollView>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -27,4 +29,4 @@ const styles = StyleSheet.create({
   scrollView: {
     paddingVertical: 40
   }
-})
+});

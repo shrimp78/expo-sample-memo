@@ -1,20 +1,30 @@
-import {router } from 'expo-router'
-import { StyleSheet, Text, View} from 'react-native'
-import { useEffect} from 'react'
+import { router } from 'expo-router';
+import { StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
 
 export default function InitialScreen() {
+  const [isMounted, setIsMounted] = useState(false);
+
   useEffect(() => {
-    initApp();
+    // 初回マウント時に呼ばれる
+    setIsMounted(true);
   }, []);
 
-  const initApp = async() => {
-    router.replace('/home')
-  }
+  useEffect(() => {
+    if (isMounted) {
+      try {
+        router.replace('/home');
+      } catch (e) {
+        console.log('初期化エラー', e);
+      }
+    }
+  }, [isMounted]);
+
   return (
-  <View style={styles.container}>
-    <Text style={styles.title}>アプリ起動中</Text>
-  </View>
-  )
+    <View style={styles.container}>
+      <Text style={styles.title}>アプリ起動中...</Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -28,4 +38,4 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold'
   }
-})
+});
