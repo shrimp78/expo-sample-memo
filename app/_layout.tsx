@@ -7,8 +7,12 @@ export default function Layout() {
     <GluestackUIProvider config={config}>
       <Stack screenOptions={{ headerTintColor: '#000000', headerStyle: { backgroundColor: '#F9F9F9' } }}>
         <Stack.Screen name="index" options={{ headerShown: false }} />
+
         {/* ホーム */}
         <Stack.Screen name="home/index" options={{ headerTitle: 'ホーム' }} />
+
+        {/* アイテム */}
+        <Stack.Screen name="item/index" options={{ headerTitle: 'アイテム' }} />
       </Stack>
     </GluestackUIProvider>
   );

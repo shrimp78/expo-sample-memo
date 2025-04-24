@@ -4,7 +4,7 @@ import { ListItem } from '@rneui/themed';
 
 export default function HomeScreen() {
   const handleAllItemsPress = () => {
-    router.push('/item/index');
+    router.push({ pathname: '/items' });
   };
 
   return (
