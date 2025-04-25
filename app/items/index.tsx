@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { useState } from 'react';
 import { Item } from '../../src/components/types/item';
 
@@ -24,8 +24,16 @@ export default function ItemScreen() {
   ];
 
   return (
-    <View>
-      <Text>ItemScreen</Text>
+    <View style={styles.container}>
+      <FlatList data={DUMMY_ITEMS} renderItem={({ item }) => <Text>{item.title}</Text>} />
+      <Text>ItemScreen ss</Text>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#efeff4'
+  }
+});
