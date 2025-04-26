@@ -9,12 +9,49 @@ type ItemListProps = {
 const ItemList: React.FC<ItemListProps> = props => {
   const { name, content } = props;
   return (
-    <ListItem.Swipeable rightContent={<Button title="削除" />}>
+    <ListItem.Swipeable
+      bottomDivider
+      rightContent={
+        <Button
+          title="削除"
+          icon={{ name: 'delete', color: 'white' }}
+          buttonStyle={{ minHeight: '100%', backgroundColor: 'red' }}
+          onPress={() => {
+            console.log('DeleteButton onPress');
+          }}
+        />
+      }
+      onPress={() => {
+        console.log('ListItem onPress');
+      }}
+      onLongPress={() => {
+        console.log('ListItem onLongPress');
+      }}
+    >
       <ListItem.Content>
-        <ListItem.Title> {name}</ListItem.Title>
+        <ListItem.Title style={styles.title}> {name}</ListItem.Title>
+        <ListItem.Subtitle style={styles.content} numberOfLines={3}>
+          {' '}
+          {content}
+        </ListItem.Subtitle>
       </ListItem.Content>
+      <ListItem.Chevron />
     </ListItem.Swipeable>
   );
 };
+
+const styles = StyleSheet.create({
+  title: {
+    color: '#4A5054',
+    fontWeight: 'bold',
+    fontSize: 20
+  },
+  content: {
+    color: '#95A2AC',
+    fontSize: 14,
+    padding: 4,
+    maxHeight: 100
+  }
+});
 
 export { ItemList };
