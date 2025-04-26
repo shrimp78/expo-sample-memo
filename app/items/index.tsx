@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, FlatList } from 'react-native';
 import { useState } from 'react';
 import { Item } from '../../src/components/types/item';
+import { ItemList } from '../../src/components/items/ItemList';
 
 export default function ItemScreen() {
   const [items, setItems] = useState<Item[]>([]);
@@ -9,23 +10,23 @@ export default function ItemScreen() {
     {
       id: '1',
       title: 'テスト1',
-      description: 'テスト1の説明'
+      content: 'テスト1の説明'
     },
     {
       id: '2',
       title: 'テスト2',
-      description: 'テスト2の説明'
+      content: 'テスト2の説明'
     },
     {
       id: '3',
-      title: 'テスト3',
-      description: 'テスト3の説明'
+      title: '新宿三丁目',
+      content: 'テスト3の説明'
     }
   ];
 
   return (
     <View style={styles.container}>
-      <FlatList data={DUMMY_ITEMS} renderItem={({ item }) => <Text>{item.title}</Text>} />
+      <FlatList data={DUMMY_ITEMS} renderItem={({ item }) => <ItemList name={item.title} content={item.content} />} />
       <Text>ItemScreen ss</Text>
     </View>
   );
