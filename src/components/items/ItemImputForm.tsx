@@ -1,5 +1,6 @@
 import { Input, InputField, Textarea, TextareaInput } from '@gluestack-ui/themed';
-import { Button, InputAccessoryView, View } from 'react-native';
+import { InputAccessoryView, View, Platform, Keyboard, TouchableOpacity } from 'react-native';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 type ItemInputFormProps = {
   title: string;
@@ -7,6 +8,8 @@ type ItemInputFormProps = {
   onChangeTitle: (text: string) => void;
   onChangeContent: (text: string) => void;
 };
+
+const inputAccessoryViewID = 'INPUT_ACCESORY_VIEW_ID';
 
 /**
  * アイテムの入力フォーム
@@ -17,10 +20,17 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
   const { title, content, onChangeTitle, onChangeContent } = props;
 
   return (
-    <View>
+    <View style={{ flex: 1, paddingBottom: 100 }}>
       {/* タイトル入力 */}
       <Input borderWidth={0} minWidth={'$full'} marginTop={'$4'} marginBottom={'$1'}>
-        <InputField placeholder="タイトルを入力してください" value={title} onChangeText={onChangeTitle} fontSize={'$2xl'} fontWeight={'$bold'} />
+        <InputField
+          placeholder="タイトルを入力してください"
+          value={title}
+          onChangeText={onChangeTitle}
+          fontSize={'$2xl'}
+          fontWeight={'$bold'}
+          editable={true}
+        />
       </Input>
 
       {/* 内容入力 */}
@@ -30,10 +40,22 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           value={content}
           scrollEnabled={true}
           onChangeText={onChangeContent}
+          inputAccessoryViewID={inputAccessoryViewID}
           paddingHorizontal={'$5'}
           fontSize={'$md'}
         />
       </Textarea>
+
+      {/* iOSのみキーボードの閉じるボタンを表示 */}
+      {Platform.OS === 'ios' && (
+        <InputAccessoryView nativeID={inputAccessoryViewID} backgroundColor={'#F1F1F1'}>
+          <View style={{ alignItems: 'flex-end', padding: 8 }}>
+            <TouchableOpacity onPress={() => Keyboard.dismiss()}>
+              <MaterialIcons name="keyboard-hide" size={24} color="#007AFF" />
+            </TouchableOpacity>
+          </View>
+        </InputAccessoryView>
+      )}
     </View>
   );
 };

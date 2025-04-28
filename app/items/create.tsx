@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, Button, TextInput } from 'react-native';
+import { KeyboardAvoidingView } from '@gluestack-ui/themed';
 import { useState, useEffect } from 'react';
 import { router, useNavigation } from 'expo-router';
 import { ItemInputForm } from '../../src/components/items/ItemImputForm';
@@ -25,8 +26,15 @@ export default function CreateItemScreen() {
 
   return (
     //あとでこれをKeyboardAvoidingViewに変更する
-    <View>
+    <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100} style={styles.container}>
       <ItemInputForm title={title} content={content} onChangeTitle={setTitle} onChangeContent={setContent} />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#ffffff'
+  }
+});
