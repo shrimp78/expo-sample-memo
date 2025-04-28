@@ -19,13 +19,20 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
   return (
     <View>
       {/* タイトル入力 */}
-      <Input>
-        <InputField placeholder="タイトルを入力してください" value={title} onChangeText={onChangeTitle} />
+      <Input borderWidth={0} minWidth={'$full'} marginTop={'$4'} marginBottom={'$1'}>
+        <InputField placeholder="タイトルを入力してください" value={title} onChangeText={onChangeTitle} fontSize={'$2xl'} fontWeight={'$bold'} />
       </Input>
 
       {/* 内容入力 */}
-      <Textarea>
-        <TextareaInput placeholder="内容を入力してください" value={content} onChangeText={onChangeContent} />
+      <Textarea borderWidth={0} minWidth={'$full'} minHeight={'$full'}>
+        <TextareaInput
+          placeholder="内容を入力してください"
+          value={content}
+          scrollEnabled={true}
+          onChangeText={onChangeContent}
+          paddingHorizontal={'$5'}
+          fontSize={'$md'}
+        />
       </Textarea>
     </View>
   );

@@ -13,7 +13,7 @@ export default function Layout() {
 
         {/* アイテム */}
         <Stack.Screen name="items/index" options={{ headerTitle: 'アイテム' }} />
-        <Stack.Screen name="items/create" options={{ headerTitle: 'アイテムの作成' }} />
+        <Stack.Screen name="items/create" options={{ headerTitle: '新規作成' }} />
       </Stack>
     </GluestackUIProvider>
   );
