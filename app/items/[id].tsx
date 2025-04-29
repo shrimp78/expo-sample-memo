@@ -2,6 +2,7 @@ import { View, Text } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Item } from '../../src/components/types/item';
+import { ItemInputForm } from '../../src/components/items/ItemInputForm';
 import { DUMMY_ITEMS } from '../../src/data/dummyItemData';
 
 export default function ItemEditScreen() {
@@ -15,6 +16,7 @@ export default function ItemEditScreen() {
     if (item) {
       setItem(item);
     }
+    // TODO: アイテムが見つからない場合の処理を後で追加する
   }, [id]);
 
   return (

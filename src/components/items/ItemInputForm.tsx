@@ -9,7 +9,7 @@ type ItemInputFormProps = {
   onChangeContent: (text: string) => void;
 };
 
-const inputAccessoryViewID = 'INPUT_ACCESORY_VIEW_ID';
+const inputAccessoryViewID = 'INPUT_ACCESSORY_VIEW_ID';
 
 /**
  * アイテムの入力フォーム
