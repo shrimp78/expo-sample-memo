@@ -19,7 +19,14 @@ export default function ItemScreen() {
 
   // 追加ボタン押下時の処理
   const handleAddItemPress = () => {
+    console.log('追加ボタンが押されました');
     router.push('/items/create');
+  };
+
+  // アイテムが押された時の処理
+  const handleItemPress = (itemId: number) => {
+    console.log('アイテムが押されました', itemId);
+    router.push({ pathname: `/items/${itemId}` });
   };
 
   return (
@@ -27,7 +34,7 @@ export default function ItemScreen() {
       <FlatList
         contentContainerStyle={{ paddingBottom: 120 }}
         data={DUMMY_ITEMS}
-        renderItem={({ item }) => <ItemList name={item.title} content={item.content} />}
+        renderItem={({ item }) => <ItemList name={item.title} content={item.content} onPress={() => handleItemPress(item.id)} />}
       />
     </View>
   );

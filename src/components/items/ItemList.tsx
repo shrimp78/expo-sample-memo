@@ -4,10 +4,11 @@ import { StyleSheet } from 'react-native';
 type ItemListProps = {
   name: string;
   content: string;
+  onPress: () => void;
 };
 
 const ItemList: React.FC<ItemListProps> = props => {
-  const { name, content } = props;
+  const { name, content, onPress } = props;
   return (
     <ListItem.Swipeable
       bottomDivider
@@ -21,9 +22,7 @@ const ItemList: React.FC<ItemListProps> = props => {
           }}
         />
       }
-      onPress={() => {
-        console.log('ListItem onPress');
-      }}
+      onPress={onPress}
       onLongPress={() => {
         console.log('ListItem onLongPress');
       }}
