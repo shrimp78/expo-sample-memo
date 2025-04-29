@@ -1,7 +1,7 @@
 import { Input, InputField, Textarea, TextareaInput } from '@gluestack-ui/themed';
 import { InputAccessoryView, View, Platform, Keyboard, TouchableOpacity } from 'react-native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-
+import { KeyboardCloseButton } from './KeyboardCloseButton';
 type ItemInputFormProps = {
   title: string;
   content: string;
@@ -9,7 +9,8 @@ type ItemInputFormProps = {
   onChangeContent: (text: string) => void;
 };
 
-const inputAccessoryViewID = 'INPUT_ACCESSORY_VIEW_ID';
+const inputAccessoryViewID1 = 'INPUT_ACCESSORY_VIEW_ID_1';
+const inputAccessoryViewID2 = 'INPUT_ACCESSORY_VIEW_ID_2';
 
 /**
  * アイテムの入力フォーム
@@ -27,6 +28,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           placeholder="タイトルを入力してください"
           value={title}
           onChangeText={onChangeTitle}
+          inputAccessoryViewID={inputAccessoryViewID1}
           fontSize={'$2xl'}
           fontWeight={'$bold'}
           editable={true}
@@ -40,7 +42,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           value={content}
           scrollEnabled={true}
           onChangeText={onChangeContent}
-          inputAccessoryViewID={inputAccessoryViewID}
+          inputAccessoryViewID={inputAccessoryViewID2}
           paddingHorizontal={'$5'}
           fontSize={'$md'}
         />
@@ -48,12 +50,13 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
 
       {/* iOSのみキーボードの閉じるボタンを表示 */}
       {Platform.OS === 'ios' && (
-        <InputAccessoryView nativeID={inputAccessoryViewID} backgroundColor={'#F1F1F1'}>
-          <View style={{ alignItems: 'flex-end', padding: 8 }}>
-            <TouchableOpacity onPress={() => Keyboard.dismiss()}>
-              <MaterialIcons name="keyboard-hide" size={24} color="#007AFF" />
-            </TouchableOpacity>
-          </View>
+        <InputAccessoryView nativeID={inputAccessoryViewID1} backgroundColor={'#F1F1F1'}>
+          <KeyboardCloseButton />
+        </InputAccessoryView>
+      )}
+      {Platform.OS === 'ios' && (
+        <InputAccessoryView nativeID={inputAccessoryViewID2} backgroundColor={'#F1F1F1'}>
+          <KeyboardCloseButton />
         </InputAccessoryView>
       )}
     </View>
