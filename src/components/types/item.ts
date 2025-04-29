@@ -2,7 +2,7 @@
  *  アイテムの型
  */
 type Item = {
-  id: string;
+  id: number;
   title: string;
   content: string;
   labelId?: number | undefined;
