@@ -1,0 +1,53 @@
+import * as SQLite from 'expo-sqlite';
+import * as FileSystem from 'expo-file-system';
+
+/**
+ * SQLの引数
+ */
+
+export type SqlArgs = {
+  sql: string;
+  params?: (string | number)[];
+};
+
+// DB名
+const DB_NAME = 'MtApp.db';
+
+/**
+ * DBのpathを取得
+ * @returns DBのpath
+ */
+
+const getDbFilePath = () => {
+  const path = FileSystem.documentDirectory + 'SQLite' + '/' + DB_NAME;
+  return path;
+};
+
+/**
+ * 更新系SQL処理
+ * @param sqlArgs SQLの引数
+ * @returns 実行結果
+ */
+
+const execute = async (...sqlArgs: SqlArgs[]): Promise<void> => {
+  const db = await SQLite.openDatabaseAsync(DB_NAME);
+  const path = getDbFilePath();
+  console.log(`execute start : path >> ${path}`);
+
+  await db.withTransactionAsync(async () => {
+    for (const arg of sqlArgs) {
+      const { sql, params } = arg;
+      console.log(`execute sql >> ${sql}`);
+      console.log(`execute params >> ${params}`);
+
+      try {
+        await db.runAsync(sql, ...(params || []));
+      } catch (error) {
+        console.error(`execute error >> ${error}`);
+        throw error;
+      }
+    }
+  });
+};
+
+export { execute };
