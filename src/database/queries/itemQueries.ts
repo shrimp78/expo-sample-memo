@@ -27,9 +27,18 @@ const InsertItem = `
   )
 `;
 
+/**
+ * Itemレコードのカウント
+ */
+
+const CountItems = `
+  SELECT COUNT(*) FROM items
+`;
+
 const ItemQueries = Object.freeze({
   CREATE_TABLE: CreateTableItems,
-  INSERT: InsertItem
+  INSERT: InsertItem,
+  COUNT: CountItems
 });
 
 export { ItemQueries };

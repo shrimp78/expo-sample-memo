@@ -61,6 +61,7 @@ const fetch = async <T>(sqlArgs: SqlArgs): Promise<T[]> => {
   const db = await SQLite.openDatabaseAsync(DB_NAME);
   const path = getDbFilePath();
   console.log(`fetch start : path >> ${path}`);
+  console.log(`fetch sql >> ${sql}`);
 
   try {
     const rows = await db.getAllAsync<T>(sql, ...(params || []));
