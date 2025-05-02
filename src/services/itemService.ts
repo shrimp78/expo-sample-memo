@@ -1,5 +1,6 @@
 import { execute, fetch, SqlArgs } from '../database/dbService';
 import { ItemQueries } from '../database/queries/itemQueries';
+
 /**
  * Itemテーブルの作成
  */
@@ -21,9 +22,10 @@ const createItem = async (title: string, content: string) => {
 /**
  * Itemレコードのカウント
  */
-const countItems = async (): Promise<number[]> => {
+const countItems = async (): Promise<number> => {
   const result = await fetch<{ 'COUNT(*)': number }>({ sql: ItemQueries.COUNT });
   const count = result.map(row => row['COUNT(*)']);
-  return count;
+  return count[0];
 };
+
 export { createTable, createItem, countItems };
