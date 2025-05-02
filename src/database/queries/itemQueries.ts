@@ -13,8 +13,23 @@ const CreateTableItems = `
   )
 `;
 
+/**
+ * Itemレコードの作成
+ * @param title タイトル
+ * @param content コンテンツ
+ */
+
+const InsertItem = `
+  INSERT INTO items (
+    title, content
+  ) VALUES (
+    ?, ?
+  )
+`;
+
 const ItemQueries = Object.freeze({
-  CREATE_TABLE: CreateTableItems
+  CREATE_TABLE: CreateTableItems,
+  INSERT: InsertItem
 });
 
 export { ItemQueries };
