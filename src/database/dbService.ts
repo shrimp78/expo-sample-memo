@@ -50,4 +50,24 @@ const execute = async (...sqlArgs: SqlArgs[]): Promise<void> => {
   });
 };
 
-export { execute };
+/**
+ * 取得系SQL処理
+ * @param sqlArgs SQLの引数
+ * @returns 実行結果
+ */
+
+const fetch = async <T>(sqlArgs: SqlArgs): Promise<T[]> => {
+  const { sql, params } = sqlArgs;
+  const db = await SQLite.openDatabaseAsync(DB_NAME);
+  const path = getDbFilePath();
+  console.log(`fetch start : path >> ${path}`);
+
+  try {
+    const rows = await db.getAllAsync<T>(sql, ...(params || []));
+    return rows;
+  } catch (error) {
+    console.error(`fetch error >> ${error}`);
+    throw error;
+  }
+};
+export { execute, fetch };
