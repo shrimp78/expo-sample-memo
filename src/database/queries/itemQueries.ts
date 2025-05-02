@@ -6,10 +6,10 @@ const CreateTableItems = `
   CREATE TABLE IF NOT EXISTS items
   (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,
-    title      TEXT NOT NULL,
-    content    TEXT NOT NULL,
-    createdAt  DATETIME NOT NULL,
-    updatedAt  DATETIME NOT NULL
+    title      TEXT    NOT NULL,
+    content    TEXT    NOT NULL,
+    created_at TEXT    DEFAULT (DATETIME('now', 'localtime')),
+    updated_at TEXT    DEFAULT (DATETIME('now', 'localtime'))
   )
 `;
 
