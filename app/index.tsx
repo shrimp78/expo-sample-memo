@@ -3,6 +3,8 @@ import { StyleSheet, Text, View } from 'react-native';
 import { useEffect, useState } from 'react';
 import * as ItemService from '../src/services/itemService';
 
+import initialItemData from '../src/data/initialItemData.json';
+
 export default function InitialScreen() {
   useEffect(() => {
     initApp();
@@ -11,6 +13,15 @@ export default function InitialScreen() {
   const initApp = async () => {
     try {
       await ItemService.createTable();
+
+      // レコードが0件なら初期データをINSERT
+      const num = await ItemService.countItems();
+      if (num === 0) {
+        console.log('Item Count が0件なので初期データをINSERTします');
+        for (const key in initialItemData) {
+          await ItemService.createItem(initialItemData[key].title, initialItemData[key].content);
+        }
+      }
 
       // 初期化が完了したら、ホーム画面に遷移
       router.replace('/home');
