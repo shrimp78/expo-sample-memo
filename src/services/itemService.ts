@@ -1,5 +1,7 @@
 import { execute, fetch, SqlArgs } from '../database/dbService';
 import { ItemQueries } from '../database/queries/itemQueries';
+import { type ItemSchema } from '../database/schemas/itemSchema';
+import { type Item } from '../components/types/item';
 
 /**
  * Itemテーブルの作成
@@ -28,4 +30,19 @@ const countItems = async (): Promise<number> => {
   return count[0];
 };
 
-export { createTable, createItem, countItems };
+/**
+ * 全てのItemを取得
+ */
+const getAllItems = async (): Promise<Item[]> => {
+  const rows = await fetch<ItemSchema>({ sql: ItemQueries.GET_ALL_ITEMS });
+  const items = rows.map((row): Item => {
+    return {
+      id: row.id,
+      title: row.title,
+      content: row.content
+    };
+  });
+  return items;
+};
+
+export { createTable, createItem, countItems, getAllItems };

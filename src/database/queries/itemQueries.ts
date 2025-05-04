@@ -1,7 +1,6 @@
 /**
  * Itemテーブルを作成
  */
-
 const CreateTableItems = `
   CREATE TABLE IF NOT EXISTS items
   (
@@ -18,7 +17,6 @@ const CreateTableItems = `
  * @param title タイトル
  * @param content コンテンツ
  */
-
 const InsertItem = `
   INSERT INTO items (
     title, content
@@ -30,15 +28,22 @@ const InsertItem = `
 /**
  * Itemレコードのカウント
  */
-
 const CountItems = `
   SELECT COUNT(*) FROM items
+`;
+
+/**
+ * 全てのItemを取得
+ */
+const GetAllItems = `
+  SELECT * FROM items
 `;
 
 const ItemQueries = Object.freeze({
   CREATE_TABLE: CreateTableItems,
   INSERT: InsertItem,
-  COUNT: CountItems
+  COUNT: CountItems,
+  GET_ALL_ITEMS: GetAllItems
 });
 
 export { ItemQueries };
