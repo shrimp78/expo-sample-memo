@@ -2,5 +2,9 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true
-  }
+  },
+  "files.exclude": {
+    "node_modules": true
+  },
+  "typescript.validate.enable": false
 }
