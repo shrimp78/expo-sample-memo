@@ -45,4 +45,21 @@ const getAllItems = async (): Promise<Item[]> => {
   return items;
 };
 
-export { createTable, createItem, countItems, getAllItems };
+/**
+ * 指定されたIDのItemを取得
+ * @param id アイテムのID
+ */
+const getItemById = async (id: number): Promise<Item> => {
+  const rows = await fetch<ItemSchema>({ sql: ItemQueries.GET_ITEM_BY_ID, params: [id] });
+  if (rows.length === 0) {
+    throw new Error('Item not found');
+  }
+  const item = {
+    id: rows[0].id,
+    title: rows[0].title,
+    content: rows[0].content
+  };
+  return item;
+};
+
+export { createTable, createItem, countItems, getAllItems, getItemById };

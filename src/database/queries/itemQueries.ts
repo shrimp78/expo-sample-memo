@@ -39,11 +39,20 @@ const GetAllItems = `
   SELECT * FROM items
 `;
 
+/**
+ * 指定されたIDのItemを取得
+ * @param id アイテムのID
+ */
+const GetItemById = `
+  SELECT * FROM items WHERE id = ?
+`;
+
 const ItemQueries = Object.freeze({
   CREATE_TABLE: CreateTableItems,
   INSERT: InsertItem,
   COUNT: CountItems,
-  GET_ALL_ITEMS: GetAllItems
+  GET_ALL_ITEMS: GetAllItems,
+  GET_ITEM_BY_ID: GetItemById
 });
 
 export { ItemQueries };
