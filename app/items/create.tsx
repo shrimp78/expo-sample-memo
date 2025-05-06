@@ -1,13 +1,13 @@
-import { StyleSheet, Button, TextInput } from 'react-native';
+import { StyleSheet, Button, TextInput, Alert } from 'react-native';
 import { KeyboardAvoidingView } from '@gluestack-ui/themed';
 import { useState, useEffect } from 'react';
-import { useNavigation } from 'expo-router';
+import { router, useNavigation } from 'expo-router';
 import { ItemInputForm } from '../../src/components/items/ItemInputForm';
-
+import * as ItemService from '../../src/services/itemService';
 export default function CreateItemScreen() {
   // タイトルと内容の状態
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const [title, setTitle] = useState<string>('');
+  const [content, setContent] = useState<string>('');
 
   // ヘッダーの保存ボタン表示
   const navigation = useNavigation();
@@ -20,8 +20,28 @@ export default function CreateItemScreen() {
   }, []);
 
   // 保存ボタン押下時の処理
-  const handleSaveItemPress = () => {
+  const handleSaveItemPress = async () => {
     console.log('保存ボタンが押されました');
+    // TODO: loading画面の実装
+
+    // バリデーション
+    if (!title) {
+      Alert.alert('確認', 'タイトルを入力してください');
+      return;
+    }
+    if (!content) {
+      Alert.alert('確認', 'コンテンツを入力してください');
+      return;
+    }
+
+    // 保存処理
+    try {
+      await ItemService.createItem(title, content);
+      router.back();
+    } catch (e) {
+      Alert.alert('エラー', '保存に失敗しました');
+      console.error(e);
+    }
   };
 
   return (
