@@ -1,7 +1,7 @@
 import { Input, InputField, Textarea, TextareaInput } from '@gluestack-ui/themed';
-import { InputAccessoryView, View, Platform, Keyboard, TouchableOpacity } from 'react-native';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { InputAccessoryView, View, Platform } from 'react-native';
 import { KeyboardCloseButton } from './KeyboardCloseButton';
+
 type ItemInputFormProps = {
   title: string;
   content: string;
