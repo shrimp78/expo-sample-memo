@@ -4,12 +4,13 @@ import { useState, useEffect } from 'react';
 import { router, useNavigation } from 'expo-router';
 import { ItemInputForm } from '../../src/components/items/ItemInputForm';
 import * as ItemService from '../../src/services/itemService';
+
 export default function CreateItemScreen() {
   // タイトルと内容の状態
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
 
-  // ヘッダーの保存ボタン表示
+  // ヘッダーの保存ボタン表示と、入力内容の変更を監視
   const navigation = useNavigation();
   useEffect(() => {
     navigation.setOptions({
@@ -17,7 +18,7 @@ export default function CreateItemScreen() {
         return <Button title="保存" onPress={handleSaveItemPress} />;
       }
     });
-  }, []);
+  }, [title, content]);
 
   // 保存ボタン押下時の処理
   const handleSaveItemPress = async () => {
