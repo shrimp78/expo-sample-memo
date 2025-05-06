@@ -62,4 +62,14 @@ const getItemById = async (id: number): Promise<Item> => {
   return item;
 };
 
-export { createTable, createItem, countItems, getAllItems, getItemById };
+/**
+ * 指定されたIDのItemを更新
+ * @param id アイテムのID
+ * @param title タイトル
+ * @param content コンテンツ
+ */
+const updateItemById = async (id: number, title: string, content: string) => {
+  await execute({ sql: ItemQueries.UPDATE_ITEM_BY_ID, params: [title, content, id] });
+};
+
+export { createTable, createItem, countItems, getAllItems, getItemById, updateItemById };

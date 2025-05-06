@@ -47,12 +47,30 @@ const GetItemById = `
   SELECT * FROM items WHERE id = ?
 `;
 
+/**
+ * 指定されたIDのItemの更新
+ * @param id アイテムのID
+ * @param title タイトル
+ * @param content コンテンツ
+ */
+const UpdateItemById = `
+  UPDATE
+    items
+  SET
+    title = ?,
+    content = ?,
+    updated_at = DATETIME('now', 'localtime')
+  WHERE
+    id = ?
+`;
+
 const ItemQueries = Object.freeze({
   CREATE_TABLE: CreateTableItems,
   INSERT: InsertItem,
   COUNT: CountItems,
   GET_ALL_ITEMS: GetAllItems,
-  GET_ITEM_BY_ID: GetItemById
+  GET_ITEM_BY_ID: GetItemById,
+  UPDATE_ITEM_BY_ID: UpdateItemById
 });
 
 export { ItemQueries };
