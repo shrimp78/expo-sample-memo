@@ -36,7 +36,7 @@ const CountItems = `
  * 全てのItemを取得
  */
 const GetAllItems = `
-  SELECT * FROM items
+  SELECT * FROM items ORDER BY updated_at DESC
 `;
 
 /**
