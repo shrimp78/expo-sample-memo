@@ -1,6 +1,6 @@
 import { View, StyleSheet, FlatList, Button } from 'react-native';
-import { useState, useEffect } from 'react';
-import { router, useNavigation } from 'expo-router';
+import { useState, useEffect, useCallback } from 'react';
+import { router, useNavigation, useFocusEffect } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { Item } from '../../src/components/types/item';
 import { ItemList } from '../../src/components/items/ItemList';
@@ -17,14 +17,16 @@ export default function ItemScreen() {
     });
   }, []);
 
-  useEffect(() => {
-    const fetchItems = async () => {
-      const items = await ItemService.getAllItems();
-      setItems(items);
-    };
+  useFocusEffect(
+    useCallback(() => {
+      const fetchItems = async () => {
+        const items = await ItemService.getAllItems();
+        setItems(items);
+      };
 
-    fetchItems();
-  }, []);
+      fetchItems();
+    }, [])
+  );
 
   // 追加ボタン押下時の処理
   const handleAddItemPress = () => {
