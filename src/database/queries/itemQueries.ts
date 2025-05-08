@@ -64,13 +64,22 @@ const UpdateItemById = `
     id = ?
 `;
 
+/**
+ * 指定されたIDのItemを削除
+ * @param id アイテムのID
+ */
+const DeleteItemById = `
+  DELETE FROM items WHERE id = ?
+`;
+
 const ItemQueries = Object.freeze({
   CREATE_TABLE: CreateTableItems,
   INSERT: InsertItem,
   COUNT: CountItems,
   GET_ALL_ITEMS: GetAllItems,
   GET_ITEM_BY_ID: GetItemById,
-  UPDATE_ITEM_BY_ID: UpdateItemById
+  UPDATE_ITEM_BY_ID: UpdateItemById,
+  DELETE_ITEM_BY_ID: DeleteItemById
 });
 
 export { ItemQueries };

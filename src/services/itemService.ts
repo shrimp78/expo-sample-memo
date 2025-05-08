@@ -72,4 +72,12 @@ const updateItemById = async (id: number, title: string, content: string) => {
   await execute({ sql: ItemQueries.UPDATE_ITEM_BY_ID, params: [title, content, id] });
 };
 
-export { createTable, createItem, countItems, getAllItems, getItemById, updateItemById };
+/**
+ * 指定されたIDのItemを削除
+ * @param id アイテムのID
+ */
+const deleteItemById = async (id: number) => {
+  await execute({ sql: ItemQueries.DELETE_ITEM_BY_ID, params: [id] });
+};
+
+export { createTable, createItem, countItems, getAllItems, getItemById, updateItemById, deleteItemById };
