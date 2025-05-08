@@ -5,23 +5,28 @@ type ItemListProps = {
   name: string;
   content: string;
   onPress: () => void;
+  onDeletePress: () => void;
 };
 
 const ItemList: React.FC<ItemListProps> = props => {
-  const { name, content, onPress } = props;
+  const { name, content, onPress, onDeletePress } = props;
   return (
     <ListItem.Swipeable
       bottomDivider
-      rightContent={
+      rightContent={reset => (
         <Button
           title="削除"
           icon={{ name: 'delete', color: 'white' }}
           buttonStyle={{ minHeight: '100%', backgroundColor: 'red' }}
           onPress={() => {
             console.log('DeleteButton onPress');
+            if (onDeletePress) {
+              onDeletePress();
+            }
+            reset();
           }}
         />
-      }
+      )}
       onPress={onPress}
       onLongPress={() => {
         console.log('ListItem onLongPress');
