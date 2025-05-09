@@ -72,6 +72,13 @@ const DeleteItemById = `
   DELETE FROM items WHERE id = ?
 `;
 
+/**
+ * Itemテーブルのデータを全件削除
+ */
+const DeleteAllItems = `
+  DELETE FROM items
+`;
+
 const ItemQueries = Object.freeze({
   CREATE_TABLE: CreateTableItems,
   INSERT: InsertItem,
@@ -79,7 +86,8 @@ const ItemQueries = Object.freeze({
   GET_ALL_ITEMS: GetAllItems,
   GET_ITEM_BY_ID: GetItemById,
   UPDATE_ITEM_BY_ID: UpdateItemById,
-  DELETE_ITEM_BY_ID: DeleteItemById
+  DELETE_ITEM_BY_ID: DeleteItemById,
+  DELETE_ALL_ITEMS: DeleteAllItems
 });
 
 export { ItemQueries };

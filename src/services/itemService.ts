@@ -80,4 +80,11 @@ const deleteItemById = async (id: number) => {
   await execute({ sql: ItemQueries.DELETE_ITEM_BY_ID, params: [id] });
 };
 
-export { createTable, createItem, countItems, getAllItems, getItemById, updateItemById, deleteItemById };
+/**
+ * Itemテーブルのデータを全件削除
+ */
+const deleteAllItems = async () => {
+  await execute({ sql: ItemQueries.DELETE_ALL_ITEMS });
+};
+
+export { createTable, createItem, countItems, getAllItems, getItemById, updateItemById, deleteItemById, deleteAllItems };
