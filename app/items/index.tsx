@@ -1,13 +1,22 @@
 import { View, StyleSheet, FlatList, TouchableOpacity, Alert, LayoutAnimation } from 'react-native';
-import { useState, useCallback } from 'react';
-import { router, useFocusEffect } from 'expo-router';
-import { Feather } from '@expo/vector-icons';
+import { useState, useCallback, useEffect } from 'react';
+import { router, useFocusEffect, useNavigation } from 'expo-router';
+import { Entypo, Feather } from '@expo/vector-icons';
 import { Item } from '../../src/components/types/item';
 import { ItemList } from '../../src/components/items/ItemList';
 import * as ItemService from '../../src/services/itemService';
 
 export default function ItemScreen() {
   const [items, setItems] = useState<Item[]>([]);
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return <Entypo name="dots-three-horizontal" size={24} color="black" />;
+      }
+    });
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
