@@ -1,6 +1,6 @@
-import { View, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { useState, useEffect, useCallback } from 'react';
-import { router, useNavigation, useFocusEffect } from 'expo-router';
+import { View, StyleSheet, FlatList, TouchableOpacity, Alert, LayoutAnimation } from 'react-native';
+import { useState, useCallback } from 'react';
+import { router, useFocusEffect } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { Item } from '../../src/components/types/item';
 import { ItemList } from '../../src/components/items/ItemList';
@@ -32,12 +32,33 @@ export default function ItemScreen() {
     router.push({ pathname: `/items/${itemId}` });
   };
 
+  // アイテムの削除
+  const handleDeletePress = async (itemId: number) => {
+    console.log('アイテムの削除が押されました', itemId);
+    try {
+      await ItemService.deleteItemById(itemId);
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      const updatedItems = await ItemService.getAllItems();
+      setItems(updatedItems);
+    } catch (e) {
+      Alert.alert('エラー', '削除に失敗しました');
+      throw e;
+    }
+  };
+
   return (
     <View style={styles.container}>
       <FlatList
         contentContainerStyle={{ paddingBottom: 120 }}
         data={items}
-        renderItem={({ item }) => <ItemList name={item.title} content={item.content} onPress={() => handleItemPress(item.id)} />}
+        renderItem={({ item }) => (
+          <ItemList
+            name={item.title}
+            content={item.content}
+            onPress={() => handleItemPress(item.id)}
+            onDeletePress={() => handleDeletePress(item.id)}
+          />
+        )}
       />
       <TouchableOpacity style={styles.floatingButton} onPress={handleAddItemPress}>
         <Feather name="plus" size={24} color="gray" />
