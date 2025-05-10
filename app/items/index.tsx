@@ -1,4 +1,4 @@
-import { View, StyleSheet, FlatList, TouchableOpacity, Alert, LayoutAnimation } from 'react-native';
+import { View, StyleSheet, FlatList, TouchableOpacity, Alert, LayoutAnimation, Modal, Text } from 'react-native';
 import { useState, useCallback, useEffect } from 'react';
 import { router, useFocusEffect, useNavigation } from 'expo-router';
 import { Entypo, Feather } from '@expo/vector-icons';
@@ -10,10 +10,20 @@ export default function ItemScreen() {
   const [items, setItems] = useState<Item[]>([]);
   const navigation = useNavigation();
 
+  // Modal用
+  const [modalVisible, setModalVisible] = useState(false);
+  const toggleModal = () => setModalVisible(!modalVisible);
+
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => {
-        return <Entypo name="dots-three-horizontal" size={24} color="black" />;
+        return (
+          <View>
+            <TouchableOpacity onPress={toggleModal}>
+              <Entypo name="dots-three-horizontal" size={24} color="black" />
+            </TouchableOpacity>
+          </View>
+        );
       }
     });
   }, []);
@@ -55,6 +65,28 @@ export default function ItemScreen() {
     }
   };
 
+  const handleDeleteAllItems = async () => {
+    console.log('アイテムの全削除が押されました');
+    Alert.alert('全てのアイテムを削除します', '', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'OK',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            await ItemService.deleteAllItems();
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+            const updatedItems = await ItemService.getAllItems();
+            setItems(updatedItems);
+          } catch (e) {
+            Alert.alert('エラー', '削除に失敗しました');
+            throw e;
+          }
+        }
+      }
+    ]);
+  };
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -72,6 +104,19 @@ export default function ItemScreen() {
       <TouchableOpacity style={styles.floatingButton} onPress={handleAddItemPress}>
         <Feather name="plus" size={24} color="gray" />
       </TouchableOpacity>
+
+      <Modal transparent={true} visible={modalVisible} animationType="fade" onRequestClose={toggleModal}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.menuItem} onPress={toggleModal}>
+              閉じる
+            </Text>
+            <Text style={styles.menuItem} onPress={handleDeleteAllItems}>
+              アイテムを全て削除する
+            </Text>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -96,5 +141,22 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     borderRadius: 30
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  modalContent: {
+    width: 300,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 15
+  },
+  menuItem: {
+    paddingVertical: 10,
+    fontSize: 16,
+    textAlign: 'center'
   }
 });
