@@ -75,8 +75,8 @@ export default function ItemScreen() {
         onPress: async () => {
           try {
             await ItemService.deleteAllItems();
-            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
             const updatedItems: Item[] = [];
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
             setItems(updatedItems);
           } catch (e) {
             Alert.alert('エラー', '削除に失敗しました');
@@ -92,6 +92,7 @@ export default function ItemScreen() {
       <FlatList
         contentContainerStyle={{ paddingBottom: 120 }}
         data={items}
+        keyExtractor={item => item.id.toString()}
         renderItem={({ item }) => (
           <ItemList
             name={item.title}
