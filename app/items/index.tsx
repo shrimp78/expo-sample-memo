@@ -76,7 +76,7 @@ export default function ItemScreen() {
           try {
             await ItemService.deleteAllItems();
             LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-            const updatedItems = await ItemService.getAllItems();
+            const updatedItems: Item[] = [];
             setItems(updatedItems);
           } catch (e) {
             Alert.alert('エラー', '削除に失敗しました');
