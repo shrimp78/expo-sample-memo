@@ -149,15 +149,21 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center'
+    backgroundColor: 'rgba(0, 0, 0, 0.5)'
   },
   modalContent: {
+    position: 'absolute',
+    top: 100,
+    right: 20,
     width: 300,
     backgroundColor: '#fff',
     borderRadius: 10,
-    padding: 15
+    padding: 15,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5 // Android用のShadow
   },
   menuItem: {
     paddingVertical: 10,
