@@ -1,4 +1,4 @@
-import { View, StyleSheet, FlatList, TouchableOpacity, Alert, LayoutAnimation, Modal, Text } from 'react-native';
+import { View, StyleSheet, FlatList, TouchableOpacity, Alert, LayoutAnimation, Modal, Text, TouchableWithoutFeedback } from 'react-native';
 import { useState, useCallback, useEffect } from 'react';
 import { router, useFocusEffect, useNavigation } from 'expo-router';
 import { Entypo, Feather } from '@expo/vector-icons';
@@ -106,16 +106,21 @@ export default function ItemScreen() {
       </TouchableOpacity>
 
       <Modal transparent={true} visible={modalVisible} animationType="fade" onRequestClose={toggleModal}>
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.menuItem} onPress={toggleModal}>
-              閉じる
-            </Text>
-            <Text style={styles.menuItem} onPress={handleDeleteAllItems}>
-              アイテムを全て削除する
-            </Text>
+        <TouchableWithoutFeedback onPress={toggleModal}>
+          <View style={styles.modalOverlay}>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                /* Modal内でのタップで閉じないようにする */
+              }}
+            >
+              <View style={styles.modalContent}>
+                <Text style={styles.menuItem} onPress={handleDeleteAllItems}>
+                  アイテムを全て削除する
+                </Text>
+              </View>
+            </TouchableWithoutFeedback>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
     </View>
   );
