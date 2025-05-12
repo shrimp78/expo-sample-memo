@@ -74,6 +74,7 @@ export default function ItemScreen() {
         style: 'destructive',
         onPress: async () => {
           try {
+            toggleModal();
             await ItemService.deleteAllItems();
             const updatedItems: Item[] = [];
             setItems(updatedItems);
