@@ -67,7 +67,7 @@ export default function ItemScreen() {
 
   const handleDeleteAllItems = async () => {
     console.log('アイテムの全削除が押されました');
-    Alert.alert('全てのアイテムを削除します', '', [
+    Alert.alert('確認', 'ガチで全てのアイテムを削除しますか？', [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'OK',
@@ -101,6 +101,11 @@ export default function ItemScreen() {
             onDeletePress={() => handleDeletePress(item.id)}
           />
         )}
+        ListEmptyComponent={
+          <View style={styles.listEmpty}>
+            <Text style={styles.listEmptyText}>アイテムがありません</Text>
+          </View>
+        }
       />
       <TouchableOpacity style={styles.floatingButton} onPress={handleAddItemPress}>
         <Feather name="plus" size={24} color="gray" />
@@ -150,7 +155,7 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)'
+    backgroundColor: 'rgba(0, 0, 0, 0.2)'
   },
   modalContent: {
     position: 'absolute',
@@ -170,5 +175,15 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     fontSize: 16,
     textAlign: 'center'
+  },
+  listEmpty: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 300 // TODO: どんな画面サイズでも自動で上下中央に寄せる方法を後で見つけたい
+  },
+  listEmptyText: {
+    fontSize: 20,
+    color: 'gray'
   }
 });
