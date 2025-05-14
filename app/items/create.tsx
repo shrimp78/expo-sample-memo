@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { router, useNavigation } from 'expo-router';
 import { ItemInputForm } from '../../src/components/items/ItemInputForm';
 import * as ItemService from '../../src/services/itemService';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function CreateItemScreen() {
   // タイトルと内容の状態
@@ -37,7 +38,7 @@ export default function CreateItemScreen() {
 
     // 保存処理
     try {
-      await ItemService.createItem(title, content);
+      await ItemService.createItem(uuidv4(), title, content);
       router.back();
     } catch (e) {
       Alert.alert('エラー', '保存に失敗しました');

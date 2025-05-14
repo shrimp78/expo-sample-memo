@@ -15,9 +15,9 @@ const createTable = async () => {
  * @param title タイトル
  * @param content コンテンツ
  */
-const createItem = async (title: string, content: string) => {
+const createItem = async (id: string, title: string, content: string) => {
   let queries: SqlArgs[] = [];
-  queries.push({ sql: ItemQueries.INSERT, params: [title, content] });
+  queries.push({ sql: ItemQueries.INSERT, params: [id, title, content] });
   await execute(...queries);
 };
 
@@ -49,7 +49,7 @@ const getAllItems = async (): Promise<Item[]> => {
  * 指定されたIDのItemを取得
  * @param id アイテムのID
  */
-const getItemById = async (id: number): Promise<Item> => {
+const getItemById = async (id: string): Promise<Item> => {
   const rows = await fetch<ItemSchema>({ sql: ItemQueries.GET_ITEM_BY_ID, params: [id] });
   if (rows.length === 0) {
     throw new Error('Item not found');
@@ -68,7 +68,7 @@ const getItemById = async (id: number): Promise<Item> => {
  * @param title タイトル
  * @param content コンテンツ
  */
-const updateItemById = async (id: number, title: string, content: string) => {
+const updateItemById = async (id: string, title: string, content: string) => {
   await execute({ sql: ItemQueries.UPDATE_ITEM_BY_ID, params: [title, content, id] });
 };
 
@@ -76,7 +76,7 @@ const updateItemById = async (id: number, title: string, content: string) => {
  * 指定されたIDのItemを削除
  * @param id アイテムのID
  */
-const deleteItemById = async (id: number) => {
+const deleteItemById = async (id: string) => {
   await execute({ sql: ItemQueries.DELETE_ITEM_BY_ID, params: [id] });
 };
 

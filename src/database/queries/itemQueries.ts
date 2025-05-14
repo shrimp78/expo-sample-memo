@@ -4,7 +4,7 @@
 const CreateTableItems = `
   CREATE TABLE IF NOT EXISTS items
   (
-    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    id         TEXT    PRIMARY KEY,
     title      TEXT    NOT NULL,
     content    TEXT    NOT NULL,
     created_at TEXT    DEFAULT (DATETIME('now', 'localtime')),
@@ -19,9 +19,9 @@ const CreateTableItems = `
  */
 const InsertItem = `
   INSERT INTO items (
-    title, content
+    id, title, content
   ) VALUES (
-    ?, ?
+    ?, ?, ?
   )
 `;
 

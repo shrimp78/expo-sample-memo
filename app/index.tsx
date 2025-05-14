@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import { useEffect, useState } from 'react';
 import * as ItemService from '../src/services/itemService';
+import { v4 as uuidv4 } from 'uuid';
 
 import initialItemData from '../src/data/initialItemData.json';
 
@@ -19,7 +20,7 @@ export default function InitialScreen() {
       if (num === 0) {
         console.log('Item Count が0件なので初期データをINSERTします');
         for (const key in initialItemData) {
-          await ItemService.createItem(initialItemData[key].title, initialItemData[key].content);
+          await ItemService.createItem(uuidv4(), initialItemData[key].title, initialItemData[key].content);
         }
       }
 
