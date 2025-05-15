@@ -18,7 +18,7 @@ export default function ItemEditScreen() {
 
     const fetchItem = async () => {
       try {
-        const item = await ItemService.getItemById(Number(id));
+        const item = await ItemService.getItemById(id as string);
         if (item) {
           setTitle(item.title);
           setContent(item.content);
@@ -53,7 +53,7 @@ export default function ItemEditScreen() {
 
     // 保存処理
     try {
-      await ItemService.updateItemById(Number(id), title, content);
+      await ItemService.updateItemById(id as string, title, content);
       router.back();
     } catch (e) {
       Alert.alert('エラー', '保存に失敗しました', [{ text: 'OK', onPress: () => router.back() }]);
