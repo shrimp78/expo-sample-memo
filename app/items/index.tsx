@@ -46,13 +46,13 @@ export default function ItemScreen() {
   };
 
   // アイテムが押された時の処理
-  const handleItemPress = (itemId: number) => {
+  const handleItemPress = (itemId: string) => {
     console.log('アイテムが押されました', itemId);
     router.push({ pathname: `/items/${itemId}` });
   };
 
   // アイテムの削除
-  const handleDeletePress = async (itemId: number) => {
+  const handleDeletePress = async (itemId: string) => {
     console.log('アイテムの削除が押されました', itemId);
     try {
       await ItemService.deleteItemById(itemId);
