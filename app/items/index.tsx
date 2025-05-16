@@ -1,7 +1,7 @@
 import { View, StyleSheet, FlatList, TouchableOpacity, Alert, LayoutAnimation, Modal, Text, TouchableWithoutFeedback } from 'react-native';
 import { useState, useCallback, useEffect } from 'react';
 import { router, useFocusEffect, useNavigation } from 'expo-router';
-import { Entypo, Feather } from '@expo/vector-icons';
+import { Entypo, Feather, AntDesign } from '@expo/vector-icons';
 import { Item } from '../../src/components/types/item';
 import { ItemList } from '../../src/components/items/ItemList';
 import * as ItemService from '../../src/services/itemService';
@@ -120,6 +120,9 @@ export default function ItemScreen() {
               }}
             >
               <View style={styles.modalContent}>
+                <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
+                  <AntDesign name="closecircleo" size={24} color="gray" />
+                </TouchableOpacity>
                 <Text style={styles.menuItem} onPress={handleDeleteAllItems}>
                   アイテムを全て削除する
                 </Text>
@@ -164,7 +167,9 @@ const styles = StyleSheet.create({
     width: 300,
     backgroundColor: '#fff',
     borderRadius: 10,
-    padding: 15,
+    paddingTop: 30,
+    paddingBottom: 20,
+    paddingHorizontal: 10,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
@@ -185,5 +190,12 @@ const styles = StyleSheet.create({
   listEmptyText: {
     fontSize: 20,
     color: 'gray'
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    zIndex: 1,
+    padding: 4
   }
 });
