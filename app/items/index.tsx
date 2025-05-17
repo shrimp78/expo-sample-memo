@@ -6,13 +6,25 @@ import { Item } from '../../src/components/types/item';
 import { ItemList } from '../../src/components/items/ItemList';
 import * as ItemService from '../../src/services/itemService';
 
+// 新規作成モーダル用
+import { KeyboardAvoidingView } from '@gluestack-ui/themed';
+import { ItemInputForm } from '../../src/components/items/ItemInputForm';
+
 export default function ItemScreen() {
   const [items, setItems] = useState<Item[]>([]);
   const navigation = useNavigation();
 
+  // 新規作成画面のModal用
+  const [title, setTitle] = useState<string>('');
+  const [content, setContent] = useState<string>('');
+
   // Modal用
   const [modalVisible, setModalVisible] = useState(false);
   const toggleModal = () => setModalVisible(!modalVisible);
+
+  // 新規作成画面のModal用
+  const [createModalVisible, setCreateModalVisible] = useState(false);
+  const toggleCreateModal = () => setCreateModalVisible(!createModalVisible);
 
   useEffect(() => {
     navigation.setOptions({
@@ -42,7 +54,8 @@ export default function ItemScreen() {
   // 追加ボタン押下時の処理
   const handleAddItemPress = () => {
     console.log('追加ボタンが押されました');
-    router.push('/items/create');
+    //    router.push('/items/create');
+    toggleCreateModal();
   };
 
   // アイテムが押された時の処理
@@ -111,6 +124,7 @@ export default function ItemScreen() {
         <Feather name="plus" size={24} color="gray" />
       </TouchableOpacity>
 
+      {/* メニューモーダル */}
       <Modal transparent={true} visible={modalVisible} animationType="fade" onRequestClose={toggleModal}>
         <TouchableWithoutFeedback onPress={toggleModal}>
           <View style={styles.modalOverlay}>
@@ -130,6 +144,21 @@ export default function ItemScreen() {
             </TouchableWithoutFeedback>
           </View>
         </TouchableWithoutFeedback>
+      </Modal>
+
+      {/* 新規作成画面のModal */}
+      <Modal animationType="slide" transparent={true} visible={createModalVisible} onRequestClose={toggleCreateModal}>
+        <View style={styles.createModalOverlay}>
+          <View style={styles.createModalContent}>
+            <TouchableOpacity style={styles.closeButton} onPress={toggleCreateModal}>
+              <AntDesign name="closecircleo" size={24} color="gray" />
+            </TouchableOpacity>
+            <Text>新規作成</Text>
+            <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100} style={styles.container}>
+              <ItemInputForm title={title} content={content} onChangeTitle={setTitle} onChangeContent={setContent} />
+            </KeyboardAvoidingView>
+          </View>
+        </View>
       </Modal>
     </View>
   );
@@ -197,5 +226,17 @@ const styles = StyleSheet.create({
     right: 8,
     zIndex: 1,
     padding: 4
+  },
+  createModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  createModalContent: {
+    width: '90%',
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10
   }
 });
