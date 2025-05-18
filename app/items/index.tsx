@@ -24,7 +24,11 @@ export default function ItemScreen() {
 
   // 新規作成画面のModal用
   const [createModalVisible, setCreateModalVisible] = useState(false);
-  const toggleCreateModal = () => setCreateModalVisible(!createModalVisible);
+  const toggleCreateModal = () => {
+    setCreateModalVisible(!createModalVisible);
+    if (createModalVisible) setModalOverlayVisible(true); // 閉じる時にリセット (TODO: 保存して終了した時もやる必要ありそう)
+  };
+  const [modalOverlayVisible, setModalOverlayVisible] = useState(false);
 
   useEffect(() => {
     navigation.setOptions({
@@ -147,14 +151,20 @@ export default function ItemScreen() {
       </Modal>
 
       {/* 新規作成画面のModal */}
-      <Modal animationType="slide" transparent={true} visible={createModalVisible} onRequestClose={toggleCreateModal}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={createModalVisible}
+        onRequestClose={toggleCreateModal}
+        onShow={() => setModalOverlayVisible(true)}
+      >
         <View style={styles.createModalOverlay}>
           <View style={styles.createModalContent}>
             <TouchableOpacity style={styles.closeButton} onPress={toggleCreateModal}>
               <AntDesign name="closecircleo" size={24} color="gray" />
             </TouchableOpacity>
             <Text>新規作成</Text>
-            <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100} style={styles.container}>
+            <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}>
               <ItemInputForm title={title} content={content} onChangeTitle={setTitle} onChangeContent={setContent} />
             </KeyboardAvoidingView>
           </View>
@@ -229,14 +239,19 @@ const styles = StyleSheet.create({
   },
   createModalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center'
   },
   createModalContent: {
-    width: '90%',
+    position: 'absolute',
+    top: 80, // TODO: これ、デバイスによって違うので、デバイスの高さによって変える必要がある
+    width: '96%',
+    bottom: 0,
     backgroundColor: 'white',
     padding: 20,
-    borderRadius: 10
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0
   }
 });
