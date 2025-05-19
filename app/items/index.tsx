@@ -14,21 +14,17 @@ export default function ItemScreen() {
   const [items, setItems] = useState<Item[]>([]);
   const navigation = useNavigation();
 
-  // 新規作成画面のModal用
-  const [title, setTitle] = useState<string>('');
-  const [content, setContent] = useState<string>('');
-
   // Modal用
   const [modalVisible, setModalVisible] = useState(false);
   const toggleModal = () => setModalVisible(!modalVisible);
 
   // 新規作成画面のModal用
+  const [title, setTitle] = useState<string>('');
+  const [content, setContent] = useState<string>('');
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const toggleCreateModal = () => {
     setCreateModalVisible(!createModalVisible);
-    if (createModalVisible) setModalOverlayVisible(true); // 閉じる時にリセット (TODO: 保存して終了した時もやる必要ありそう)
   };
-  const [modalOverlayVisible, setModalOverlayVisible] = useState(false);
 
   useEffect(() => {
     navigation.setOptions({
@@ -151,13 +147,7 @@ export default function ItemScreen() {
       </Modal>
 
       {/* 新規作成画面のModal */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={createModalVisible}
-        onRequestClose={toggleCreateModal}
-        onShow={() => setModalOverlayVisible(true)}
-      >
+      <Modal animationType="slide" transparent={true} visible={createModalVisible} onRequestClose={toggleCreateModal}>
         <View style={styles.createModalOverlay}>
           <View style={styles.createModalContent}>
             <TouchableOpacity style={styles.closeButton} onPress={toggleCreateModal}>
@@ -252,6 +242,11 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0
+    borderBottomRightRadius: 0,
+    shadowColor: '#000', // iOS用
+    shadowOffset: { width: 0, height: 4 }, // iOS用
+    shadowOpacity: 0.3, // iOS用
+    shadowRadius: 8, // iOS用
+    elevation: 10 // Android用
   }
 });
