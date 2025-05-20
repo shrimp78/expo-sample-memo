@@ -1,4 +1,4 @@
-import { View, StyleSheet, FlatList, TouchableOpacity, Alert, LayoutAnimation, Modal, Text, TouchableWithoutFeedback } from 'react-native';
+import { View, StyleSheet, FlatList, TouchableOpacity, Alert, Button, LayoutAnimation, Modal, Text, TouchableWithoutFeedback } from 'react-native';
 import { useState, useCallback, useEffect } from 'react';
 import { router, useFocusEffect, useNavigation } from 'expo-router';
 import { Entypo, Feather, AntDesign } from '@expo/vector-icons';
@@ -9,12 +9,13 @@ import * as ItemService from '../../src/services/itemService';
 // 新規作成モーダル用
 import { KeyboardAvoidingView } from '@gluestack-ui/themed';
 import { ItemInputForm } from '../../src/components/items/ItemInputForm';
+import * as Crypto from 'expo-crypto';
 
 export default function ItemScreen() {
   const [items, setItems] = useState<Item[]>([]);
   const navigation = useNavigation();
 
-  // Modal用
+  // メニューModal用
   const [modalVisible, setModalVisible] = useState(false);
   const toggleModal = () => setModalVisible(!modalVisible);
 
@@ -24,6 +25,11 @@ export default function ItemScreen() {
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const toggleCreateModal = () => {
     setCreateModalVisible(!createModalVisible);
+  };
+
+  const fetchItems = async () => {
+    const items = await ItemService.getAllItems();
+    setItems(items);
   };
 
   useEffect(() => {
@@ -42,20 +48,44 @@ export default function ItemScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      const fetchItems = async () => {
-        const items = await ItemService.getAllItems();
-        setItems(items);
-      };
-
       fetchItems();
     }, [])
   );
 
-  // 追加ボタン押下時の処理
+  // (+)ボタン押下時の処理
   const handleAddItemPress = () => {
     console.log('追加ボタンが押されました');
-    //    router.push('/items/create');
     toggleCreateModal();
+  };
+
+  // 保存ボタン押下時の処理
+  const handleSaveItemPress = async () => {
+    console.log('保存ボタンが押されました');
+    // TODO: loading画面の実装
+
+    // バリデーション
+    if (!title) {
+      Alert.alert('確認', 'タイトルを入力してください');
+      return;
+    }
+    if (!content) {
+      Alert.alert('確認', 'コンテンツを入力してください');
+      return;
+    }
+
+    // 保存処理
+    try {
+      const id = Crypto.randomUUID();
+      await ItemService.createItem(id, title, content);
+      toggleCreateModal();
+      await fetchItems();
+    } catch (e) {
+      Alert.alert('エラー', '保存に失敗しました');
+      console.error(e);
+    } finally {
+      setTitle('');
+      setContent('');
+    }
   };
 
   // アイテムが押された時の処理
@@ -153,10 +183,14 @@ export default function ItemScreen() {
             <TouchableOpacity style={styles.closeButton} onPress={toggleCreateModal}>
               <AntDesign name="closecircleo" size={24} color="gray" />
             </TouchableOpacity>
-            <Text>新規作成</Text>
-            <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}>
-              <ItemInputForm title={title} content={content} onChangeTitle={setTitle} onChangeContent={setContent} />
-            </KeyboardAvoidingView>
+            <View style={styles.saveButtonArea}>
+              <Button title="保存" onPress={handleSaveItemPress} />
+            </View>
+            <View style={styles.inputArea}>
+              <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}>
+                <ItemInputForm title={title} content={content} onChangeTitle={setTitle} onChangeContent={setContent} />
+              </KeyboardAvoidingView>
+            </View>
           </View>
         </View>
       </Modal>
@@ -220,17 +254,25 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'gray'
   },
-  closeButton: {
-    position: 'absolute',
-    top: 8,
-    right: 8,
-    zIndex: 1,
-    padding: 4
-  },
   createModalOverlay: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center'
+  },
+  closeButton: {
+    position: 'absolute',
+    top: 16,
+    left: 16,
+    zIndex: 1,
+    padding: 4
+  },
+  saveButtonArea: {
+    //alignItems: 'flex-end',
+    //marginTop: 0
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    padding: 4
   },
   createModalContent: {
     position: 'absolute',
@@ -248,5 +290,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3, // iOS用
     shadowRadius: 8, // iOS用
     elevation: 10 // Android用
+  },
+  inputArea: {
+    marginTop: 20
   }
 });
