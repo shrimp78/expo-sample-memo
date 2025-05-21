@@ -9,8 +9,16 @@ CREATE TABLE IF NOT EXISTS groups
 )
 `;
 
+/**
+ * Itemレコードのカウント
+ */
+const CountGroups = `
+  SELECT COUNT(*) FROM groups
+`;
+
 const GroupQueries = Object.freeze({
-  CRATE_TABLE: CreateGroupTable
+  CRATE_TABLE: CreateGroupTable,
+  COUNT_GROUPS: CountGroups
 });
 
 export { GroupQueries };
