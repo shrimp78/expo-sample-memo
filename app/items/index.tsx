@@ -178,21 +178,29 @@ export default function ItemScreen() {
 
       {/* 新規作成画面のModal */}
       <Modal animationType="slide" transparent={true} visible={createModalVisible} onRequestClose={toggleCreateModal}>
-        <View style={styles.createModalOverlay}>
-          <View style={styles.createModalContent}>
-            <TouchableOpacity style={styles.closeButton} onPress={toggleCreateModal}>
-              <AntDesign name="closecircleo" size={24} color="gray" />
-            </TouchableOpacity>
-            <View style={styles.saveButtonArea}>
-              <Button title="保存" onPress={handleSaveItemPress} />
-            </View>
-            <View style={styles.inputArea}>
-              <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}>
-                <ItemInputForm title={title} content={content} onChangeTitle={setTitle} onChangeContent={setContent} />
-              </KeyboardAvoidingView>
-            </View>
+        <TouchableWithoutFeedback onPress={toggleCreateModal}>
+          <View style={styles.createModalOverlay}>
+            <TouchableWithoutFeedback
+              onPress={() => {
+                /* Modal内でのタップで閉じないようにする */
+              }}
+            >
+              <View style={styles.createModalContent}>
+                <TouchableOpacity style={styles.closeButton} onPress={toggleCreateModal}>
+                  <AntDesign name="closecircleo" size={24} color="gray" />
+                </TouchableOpacity>
+                <View style={styles.saveButtonArea}>
+                  <Button title="保存" onPress={handleSaveItemPress} />
+                </View>
+                <View style={styles.inputArea}>
+                  <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}>
+                    <ItemInputForm title={title} content={content} onChangeTitle={setTitle} onChangeContent={setContent} />
+                  </KeyboardAvoidingView>
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </Modal>
     </View>
   );
@@ -267,10 +275,8 @@ const styles = StyleSheet.create({
     padding: 4
   },
   saveButtonArea: {
-    //alignItems: 'flex-end',
-    //marginTop: 0
     position: 'absolute',
-    top: 12,
+    top: 8,
     right: 12,
     padding: 4
   },
