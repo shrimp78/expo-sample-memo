@@ -10,6 +10,20 @@ CREATE TABLE IF NOT EXISTS groups
 `;
 
 /**
+ * Itemレコードの作成
+ * @param id id
+ * @param name グループ名
+ * @param color 色
+ */
+const InsertGroup = `
+  INSERT INTO groups (
+    id, name, color
+  ) VALUES (
+    ?, ?, ?
+  )
+`;
+
+/**
  * Itemレコードのカウント
  */
 const CountGroups = `
@@ -18,6 +32,7 @@ const CountGroups = `
 
 const GroupQueries = Object.freeze({
   CRATE_TABLE: CreateGroupTable,
+  INSERT_GROUP: InsertGroup,
   COUNT_GROUPS: CountGroups
 });
 

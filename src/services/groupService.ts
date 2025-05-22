@@ -9,6 +9,16 @@ const createTable = async () => {
 };
 
 /**
+ * グループレコードの作成
+ * @param id id
+ * @param name グループ名
+ * @param color 色
+ */
+const insertGroup = async (id: string, name: string, color: string) => {
+  await execute({ sql: GroupQueries.INSERT_GROUP, params: [id, name, color] });
+};
+
+/**
  * Itemレコードのカウント
  */
 const countGroups = async (): Promise<number> => {
@@ -17,4 +27,4 @@ const countGroups = async (): Promise<number> => {
   return count[0];
 };
 
-export { createTable, countGroups };
+export { createTable, insertGroup, countGroups };
