@@ -28,6 +28,7 @@ export default function ItemScreen() {
   };
 
   const fetchItems = async () => {
+    // TODO: try catch を入れる
     const items = await ItemService.getAllItems();
     setItems(items);
   };
