@@ -30,10 +30,18 @@ const CountGroups = `
   SELECT COUNT(*) FROM groups
 `;
 
+/**
+ * 全てのItemを取得
+ */
+const GetAllGroups = `
+  SELECT * FROM groups ORDER BY updated_at DESC
+`;
+
 const GroupQueries = Object.freeze({
   CRATE_TABLE: CreateGroupTable,
   INSERT_GROUP: InsertGroup,
-  COUNT_GROUPS: CountGroups
+  COUNT_GROUPS: CountGroups,
+  GET_ALL_GROUPS: GetAllGroups
 });
 
 export { GroupQueries };

@@ -36,7 +36,7 @@ export default function InitialScreen() {
     // Itemのレコードが0件なら初期データをINSERT
     const itemNum = await ItemService.countItems();
     if (itemNum === 0) {
-      console.log('Item Count が0件なので初期データをINSERTします');
+      console.log('Item Count が0件なので初期アイテムデータをINSERTします');
       for (const key in initialItemData) {
         const id = Crypto.randomUUID();
         await ItemService.createItem(id, initialItemData[key].title, initialItemData[key].content);
@@ -46,7 +46,7 @@ export default function InitialScreen() {
     // Groupのレコードが0件なら初期データをINSERT
     const groupNum = await GroupService.countGroups();
     if (groupNum === 0) {
-      console.log('Group Count が0件なので初期データをINSERTします');
+      console.log('Group Count が0件なので初期グループデータをINSERTします');
       for (const key in initialGroupData) {
         const id = Crypto.randomUUID();
         await GroupService.insertGroup(id, initialGroupData[key].name, initialGroupData[key].color);

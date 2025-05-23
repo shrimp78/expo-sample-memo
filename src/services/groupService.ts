@@ -1,5 +1,7 @@
 import { execute, fetch } from '../database/dbService';
 import { GroupQueries } from '../database/queries/groupQueries';
+import { type Group } from '../components/types/group';
+import { type GroupSchema } from '../database/schemas/groupSchema';
 
 /**
  * グループテーブルを作成
@@ -27,4 +29,19 @@ const countGroups = async (): Promise<number> => {
   return count[0];
 };
 
-export { createTable, insertGroup, countGroups };
+/**
+ * 全てのGroupを取得
+ */
+const getAllGroups = async (): Promise<Group[]> => {
+  const rows = await fetch<GroupSchema>({ sql: GroupQueries.GET_ALL_GROUPS });
+  const groups = rows.map((row): Group => {
+    return {
+      id: row.id,
+      name: row.name,
+      color: row.color
+    };
+  });
+  return groups;
+};
+
+export { createTable, insertGroup, countGroups, getAllGroups };
