@@ -1,9 +1,10 @@
 import { router, useFocusEffect } from 'expo-router';
-import { View, ScrollView, StyleSheet, Text } from 'react-native';
+import { View, ScrollView, StyleSheet, Text, FlatList } from 'react-native';
 import { useCallback, useState } from 'react';
 import { ListItem } from '@rneui/themed';
 import * as GroupService from '../../src/services/groupService';
 import { type Group } from '../../src/components/types/group';
+import { GroupList } from '../../src/components/groups/groupList';
 
 export default function HomeScreen() {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -39,13 +40,12 @@ export default function HomeScreen() {
         <Text style={styles.sectionTitle}>グループ</Text>
 
         {/* グループのリスト */}
-        {groups.map(group => (
-          <ListItem key={group.id} onPress={() => handleGroupPress(group.id)}>
-            <ListItem.Content>
-              <ListItem.Title>{group.name}</ListItem.Title>
-            </ListItem.Content>
-          </ListItem>
-        ))}
+
+        <FlatList<Group>
+          data={groups}
+          keyExtractor={group => group.id.toString()}
+          renderItem={({ item }) => <GroupList name={item.name} color={item.color} />}
+        />
       </ScrollView>
     </View>
   );
