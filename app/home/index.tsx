@@ -39,8 +39,14 @@ export default function HomeScreen() {
 
         <Text style={styles.sectionTitle}>グループ</Text>
 
-        {/* グループのリスト */}
+        {/* グループのリスト new */}
+        {groups.map(group => (
+          <Text key={group.id} style={[styles.groupName, { color: group.color }]}>
+            {group.name}
+          </Text>
+        ))}
 
+        {/* グループのリスト old */}
         <FlatList<Group>
           data={groups}
           keyExtractor={group => group.id.toString()}
@@ -65,5 +71,12 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginLeft: 14,
     color: '#707070'
+  },
+  groupName: {
+    marginTop: 30,
+    marginBottom: 10,
+    fontSize: 14,
+    marginLeft: 14,
+    fontWeight: 'bold'
   }
 });
