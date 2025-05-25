@@ -37,8 +37,6 @@ export default function HomeScreen() {
           </ListItem.Content>
         </ListItem>
 
-        <Text style={styles.sectionTitle}>グループ</Text>
-
         {/* グループのリスト new */}
         {groups.map(group => (
           <Text key={group.id} style={[styles.groupName, { color: group.color }]}>
@@ -64,13 +62,6 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     paddingVertical: 40
-  },
-  sectionTitle: {
-    marginTop: 30,
-    marginBottom: 10,
-    fontSize: 14,
-    marginLeft: 14,
-    color: '#707070'
   },
   groupName: {
     marginTop: 30,
