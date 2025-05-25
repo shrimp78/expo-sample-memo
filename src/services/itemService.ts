@@ -68,8 +68,8 @@ const getItemById = async (id: string): Promise<Item> => {
  * @param title タイトル
  * @param content コンテンツ
  */
-const updateItemById = async (id: string, title: string, content: string) => {
-  await execute({ sql: ItemQueries.UPDATE_ITEM_BY_ID, params: [title, content, id] });
+const updateItemById = async (id: string, title: string, content: string, group_id: string | null) => {
+  await execute({ sql: ItemQueries.UPDATE_ITEM_BY_ID, params: [title, content, group_id, id] });
 };
 
 /**

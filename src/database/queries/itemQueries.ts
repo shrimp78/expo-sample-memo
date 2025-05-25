@@ -7,6 +7,7 @@ const CreateTableItems = `
     id         TEXT    PRIMARY KEY,
     title      TEXT    NOT NULL,
     content    TEXT    NOT NULL,
+    group_id   TEXT,
     created_at TEXT    DEFAULT (DATETIME('now', 'localtime')),
     updated_at TEXT    DEFAULT (DATETIME('now', 'localtime'))
   )
@@ -19,9 +20,9 @@ const CreateTableItems = `
  */
 const InsertItem = `
   INSERT INTO items (
-    id, title, content
+    id, title, content, group_id
   ) VALUES (
-    ?, ?, ?
+    ?, ?, ?, ?
   )
 `;
 
@@ -59,6 +60,7 @@ const UpdateItemById = `
   SET
     title = ?,
     content = ?,
+    group_id = ?,
     updated_at = DATETIME('now', 'localtime')
   WHERE
     id = ?
