@@ -14,10 +14,16 @@ const createTable = async () => {
  * Itemレコードの作成
  * @param title タイトル
  * @param content コンテンツ
+ * @param group_id グループID(nullの場合はundefined)
  */
-const createItem = async (id: string, title: string, content: string) => {
+const createItem = async (id: string, title: string, content: string, group_id: string | undefined) => {
   let queries: SqlArgs[] = [];
+  // Itemの追加
   queries.push({ sql: ItemQueries.INSERT, params: [id, title, content] });
+  // GroupIDの追加
+  if (group_id !== undefined) {
+    queries.push({ sql: ItemQueries.UPDATE_ITEM_GROUP_BY_ID, params: [group_id, id] });
+  }
   await execute(...queries);
 };
 
@@ -39,7 +45,8 @@ const getAllItems = async (): Promise<Item[]> => {
     return {
       id: row.id,
       title: row.title,
-      content: row.content
+      content: row.content,
+      group_id: row.group_id
     };
   });
   return items;
@@ -57,7 +64,8 @@ const getItemById = async (id: string): Promise<Item> => {
   const item = {
     id: rows[0].id,
     title: rows[0].title,
-    content: rows[0].content
+    content: rows[0].content,
+    group_id: rows[0].group_id
   };
   return item;
 };
@@ -67,6 +75,7 @@ const getItemById = async (id: string): Promise<Item> => {
  * @param id アイテムのID
  * @param title タイトル
  * @param content コンテンツ
+ * @param group_id グループID(nullの場合はundefined)
  */
 const updateItemById = async (id: string, title: string, content: string, group_id: string | null) => {
   await execute({ sql: ItemQueries.UPDATE_ITEM_BY_ID, params: [title, content, group_id, id] });

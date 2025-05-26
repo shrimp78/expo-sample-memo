@@ -20,9 +20,9 @@ const CreateTableItems = `
  */
 const InsertItem = `
   INSERT INTO items (
-    id, title, content, group_id
+    id, title, content
   ) VALUES (
-    ?, ?, ?, ?
+    ?, ?, ?
   )
 `;
 
@@ -50,9 +50,10 @@ const GetItemById = `
 
 /**
  * 指定されたIDのItemの更新
- * @param id アイテムのID
  * @param title タイトル
  * @param content コンテンツ
+ * @param group_id グループID
+ * @param id アイテムのID
  */
 const UpdateItemById = `
   UPDATE
@@ -62,6 +63,20 @@ const UpdateItemById = `
     content = ?,
     group_id = ?,
     updated_at = DATETIME('now', 'localtime')
+  WHERE
+    id = ?
+`;
+
+/**
+ * 指定されたIDのItemのグループIDを更新
+ * @param group_id グループID
+ * @param id アイテムのID
+ */
+const UpdateItemGroupById = `
+  UPDATE
+    items
+  SET
+    group_id = ?
   WHERE
     id = ?
 `;
@@ -88,6 +103,7 @@ const ItemQueries = Object.freeze({
   GET_ALL_ITEMS: GetAllItems,
   GET_ITEM_BY_ID: GetItemById,
   UPDATE_ITEM_BY_ID: UpdateItemById,
+  UPDATE_ITEM_GROUP_BY_ID: UpdateItemGroupById,
   DELETE_ITEM_BY_ID: DeleteItemById,
   DELETE_ALL_ITEMS: DeleteAllItems
 });
