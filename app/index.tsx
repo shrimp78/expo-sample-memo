@@ -39,7 +39,7 @@ export default function InitialScreen() {
       console.log('Item Count が0件なので初期アイテムデータをINSERTします');
       for (const key in initialItemData) {
         const id = Crypto.randomUUID();
-        await ItemService.createItem(id, initialItemData[key].title, initialItemData[key].content);
+        await ItemService.createItem(id, initialItemData[key].title, initialItemData[key].content, initialItemData[key].group_id);
       }
     }
 

@@ -1,13 +1,16 @@
 [
   {
+    "id": "5e0c991d-cfe6-89fa-5ce4-8db27235f3bb",
     "name": "北アルプス",
     "color": "#2E86C1"
   },
   {
+    "id": "38789cca-4ec9-c906-cbec-ec36d5e2a938",
     "name": "八ヶ岳",
     "color": "#117A65"
   },
   {
+    "id": "df08694a-be26-d572-9498-ce4437de5fbd",
     "name": "その他",
     "color": "#F8C471"
   }
