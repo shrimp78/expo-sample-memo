@@ -7,7 +7,7 @@ import * as FileSystem from 'expo-file-system';
 
 export type SqlArgs = {
   sql: string;
-  params?: (string | number)[];
+  params?: (string | number | null)[];
 };
 
 // DB名
