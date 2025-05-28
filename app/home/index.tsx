@@ -2,16 +2,22 @@ import { router, useFocusEffect } from 'expo-router';
 import { View, ScrollView, StyleSheet, Text, FlatList } from 'react-native';
 import { useCallback, useState } from 'react';
 import { ListItem } from '@rneui/themed';
+import * as ItemService from '../../src/services/itemService';
 import * as GroupService from '../../src/services/groupService';
+import { type Item } from '../../src/components/types/item';
 import { type Group } from '../../src/components/types/group';
+import { ItemList } from '../../src/components/items/ItemList';
 import { GroupList } from '../../src/components/groups/groupList';
 
 export default function HomeScreen() {
+  const [items, setItems] = useState<Item[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
 
   useFocusEffect(
     useCallback(() => {
       const loadData = async () => {
+        const items = await ItemService.getAllItems();
+        setItems(items);
         const groups = await GroupService.getAllGroups();
         setGroups(groups);
       };
@@ -21,6 +27,16 @@ export default function HomeScreen() {
 
   const handleAllItemsPress = () => {
     router.push({ pathname: '/items' });
+  };
+
+  const handleItemPress = (itemId: string) => {
+    console.log('アイテムが押されました', itemId);
+    //TODO アイテムの詳細画面に遷移する
+  };
+
+  const handleDeletePress = (itemId: string) => {
+    console.log('アイテムの削除が押されました', itemId);
+    //TODO アイテムを削除する
   };
 
   const handleGroupPress = (groupId: string) => {
@@ -38,11 +54,23 @@ export default function HomeScreen() {
         </ListItem>
 
         {/* グループのリスト new */}
-        {groups.map(group => (
-          <Text key={group.id} style={[styles.groupName, { color: group.color }]}>
-            {group.name}
-          </Text>
-        ))}
+        {groups.map(group => {
+          const filteredItems = items.filter(item => item.group_id === group.id);
+          return (
+            <View key={group.id}>
+              <Text key={group.id} style={[styles.groupName, { color: group.color }]}>
+                {group.name}
+              </Text>
+              <FlatList<Item>
+                data={filteredItems}
+                keyExtractor={item => item.id.toString()}
+                renderItem={({ item }) => (
+                  <ItemList name="kame" onPress={() => handleItemPress(item.id)} onDeletePress={() => handleDeletePress(item.id)} />
+                )}
+              />
+            </View>
+          );
+        })}
 
         {/* グループのリスト old */}
         <FlatList<Group>
