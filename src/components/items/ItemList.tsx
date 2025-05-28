@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 
 type ItemListProps = {
   name: string;
-  content: string;
+  content?: string;
   onPress: () => void;
   onDeletePress: () => void;
 };
@@ -36,7 +36,7 @@ const ItemList: React.FC<ItemListProps> = props => {
         <ListItem.Title style={styles.title}> {name}</ListItem.Title>
         <ListItem.Subtitle style={styles.content} numberOfLines={3}>
           {' '}
-          {content}
+          {content ?? ''}
         </ListItem.Subtitle>
       </ListItem.Content>
       <ListItem.Chevron />
