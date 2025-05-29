@@ -48,8 +48,7 @@ export default function InitialScreen() {
     if (groupNum === 0) {
       console.log('Group Count が0件なので初期グループデータをINSERTします');
       for (const key in initialGroupData) {
-        const id = Crypto.randomUUID();
-        await GroupService.insertGroup(id, initialGroupData[key].name, initialGroupData[key].color);
+        await GroupService.insertGroup(initialGroupData[key].id, initialGroupData[key].name, initialGroupData[key].color);
       }
     }
   };
