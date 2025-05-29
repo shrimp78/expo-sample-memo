@@ -16,7 +16,7 @@ const createTable = async () => {
  * @param content コンテンツ
  * @param group_id グループID(nullの場合はundefined)
  */
-const createItem = async (id: string, title: string, content: string, group_id: string | undefined) => {
+const createItem = async (id: string, title: string, content: string, group_id: string | null) => {
   let queries: SqlArgs[] = [];
   // Itemの追加
   queries.push({ sql: ItemQueries.INSERT, params: [id, title, content] });

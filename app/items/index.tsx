@@ -77,7 +77,7 @@ export default function ItemScreen() {
     // 保存処理
     try {
       const id = Crypto.randomUUID();
-      const group_id = undefined; //  TODO : グループIDを選択できるようにする
+      const group_id = null; //  TODO : グループIDを選択できるようにする
       await ItemService.createItem(id, title, content, group_id);
       toggleCreateModal();
       await fetchItems();

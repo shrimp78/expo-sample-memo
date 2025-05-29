@@ -65,19 +65,19 @@ export default function HomeScreen() {
                 data={filteredItems}
                 keyExtractor={item => item.id.toString()}
                 renderItem={({ item }) => (
-                  <ItemList name="kame" onPress={() => handleItemPress(item.id)} onDeletePress={() => handleDeletePress(item.id)} />
+                  <ItemList
+                    name={item.title}
+                    content={item.content}
+                    onPress={() => handleItemPress(item.id)}
+                    onDeletePress={() => handleDeletePress(item.id)}
+                  />
                 )}
               />
             </View>
           );
         })}
 
-        {/* グループのリスト old */}
-        <FlatList<Group>
-          data={groups}
-          keyExtractor={group => group.id.toString()}
-          renderItem={({ item }) => <GroupList name={item.name} color={item.color} />}
-        />
+        <View style={styles.bottomContainer}></View>
       </ScrollView>
     </View>
   );
@@ -97,5 +97,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginLeft: 14,
     fontWeight: 'bold'
+  },
+  bottomContainer: {
+    height: 100
   }
 });
