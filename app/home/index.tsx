@@ -1,5 +1,5 @@
 import { router, useFocusEffect } from 'expo-router';
-import { View, ScrollView, StyleSheet, Text, FlatList } from 'react-native';
+import { View, ScrollView, StyleSheet, Text, FlatList, SectionList } from 'react-native';
 import { useCallback, useState } from 'react';
 import { ListItem } from '@rneui/themed';
 import * as ItemService from '../../src/services/itemService';
@@ -7,7 +7,6 @@ import * as GroupService from '../../src/services/groupService';
 import { type Item } from '../../src/components/types/item';
 import { type Group } from '../../src/components/types/group';
 import { ItemList } from '../../src/components/items/ItemList';
-import { GroupList } from '../../src/components/groups/groupList';
 
 export default function HomeScreen() {
   const [items, setItems] = useState<Item[]>([]);
@@ -29,9 +28,10 @@ export default function HomeScreen() {
     router.push({ pathname: '/items' });
   };
 
+  // アイテムが押された時の処理
   const handleItemPress = (itemId: string) => {
     console.log('アイテムが押されました', itemId);
-    //TODO アイテムの詳細画面に遷移する
+    router.push({ pathname: `/items/${itemId}` });
   };
 
   const handleDeletePress = (itemId: string) => {
@@ -43,18 +43,42 @@ export default function HomeScreen() {
     console.log('グループが押されました', groupId);
   };
 
+  // グループセクション用のデータ整形
+  const sections = groups.map(group => ({
+    title: group.name,
+    color: group.color,
+    data: items.filter(item => item.group_id === group.id)
+  }));
+
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        {/* 全てのメモ */}
+      <SectionList sections={sections}></SectionList>
+      <SectionList
+        sections={sections}
+        keyExtractor={item => item.id}
+        renderSectionHeader={({ section }) => (
+          <Text style={[styles.groupName, { color: section.color }]}>{section.title}</Text>
+        )}
+        renderItem={({ item }) => (
+          <ItemList
+            name={item.title}
+            content={item.content}
+            onPress={() => handleItemPress(item.id)}
+            onDeletePress={() => handleDeletePress(item.id)}
+          />
+        )}
+        ListFooterComponent={<View style={styles.bottomContainer} />}
+        contentContainerStyle={{ paddingVertical: 40 }}
+        stickySectionHeadersEnabled={false}
+      {/* 全てのメモ
         <ListItem onPress={handleAllItemsPress}>
           <ListItem.Content>
             <ListItem.Title>全てのアイテム</ListItem.Title>
           </ListItem.Content>
-        </ListItem>
+        </ListItem> */}
 
-        {/* グループのリスト new */}
-        {groups.map(group => {
+      {/* グループのリスト new */}
+      {/* {groups.map(group => {
           const filteredItems = items.filter(item => item.group_id === group.id);
           return (
             <View key={group.id}>
@@ -77,8 +101,7 @@ export default function HomeScreen() {
           );
         })}
 
-        <View style={styles.bottomContainer}></View>
-      </ScrollView>
+        <View style={styles.bottomContainer}></View> */}
     </View>
   );
 }
