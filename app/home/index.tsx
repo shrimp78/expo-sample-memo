@@ -95,6 +95,6 @@ const styles = StyleSheet.create({
   sectionHeader: {},
   sectionHeaderBorder: {
     flex: 1,
-    height: 4
+    height: 2
   }
 });
