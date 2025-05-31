@@ -52,12 +52,14 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <SectionList sections={sections}></SectionList>
       <SectionList
         sections={sections}
         keyExtractor={item => item.id}
         renderSectionHeader={({ section }) => (
-          <Text style={[styles.groupName, { color: section.color }]}>{section.title}</Text>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.groupName, { color: section.color }]}>{section.title}</Text>
+            <View style={[styles.sectionHeaderBorder, { backgroundColor: section.color }]} />
+          </View>
         )}
         renderItem={({ item }) => (
           <ItemList
@@ -68,40 +70,9 @@ export default function HomeScreen() {
           />
         )}
         ListFooterComponent={<View style={styles.bottomContainer} />}
-        contentContainerStyle={{ paddingVertical: 40 }}
+        contentContainerStyle={{ paddingBottom: 100 }}
         stickySectionHeadersEnabled={false}
-      {/* 全てのメモ
-        <ListItem onPress={handleAllItemsPress}>
-          <ListItem.Content>
-            <ListItem.Title>全てのアイテム</ListItem.Title>
-          </ListItem.Content>
-        </ListItem> */}
-
-      {/* グループのリスト new */}
-      {/* {groups.map(group => {
-          const filteredItems = items.filter(item => item.group_id === group.id);
-          return (
-            <View key={group.id}>
-              <Text key={group.id} style={[styles.groupName, { color: group.color }]}>
-                {group.name}
-              </Text>
-              <FlatList<Item>
-                data={filteredItems}
-                keyExtractor={item => item.id.toString()}
-                renderItem={({ item }) => (
-                  <ItemList
-                    name={item.title}
-                    content={item.content}
-                    onPress={() => handleItemPress(item.id)}
-                    onDeletePress={() => handleDeletePress(item.id)}
-                  />
-                )}
-              />
-            </View>
-          );
-        })}
-
-        <View style={styles.bottomContainer}></View> */}
+      />
     </View>
   );
 }
@@ -110,9 +81,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#EFEFF4'
-  },
-  scrollView: {
-    paddingVertical: 40
   },
   groupName: {
     marginTop: 30,
@@ -123,5 +91,10 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     height: 100
+  },
+  sectionHeader: {},
+  sectionHeaderBorder: {
+    flex: 1,
+    height: 4
   }
 });
