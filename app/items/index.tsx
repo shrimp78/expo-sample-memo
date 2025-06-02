@@ -107,20 +107,6 @@ export default function ItemScreen() {
     router.push({ pathname: `/items/${itemId}` });
   };
 
-  // アイテムの削除
-  const handleDeletePress = async (itemId: string) => {
-    console.log('アイテムの削除が押されました', itemId);
-    try {
-      await ItemService.deleteItemById(itemId);
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-      const updatedItems = await ItemService.getAllItems();
-      setItems(updatedItems);
-    } catch (e) {
-      Alert.alert('エラー', '削除に失敗しました');
-      throw e;
-    }
-  };
-
   const handleDeleteAllItems = async () => {
     console.log('アイテムの全削除が押されました');
     Alert.alert('確認', 'ガチで全てのアイテムを削除しますか？', [

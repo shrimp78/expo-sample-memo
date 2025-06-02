@@ -1,11 +1,13 @@
 import { router, useFocusEffect } from 'expo-router';
 import {
+  Alert,
   View,
   ScrollView,
   StyleSheet,
   Text,
   FlatList,
-  SectionList
+  SectionList,
+  LayoutAnimation
 } from 'react-native';
 import { useCallback, useState } from 'react';
 import { ListItem } from '@rneui/themed';
@@ -41,9 +43,18 @@ export default function HomeScreen() {
     router.push({ pathname: `/items/${itemId}` });
   };
 
-  const handleDeletePress = (itemId: string) => {
+  // アイテムの削除
+  const handleDeletePress = async (itemId: string) => {
     console.log('アイテムの削除が押されました', itemId);
-    //TODO アイテムを削除する
+    try {
+      await ItemService.deleteItemById(itemId);
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+      const updatedItems = await ItemService.getAllItems();
+      setItems(updatedItems);
+    } catch (e) {
+      Alert.alert('エラー', '削除に失敗しました');
+      throw e;
+    }
   };
 
   const handleGroupPress = (groupId: string) => {
