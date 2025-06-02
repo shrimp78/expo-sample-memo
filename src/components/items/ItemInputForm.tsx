@@ -1,4 +1,9 @@
-import { Input, InputField, Textarea, TextareaInput } from '@gluestack-ui/themed';
+import {
+  Input,
+  InputField,
+  Textarea,
+  TextareaInput
+} from '@gluestack-ui/themed';
 import { InputAccessoryView, View, Platform } from 'react-native';
 import { KeyboardCloseButton } from './KeyboardCloseButton';
 
@@ -23,7 +28,12 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
   return (
     <View style={{ flex: 1, paddingBottom: 100 }}>
       {/* タイトル入力 */}
-      <Input borderWidth={0} minWidth={'$full'} marginTop={'$4'} marginBottom={'$1'}>
+      <Input
+        borderWidth={0}
+        minWidth={'$full'}
+        marginTop={'$4'}
+        marginBottom={'$1'}
+      >
         <InputField
           placeholder="タイトルを入力してください"
           value={title}
@@ -50,12 +60,18 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
 
       {/* iOSのみキーボードの閉じるボタンを表示 */}
       {Platform.OS === 'ios' && (
-        <InputAccessoryView nativeID={inputAccessoryViewID1} backgroundColor={'#F1F1F1'}>
+        <InputAccessoryView
+          nativeID={inputAccessoryViewID1}
+          backgroundColor={'#F1F1F1'}
+        >
           <KeyboardCloseButton />
         </InputAccessoryView>
       )}
       {Platform.OS === 'ios' && (
-        <InputAccessoryView nativeID={inputAccessoryViewID2} backgroundColor={'#F1F1F1'}>
+        <InputAccessoryView
+          nativeID={inputAccessoryViewID2}
+          backgroundColor={'#F1F1F1'}
+        >
           <KeyboardCloseButton />
         </InputAccessoryView>
       )}

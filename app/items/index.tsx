@@ -1,4 +1,15 @@
-import { View, StyleSheet, FlatList, TouchableOpacity, Alert, Button, LayoutAnimation, Modal, Text, TouchableWithoutFeedback } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  Alert,
+  Button,
+  LayoutAnimation,
+  Modal,
+  Text,
+  TouchableWithoutFeedback
+} from 'react-native';
 import { useState, useCallback, useEffect } from 'react';
 import { router, useFocusEffect, useNavigation } from 'expo-router';
 import { Entypo, Feather, AntDesign } from '@expo/vector-icons';
@@ -152,12 +163,20 @@ export default function ItemScreen() {
           </View>
         }
       />
-      <TouchableOpacity style={styles.floatingButton} onPress={handleAddItemPress}>
+      <TouchableOpacity
+        style={styles.floatingButton}
+        onPress={handleAddItemPress}
+      >
         <Feather name="plus" size={24} color="gray" />
       </TouchableOpacity>
 
       {/* メニューモーダル */}
-      <Modal transparent={true} visible={modalVisible} animationType="fade" onRequestClose={toggleModal}>
+      <Modal
+        transparent={true}
+        visible={modalVisible}
+        animationType="fade"
+        onRequestClose={toggleModal}
+      >
         <TouchableWithoutFeedback onPress={toggleModal}>
           <View style={styles.modalOverlay}>
             <TouchableWithoutFeedback
@@ -166,7 +185,10 @@ export default function ItemScreen() {
               }}
             >
               <View style={styles.modalContent}>
-                <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={toggleModal}
+                >
                   <AntDesign name="closecircleo" size={24} color="gray" />
                 </TouchableOpacity>
                 <Text style={styles.menuItem} onPress={handleDeleteAllItems}>
@@ -179,7 +201,12 @@ export default function ItemScreen() {
       </Modal>
 
       {/* 新規作成画面のModal */}
-      <Modal animationType="slide" transparent={true} visible={createModalVisible} onRequestClose={toggleCreateModal}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={createModalVisible}
+        onRequestClose={toggleCreateModal}
+      >
         <TouchableWithoutFeedback onPress={toggleCreateModal}>
           <View style={styles.createModalOverlay}>
             <TouchableWithoutFeedback
@@ -188,15 +215,26 @@ export default function ItemScreen() {
               }}
             >
               <View style={styles.createModalContent}>
-                <TouchableOpacity style={styles.closeButton} onPress={toggleCreateModal}>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={toggleCreateModal}
+                >
                   <AntDesign name="closecircleo" size={24} color="gray" />
                 </TouchableOpacity>
                 <View style={styles.saveButtonArea}>
                   <Button title="保存" onPress={handleSaveItemPress} />
                 </View>
                 <View style={styles.inputArea}>
-                  <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}>
-                    <ItemInputForm title={title} content={content} onChangeTitle={setTitle} onChangeContent={setContent} />
+                  <KeyboardAvoidingView
+                    behavior="padding"
+                    keyboardVerticalOffset={100}
+                  >
+                    <ItemInputForm
+                      title={title}
+                      content={content}
+                      onChangeTitle={setTitle}
+                      onChangeContent={setContent}
+                    />
                   </KeyboardAvoidingView>
                 </View>
               </View>

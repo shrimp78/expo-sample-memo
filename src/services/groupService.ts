@@ -24,7 +24,9 @@ const insertGroup = async (id: string, name: string, color: string) => {
  * Itemレコードのカウント
  */
 const countGroups = async (): Promise<number> => {
-  const result = await fetch<{ 'COUNT(*)': number }>({ sql: GroupQueries.COUNT_GROUPS });
+  const result = await fetch<{ 'COUNT(*)': number }>({
+    sql: GroupQueries.COUNT_GROUPS
+  });
   const count = result.map(row => row['COUNT(*)']);
   return count[0];
 };

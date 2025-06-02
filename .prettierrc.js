@@ -5,7 +5,7 @@ module.exports = {
   //  all:  全てにカンマをつける
   trailingComma: 'es5',
   // 折り返す行の長さを指定する。
-  printWidth: 80,
+  printWidth: 100,
   // インデントレベルごとのスペースの数を指定する。
   tabWidth: 2,
   // スペースではなくタブでインデントを行うか指定する。

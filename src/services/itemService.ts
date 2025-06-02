@@ -16,13 +16,21 @@ const createTable = async () => {
  * @param content コンテンツ
  * @param group_id グループID(nullの場合はundefined)
  */
-const createItem = async (id: string, title: string, content: string, group_id: string | null) => {
+const createItem = async (
+  id: string,
+  title: string,
+  content: string,
+  group_id: string | null
+) => {
   let queries: SqlArgs[] = [];
   // Itemの追加
   queries.push({ sql: ItemQueries.INSERT, params: [id, title, content] });
   // GroupIDの追加
   if (group_id !== undefined) {
-    queries.push({ sql: ItemQueries.UPDATE_ITEM_GROUP_BY_ID, params: [group_id, id] });
+    queries.push({
+      sql: ItemQueries.UPDATE_ITEM_GROUP_BY_ID,
+      params: [group_id, id]
+    });
   }
   await execute(...queries);
 };
@@ -31,7 +39,9 @@ const createItem = async (id: string, title: string, content: string, group_id: 
  * Itemレコードのカウント
  */
 const countItems = async (): Promise<number> => {
-  const result = await fetch<{ 'COUNT(*)': number }>({ sql: ItemQueries.COUNT });
+  const result = await fetch<{ 'COUNT(*)': number }>({
+    sql: ItemQueries.COUNT
+  });
   const count = result.map(row => row['COUNT(*)']);
   return count[0];
 };
@@ -57,7 +67,10 @@ const getAllItems = async (): Promise<Item[]> => {
  * @param id アイテムのID
  */
 const getItemById = async (id: string): Promise<Item> => {
-  const rows = await fetch<ItemSchema>({ sql: ItemQueries.GET_ITEM_BY_ID, params: [id] });
+  const rows = await fetch<ItemSchema>({
+    sql: ItemQueries.GET_ITEM_BY_ID,
+    params: [id]
+  });
   if (rows.length === 0) {
     throw new Error('Item not found');
   }
@@ -77,8 +90,16 @@ const getItemById = async (id: string): Promise<Item> => {
  * @param content コンテンツ
  * @param group_id グループID(nullの場合はundefined)
  */
-const updateItemById = async (id: string, title: string, content: string, group_id: string | null) => {
-  await execute({ sql: ItemQueries.UPDATE_ITEM_BY_ID, params: [title, content, group_id, id] });
+const updateItemById = async (
+  id: string,
+  title: string,
+  content: string,
+  group_id: string | null
+) => {
+  await execute({
+    sql: ItemQueries.UPDATE_ITEM_BY_ID,
+    params: [title, content, group_id, id]
+  });
 };
 
 /**
@@ -96,4 +117,13 @@ const deleteAllItems = async () => {
   await execute({ sql: ItemQueries.DELETE_ALL_ITEMS });
 };
 
-export { createTable, createItem, countItems, getAllItems, getItemById, updateItemById, deleteItemById, deleteAllItems };
+export {
+  createTable,
+  createItem,
+  countItems,
+  getAllItems,
+  getItemById,
+  updateItemById,
+  deleteItemById,
+  deleteAllItems
+};

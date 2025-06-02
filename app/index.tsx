@@ -39,7 +39,12 @@ export default function InitialScreen() {
       console.log('Item Count が0件なので初期アイテムデータをINSERTします');
       for (const key in initialItemData) {
         const id = Crypto.randomUUID();
-        await ItemService.createItem(id, initialItemData[key].title, initialItemData[key].content, initialItemData[key].group_id);
+        await ItemService.createItem(
+          id,
+          initialItemData[key].title,
+          initialItemData[key].content,
+          initialItemData[key].group_id
+        );
       }
     }
 
@@ -48,7 +53,11 @@ export default function InitialScreen() {
     if (groupNum === 0) {
       console.log('Group Count が0件なので初期グループデータをINSERTします');
       for (const key in initialGroupData) {
-        await GroupService.insertGroup(initialGroupData[key].id, initialGroupData[key].name, initialGroupData[key].color);
+        await GroupService.insertGroup(
+          initialGroupData[key].id,
+          initialGroupData[key].name,
+          initialGroupData[key].color
+        );
       }
     }
   };

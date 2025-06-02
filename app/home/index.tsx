@@ -1,5 +1,12 @@
 import { router, useFocusEffect } from 'expo-router';
-import { View, ScrollView, StyleSheet, Text, FlatList, SectionList } from 'react-native';
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  FlatList,
+  SectionList
+} from 'react-native';
 import { useCallback, useState } from 'react';
 import { ListItem } from '@rneui/themed';
 import * as ItemService from '../../src/services/itemService';
@@ -57,8 +64,15 @@ export default function HomeScreen() {
         keyExtractor={item => item.id}
         renderSectionHeader={({ section }) => (
           <View style={styles.sectionHeader}>
-            <Text style={[styles.groupName, { color: section.color }]}>{section.title}</Text>
-            <View style={[styles.sectionHeaderBorder, { backgroundColor: section.color }]} />
+            <Text style={[styles.groupName, { color: section.color }]}>
+              {section.title}
+            </Text>
+            <View
+              style={[
+                styles.sectionHeaderBorder,
+                { backgroundColor: section.color }
+              ]}
+            />
           </View>
         )}
         renderItem={({ item }) => (
