@@ -7,10 +7,11 @@ import {
   Text,
   FlatList,
   SectionList,
-  LayoutAnimation
+  LayoutAnimation,
+  TouchableOpacity
 } from 'react-native';
 import { useCallback, useState } from 'react';
-import { ListItem } from '@rneui/themed';
+import { Feather } from '@expo/vector-icons';
 import * as ItemService from '../../src/services/itemService';
 import * as GroupService from '../../src/services/groupService';
 import { type Item } from '../../src/components/types/item';
@@ -33,8 +34,9 @@ export default function HomeScreen() {
     }, [])
   );
 
-  const handleAllItemsPress = () => {
-    router.push({ pathname: '/items' });
+  // アイテムの新規作成
+  const handleAddItemPress = () => {
+    console.log('アイテムの新規作成が押されました');
   };
 
   // アイテムが押された時の処理
@@ -98,6 +100,12 @@ export default function HomeScreen() {
         contentContainerStyle={{ paddingBottom: 100 }}
         stickySectionHeadersEnabled={false}
       />
+      <TouchableOpacity
+        style={styles.floatingButton}
+        onPress={handleAddItemPress}
+      >
+        <Feather name="plus" size={24} color="gray" />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -121,5 +129,21 @@ const styles = StyleSheet.create({
   sectionHeaderBorder: {
     flex: 1,
     height: 2
+  },
+  floatingButton: {
+    position: 'absolute',
+    width: 60,
+    height: 60,
+    backgroundColor: 'white',
+    alignItems: 'center',
+    justifyContent: 'center',
+    right: 30,
+    bottom: 40,
+    elevation: 5, // Android用の影
+    shadowColor: 'black', // iOS用の影
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    borderRadius: 30
   }
 });
