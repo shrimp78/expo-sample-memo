@@ -70,7 +70,7 @@ export default function HomeScreen() {
     // 保存処理
     try {
       const id = Crypto.randomUUID();
-      const group_id = null; //  TODO : グループIDを選択できるようにする
+      const group_id = '5e0c991d-cfe6-89fa-5ce4-8db27235f3bb'; //  TODO : グループIDを選択できるようにする
       await ItemService.createItem(id, title, content, group_id);
       toggleCreateModal();
       //      await fetchItems(); TODO: ここで、アイテム一覧を更新する
