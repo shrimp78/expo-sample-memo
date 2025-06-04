@@ -4,15 +4,12 @@ import {
   View,
   StyleSheet,
   Text,
-  Modal,
   SectionList,
   LayoutAnimation,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  Button
+  TouchableOpacity
 } from 'react-native';
 import { useCallback, useState } from 'react';
-import { Feather, AntDesign } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
 import * as ItemService from '../../src/services/itemService';
 import * as GroupService from '../../src/services/groupService';
 import { type Item } from '../../src/components/types/item';
@@ -20,9 +17,8 @@ import { type Group } from '../../src/components/types/group';
 import { ItemList } from '../../src/components/items/ItemList';
 
 // 新規作成モーダル用
-import { KeyboardAvoidingView } from '@gluestack-ui/themed';
-import { ItemInputForm } from '../../src/components/items/ItemInputForm';
 import * as Crypto from 'expo-crypto';
+import { ItemCreateModal } from '../../src/components/items/ItemCreateModal';
 
 export default function HomeScreen() {
   const [items, setItems] = useState<Item[]>([]);
@@ -104,10 +100,6 @@ export default function HomeScreen() {
     }
   };
 
-  const handleGroupPress = (groupId: string) => {
-    console.log('グループが押されました', groupId);
-  };
-
   // グループセクション用のデータ整形
   const sections = groups.map(group => ({
     title: group.name,
@@ -142,42 +134,15 @@ export default function HomeScreen() {
         <Feather name="plus" size={24} color="gray" />
       </TouchableOpacity>
 
-      {/* 新規作成画面のModal */}
-      <Modal
-        animationType="slide"
-        transparent={true}
+      <ItemCreateModal
         visible={createModalVisible}
-        onRequestClose={toggleCreateModal}
-      >
-        <TouchableWithoutFeedback onPress={toggleCreateModal}>
-          <View style={styles.createModalOverlay}>
-            <TouchableWithoutFeedback
-              onPress={() => {
-                /* Modal内でのタップで閉じないようにする */
-              }}
-            >
-              <View style={styles.createModalContent}>
-                <TouchableOpacity style={styles.closeButton} onPress={toggleCreateModal}>
-                  <AntDesign name="closecircleo" size={24} color="gray" />
-                </TouchableOpacity>
-                <View style={styles.saveButtonArea}>
-                  <Button title="保存" onPress={handleSaveItemPress} />
-                </View>
-                <View style={styles.inputArea}>
-                  <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}>
-                    <ItemInputForm
-                      title={title}
-                      content={content}
-                      onChangeTitle={setTitle}
-                      onChangeContent={setContent}
-                    />
-                  </KeyboardAvoidingView>
-                </View>
-              </View>
-            </TouchableWithoutFeedback>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
+        toggleCreateModal={toggleCreateModal}
+        onSave={handleSaveItemPress}
+        onChangeTitle={setTitle}
+        onChangeContent={setContent}
+        title={title}
+        content={content}
+      />
     </View>
   );
 }
@@ -217,44 +182,5 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     borderRadius: 30
-  },
-  // 新規作成画面のModal用
-  createModalOverlay: {
-    flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center'
-  },
-  createModalContent: {
-    position: 'absolute',
-    top: 80, // TODO: これ、デバイスによって違うので、デバイスの高さによって変える必要がある
-    width: '96%',
-    bottom: 0,
-    backgroundColor: 'white',
-    padding: 20,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
-    shadowColor: '#000', // iOS用
-    shadowOffset: { width: 0, height: 4 }, // iOS用
-    shadowOpacity: 0.3, // iOS用
-    shadowRadius: 8, // iOS用
-    elevation: 10 // Android用
-  },
-  closeButton: {
-    position: 'absolute',
-    top: 16,
-    left: 16,
-    zIndex: 1,
-    padding: 4
-  },
-  saveButtonArea: {
-    position: 'absolute',
-    top: 8,
-    right: 12,
-    padding: 4
-  },
-  inputArea: {
-    marginTop: 20
   }
 });
