@@ -38,15 +38,16 @@ export default function HomeScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      const loadData = async () => {
-        const items = await ItemService.getAllItems();
-        setItems(items);
-        const groups = await GroupService.getAllGroups();
-        setGroups(groups);
-      };
       loadData();
     }, [])
   );
+
+  const loadData = async () => {
+    const items = await ItemService.getAllItems();
+    setItems(items);
+    const groups = await GroupService.getAllGroups();
+    setGroups(groups);
+  };
 
   // アイテムの新規作成
   const handleAddItemPress = () => {
@@ -73,7 +74,7 @@ export default function HomeScreen() {
       const group_id = '5e0c991d-cfe6-89fa-5ce4-8db27235f3bb'; //  TODO : グループIDを選択できるようにする
       await ItemService.createItem(id, title, content, group_id);
       toggleCreateModal();
-      //      await fetchItems(); TODO: ここで、アイテム一覧を更新する
+      await loadData();
     } catch (e) {
       Alert.alert('エラー', '保存に失敗しました');
       console.error(e);
