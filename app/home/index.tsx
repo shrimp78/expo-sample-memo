@@ -152,17 +152,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#EFEFF4'
   },
-  groupName: {
-    marginTop: 30,
-    marginBottom: 10,
-    fontSize: 14,
-    marginLeft: 14,
-    fontWeight: 'bold'
-  },
   bottomContainer: {
     height: 100
   },
   sectionHeader: {},
+  groupName: {
+    marginTop: 30,
+    marginBottom: 10,
+    fontSize: 24,
+    marginLeft: 14,
+    fontWeight: 'bold'
+  },
   sectionHeaderBorder: {
     flex: 1,
     height: 2
