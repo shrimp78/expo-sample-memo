@@ -2,10 +2,21 @@ import {
   Input,
   InputField,
   Textarea,
-  TextareaInput
+  TextareaInput,
+  Select,
+  SelectTrigger,
+  SelectInput,
+  SelectIcon,
+  SelectPortal,
+  SelectBackdrop,
+  SelectContent,
+  SelectDragIndicatorWrapper,
+  SelectDragIndicator,
+  SelectItem
 } from '@gluestack-ui/themed';
 import { InputAccessoryView, View, Platform } from 'react-native';
 import { KeyboardCloseButton } from './KeyboardCloseButton';
+import Entypo from '@expo/vector-icons/Entypo';
 
 type ItemInputFormProps = {
   title: string;
@@ -28,12 +39,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
   return (
     <View style={{ flex: 1, paddingBottom: 100 }}>
       {/* タイトル入力 */}
-      <Input
-        borderWidth={0}
-        minWidth={'$full'}
-        marginTop={'$4'}
-        marginBottom={'$1'}
-      >
+      <Input borderWidth={0} minWidth={'$full'} marginTop={'$4'} marginBottom={'$1'}>
         <InputField
           placeholder="タイトルを入力してください"
           value={title}
@@ -44,6 +50,23 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           editable={true}
         />
       </Input>
+
+      {/* グループ選択 */}
+      <Select>
+        <SelectTrigger>
+          <SelectInput />
+          <SelectIcon as={Entypo} name="chevron-down" />
+        </SelectTrigger>
+        <SelectPortal>
+          <SelectBackdrop />
+          <SelectContent>
+            <SelectDragIndicatorWrapper>
+              <SelectDragIndicator />
+            </SelectDragIndicatorWrapper>
+            <SelectItem />
+          </SelectContent>
+        </SelectPortal>
+      </Select>
 
       {/* 内容入力 */}
       <Textarea borderWidth={0} minWidth={'$full'} minHeight={'$full'}>
@@ -60,18 +83,12 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
 
       {/* iOSのみキーボードの閉じるボタンを表示 */}
       {Platform.OS === 'ios' && (
-        <InputAccessoryView
-          nativeID={inputAccessoryViewID1}
-          backgroundColor={'#F1F1F1'}
-        >
+        <InputAccessoryView nativeID={inputAccessoryViewID1} backgroundColor={'#F1F1F1'}>
           <KeyboardCloseButton />
         </InputAccessoryView>
       )}
       {Platform.OS === 'ios' && (
-        <InputAccessoryView
-          nativeID={inputAccessoryViewID2}
-          backgroundColor={'#F1F1F1'}
-        >
+        <InputAccessoryView nativeID={inputAccessoryViewID2} backgroundColor={'#F1F1F1'}>
           <KeyboardCloseButton />
         </InputAccessoryView>
       )}
