@@ -17,6 +17,7 @@ import {
 import { InputAccessoryView, View, Platform } from 'react-native';
 import { KeyboardCloseButton } from './KeyboardCloseButton';
 import Entypo from '@expo/vector-icons/Entypo';
+import { useState } from 'react';
 
 type ItemInputFormProps = {
   title: string;
@@ -53,23 +54,27 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
 
       {/* グループ選択 */}
       <Select>
-        <SelectTrigger>
-          <SelectInput />
-          <SelectIcon as={Entypo} name="chevron-down" />
+        <SelectTrigger variant="outline" size="md" style={{ zIndex: 1000 }}>
+          <SelectInput placeholder="グループを選択" />
+          <SelectIcon>
+            <Entypo name="chevron-down" size={20} />
+          </SelectIcon>
         </SelectTrigger>
         <SelectPortal>
           <SelectBackdrop />
-          <SelectContent>
+          <SelectContent style={{ zIndex: 2000 }}>
             <SelectDragIndicatorWrapper>
               <SelectDragIndicator />
             </SelectDragIndicatorWrapper>
-            <SelectItem />
+            <SelectItem label="仕事" value="work" />
+            <SelectItem label="プライベート" value="private" />
+            <SelectItem label="その他" value="other" />
           </SelectContent>
         </SelectPortal>
       </Select>
 
       {/* 内容入力 */}
-      <Textarea borderWidth={0} minWidth={'$full'} minHeight={'$full'}>
+      <Textarea borderWidth={0} minWidth={'$full'} minHeight={'$full'} marginTop={'$16'}>
         <TextareaInput
           placeholder="内容を入力してください"
           value={content}
