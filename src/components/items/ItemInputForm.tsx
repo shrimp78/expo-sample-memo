@@ -1,4 +1,4 @@
-import { Input, InputField, Textarea, TextareaInput } from '@gluestack-ui/themed';
+import { Input, InputField, Textarea, TextareaInput, Text } from '@gluestack-ui/themed';
 import { InputAccessoryView, View, Platform } from 'react-native';
 import { KeyboardCloseButton } from './KeyboardCloseButton';
 
@@ -35,30 +35,51 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
         />
       </Input>
 
-      {/* 内容入力 */}
-      <Textarea borderWidth={0} minWidth={'$full'} minHeight={'$full'} marginTop={'$4'}>
-        <TextareaInput
-          placeholder="内容を入力してください"
-          value={content}
-          scrollEnabled={true}
-          onChangeText={onChangeContent}
-          inputAccessoryViewID={inputAccessoryViewID2}
-          paddingHorizontal={'$5'}
-          fontSize={'$md'}
-        />
-      </Textarea>
+      <Text
+        color="$red500"
+        minHeight={'$full'}
+        fontSize="$md"
+        backgroundColor="$yellow100"
+        padding="$4"
+        onLayout={event => {
+          console.log('Text component layout:', event.nativeEvent.layout);
+        }}
+      >
+        グループ
+      </Text>
 
-      {/* iOSのみキーボードの閉じるボタンを表示 */}
-      {Platform.OS === 'ios' && (
-        <InputAccessoryView nativeID={inputAccessoryViewID1} backgroundColor={'#F1F1F1'}>
-          <KeyboardCloseButton />
-        </InputAccessoryView>
-      )}
-      {Platform.OS === 'ios' && (
-        <InputAccessoryView nativeID={inputAccessoryViewID2} backgroundColor={'#F1F1F1'}>
-          <KeyboardCloseButton />
-        </InputAccessoryView>
-      )}
+      {/* 内容入力 */}
+      <View style={{ flex: 1 }}>
+        <Textarea
+          borderWidth={0}
+          minHeight={'$full'}
+          minWidth={'$full'}
+          marginTop={'$2'}
+          backgroundColor="$red500"
+        >
+          <TextareaInput
+            placeholder="内容を入力してください"
+            value={content}
+            scrollEnabled={true}
+            onChangeText={onChangeContent}
+            inputAccessoryViewID={inputAccessoryViewID2}
+            paddingHorizontal={'$5'}
+            fontSize={'$md'}
+          />
+        </Textarea>
+
+        {/* iOSのみキーボードの閉じるボタンを表示 */}
+        {Platform.OS === 'ios' && (
+          <InputAccessoryView nativeID={inputAccessoryViewID1} backgroundColor={'#F1F1F1'}>
+            <KeyboardCloseButton />
+          </InputAccessoryView>
+        )}
+        {Platform.OS === 'ios' && (
+          <InputAccessoryView nativeID={inputAccessoryViewID2} backgroundColor={'#F1F1F1'}>
+            <KeyboardCloseButton />
+          </InputAccessoryView>
+        )}
+      </View>
     </View>
   );
 };
