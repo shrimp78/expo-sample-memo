@@ -16,13 +16,22 @@ type ItemCreateProps = {
   onSave: () => void;
   onChangeTitle: (text: string) => void;
   onChangeContent: (text: string) => void;
+  onSelectGroup?: () => void;
   title: string;
   content: string;
 };
 
 const ItemCreateModal: React.FC<ItemCreateProps> = props => {
-  const { visible, toggleCreateModal, onSave, onChangeTitle, onChangeContent, title, content } =
-    props;
+  const {
+    visible,
+    toggleCreateModal,
+    onSave,
+    onChangeTitle,
+    onChangeContent,
+    onSelectGroup,
+    title,
+    content
+  } = props;
   return (
     <Modal
       animationType="slide"
@@ -51,6 +60,7 @@ const ItemCreateModal: React.FC<ItemCreateProps> = props => {
                     content={content}
                     onChangeTitle={onChangeTitle}
                     onChangeContent={onChangeContent}
+                    onSelectGroup={onSelectGroup}
                   />
                 </KeyboardAvoidingView>
               </View>

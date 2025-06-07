@@ -1,4 +1,13 @@
-import { Input, InputField, Textarea, TextareaInput, Text } from '@gluestack-ui/themed';
+import {
+  Input,
+  InputField,
+  Textarea,
+  TextareaInput,
+  Text,
+  HStack,
+  Button,
+  ButtonText
+} from '@gluestack-ui/themed';
 import { InputAccessoryView, View, Platform } from 'react-native';
 import { KeyboardCloseButton } from './KeyboardCloseButton';
 
@@ -7,6 +16,7 @@ type ItemInputFormProps = {
   content: string;
   onChangeTitle: (text: string) => void;
   onChangeContent: (text: string) => void;
+  onSelectGroup?: () => void; // グループ選択ボタンが押された時のコールバック
 };
 
 const inputAccessoryViewID1 = 'INPUT_ACCESSORY_VIEW_ID_1';
@@ -18,7 +28,7 @@ const inputAccessoryViewID2 = 'INPUT_ACCESSORY_VIEW_ID_2';
  * @returns アイテム入力フォーム
  */
 const ItemInputForm: React.FC<ItemInputFormProps> = props => {
-  const { title, content, onChangeTitle, onChangeContent } = props;
+  const { title, content, onChangeTitle, onChangeContent, onSelectGroup } = props;
 
   return (
     <View style={{ flex: 1, paddingBottom: 100 }}>
@@ -35,51 +45,55 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
         />
       </Input>
 
-      <Text
-        color="$red500"
-        minHeight={'$full'}
-        fontSize="$md"
-        backgroundColor="$yellow100"
-        padding="$4"
-        onLayout={event => {
-          console.log('Text component layout:', event.nativeEvent.layout);
-        }}
+      {/* グループ選択エリア */}
+      <HStack
+        justifyContent="space-between"
+        alignItems="center"
+        paddingHorizontal={'$8'}
+        paddingVertical={'$3'}
+        marginTop={'$2'}
+        marginBottom={'$2'}
+        backgroundColor="$blue500"
+        height={'$12'}
       >
-        グループ
-      </Text>
+        <Text fontSize={'$lg'} fontWeight={'$medium'} color="$red500">
+          グループ
+        </Text>
+        <Button size="sm" variant="outline" onPress={onSelectGroup} borderColor={'$primary500'}>
+          <ButtonText color={'$primary500'}>指定する</ButtonText>
+        </Button>
+      </HStack>
 
       {/* 内容入力 */}
-      <View style={{ flex: 1 }}>
-        <Textarea
-          borderWidth={0}
-          minHeight={'$full'}
-          minWidth={'$full'}
-          marginTop={'$2'}
-          backgroundColor="$red500"
-        >
-          <TextareaInput
-            placeholder="内容を入力してください"
-            value={content}
-            scrollEnabled={true}
-            onChangeText={onChangeContent}
-            inputAccessoryViewID={inputAccessoryViewID2}
-            paddingHorizontal={'$5'}
-            fontSize={'$md'}
-          />
-        </Textarea>
+      <Textarea
+        borderWidth={0}
+        minHeight={'$full'}
+        minWidth={'$full'}
+        marginTop={'$2'}
+        backgroundColor="$red500"
+      >
+        <TextareaInput
+          placeholder="内容を入力してください"
+          value={content}
+          scrollEnabled={true}
+          onChangeText={onChangeContent}
+          inputAccessoryViewID={inputAccessoryViewID2}
+          paddingHorizontal={'$5'}
+          fontSize={'$md'}
+        />
+      </Textarea>
 
-        {/* iOSのみキーボードの閉じるボタンを表示 */}
-        {Platform.OS === 'ios' && (
-          <InputAccessoryView nativeID={inputAccessoryViewID1} backgroundColor={'#F1F1F1'}>
-            <KeyboardCloseButton />
-          </InputAccessoryView>
-        )}
-        {Platform.OS === 'ios' && (
-          <InputAccessoryView nativeID={inputAccessoryViewID2} backgroundColor={'#F1F1F1'}>
-            <KeyboardCloseButton />
-          </InputAccessoryView>
-        )}
-      </View>
+      {/* iOSのみキーボードの閉じるボタンを表示 */}
+      {Platform.OS === 'ios' && (
+        <InputAccessoryView nativeID={inputAccessoryViewID1} backgroundColor={'#F1F1F1'}>
+          <KeyboardCloseButton />
+        </InputAccessoryView>
+      )}
+      {Platform.OS === 'ios' && (
+        <InputAccessoryView nativeID={inputAccessoryViewID2} backgroundColor={'#F1F1F1'}>
+          <KeyboardCloseButton />
+        </InputAccessoryView>
+      )}
     </View>
   );
 };

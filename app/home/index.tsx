@@ -51,6 +51,12 @@ export default function HomeScreen() {
     toggleCreateModal();
   };
 
+  // グループ選択処理
+  const handleSelectGroup = () => {
+    console.log('グループ選択が押されました');
+    // TODO: グループ選択モーダルを開く処理を実装
+  };
+
   // アイテムの保存処理
   const handleSaveItemPress = async () => {
     console.log('アイテムの保存が押されました');
@@ -140,6 +146,7 @@ export default function HomeScreen() {
         onSave={handleSaveItemPress}
         onChangeTitle={setTitle}
         onChangeContent={setContent}
+        onSelectGroup={handleSelectGroup}
         title={title}
         content={content}
       />
