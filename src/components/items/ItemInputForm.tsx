@@ -8,8 +8,9 @@ import {
   Button,
   ButtonText
 } from '@gluestack-ui/themed';
-import { InputAccessoryView, View, Platform } from 'react-native';
+import { InputAccessoryView, View, Platform, TouchableOpacity } from 'react-native';
 import { KeyboardCloseButton } from './KeyboardCloseButton';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 type ItemInputFormProps = {
   title: string;
@@ -47,31 +48,28 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
 
       {/* グループ選択エリア */}
       <HStack
-        justifyContent="space-between"
         alignItems="center"
-        paddingHorizontal={'$8'}
+        paddingHorizontal={'$2'}
         paddingVertical={'$3'}
         marginTop={'$2'}
         marginBottom={'$2'}
-        backgroundColor="$blue500"
         height={'$12'}
       >
-        <Text fontSize={'$lg'} fontWeight={'$medium'} color="$red500">
+        <Text fontSize={'$lg'} fontWeight={'$medium'} color="$gray">
           グループ
         </Text>
-        <Button size="sm" variant="outline" onPress={onSelectGroup} borderColor={'$primary500'}>
-          <ButtonText color={'$primary500'}>指定する</ButtonText>
-        </Button>
+        <TouchableOpacity onPress={onSelectGroup}>
+          <HStack alignItems="center" space="sm" marginLeft={'$4'}>
+            <FontAwesome name="circle" size={24} color="#117A65" />
+            <Text fontSize={'$lg'} fontWeight={'$medium'} color="#117A65">
+              八ヶ岳
+            </Text>
+          </HStack>
+        </TouchableOpacity>
       </HStack>
 
       {/* 内容入力 */}
-      <Textarea
-        borderWidth={0}
-        flex={1}
-        minWidth={'$full'}
-        marginTop={'$2'}
-        backgroundColor="$red500"
-      >
+      <Textarea borderWidth={0} flex={1} minWidth={'$full'} marginTop={'$2'}>
         <TextareaInput
           placeholder="内容を入力してください"
           value={content}
