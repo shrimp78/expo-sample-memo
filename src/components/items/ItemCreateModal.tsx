@@ -54,7 +54,11 @@ const ItemCreateModal: React.FC<ItemCreateProps> = props => {
                 <Button title="保存" onPress={onSave} />
               </View>
               <View style={styles.inputArea}>
-                <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}>
+                <KeyboardAvoidingView
+                  behavior="padding"
+                  keyboardVerticalOffset={100}
+                  style={{ flex: 1 }}
+                >
                   <ItemInputForm
                     title={title}
                     content={content}
@@ -109,7 +113,8 @@ const styles = StyleSheet.create({
     padding: 4
   },
   inputArea: {
-    marginTop: 20
+    marginTop: 20,
+    flex: 1
   }
 });
 

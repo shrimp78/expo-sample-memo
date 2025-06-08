@@ -31,7 +31,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
   const { title, content, onChangeTitle, onChangeContent, onSelectGroup } = props;
 
   return (
-    <View style={{ flex: 1, paddingBottom: 100 }}>
+    <View style={{ flex: 1, paddingBottom: 20 }}>
       {/* タイトル入力 */}
       <Input borderWidth={0} minWidth={'$full'} marginTop={'$4'} marginBottom={'$1'}>
         <InputField
@@ -67,7 +67,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
       {/* 内容入力 */}
       <Textarea
         borderWidth={0}
-        minHeight={'$full'}
+        flex={1}
         minWidth={'$full'}
         marginTop={'$2'}
         backgroundColor="$red500"
