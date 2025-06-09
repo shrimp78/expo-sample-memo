@@ -16,7 +16,7 @@ type ItemCreateProps = {
   onSave: () => void;
   onChangeTitle: (text: string) => void;
   onChangeContent: (text: string) => void;
-  onSelectGroup?: () => void;
+  onSelectGroup: () => void;
   title: string;
   content: string;
 };

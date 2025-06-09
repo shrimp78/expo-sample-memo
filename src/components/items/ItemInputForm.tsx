@@ -17,7 +17,7 @@ type ItemInputFormProps = {
   content: string;
   onChangeTitle: (text: string) => void;
   onChangeContent: (text: string) => void;
-  onSelectGroup?: () => void; // グループ選択ボタンが押された時のコールバック
+  onSelectGroup: () => void;
 };
 
 const inputAccessoryViewID1 = 'INPUT_ACCESSORY_VIEW_ID_1';
