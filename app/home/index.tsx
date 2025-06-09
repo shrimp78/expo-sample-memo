@@ -6,9 +6,10 @@ import {
   Text,
   SectionList,
   LayoutAnimation,
-  TouchableOpacity
+  TouchableOpacity,
+  Modal
 } from 'react-native';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { Feather } from '@expo/vector-icons';
 import * as ItemService from '../../src/services/itemService';
 import * as GroupService from '../../src/services/groupService';
@@ -32,11 +33,23 @@ export default function HomeScreen() {
     setCreateModalVisible(!createModalVisible);
   };
 
+  // グループ選択画面のModal用
+  const [groupModalVisible, setGroupModalVisible] = useState(false);
+  const toggleGroupModal = () => {
+    setCreateModalVisible(!createModalVisible);
+    setGroupModalVisible(!groupModalVisible);
+  };
+
   useFocusEffect(
     useCallback(() => {
       loadData();
     }, [])
   );
+
+  // デバッグ用: groupModalVisibleの状態変化を監視
+  useEffect(() => {
+    console.log('groupModalVisible state changed:', groupModalVisible);
+  }, [groupModalVisible]);
 
   const loadData = async () => {
     const items = await ItemService.getAllItems();
@@ -54,7 +67,7 @@ export default function HomeScreen() {
   // グループ選択処理
   const handleSelectGroup = () => {
     console.log('グループ選択が押されました');
-    // TODO: グループ選択モーダルを開く処理を実装
+    toggleGroupModal();
   };
 
   // アイテムの保存処理
@@ -150,6 +163,24 @@ export default function HomeScreen() {
         title={title}
         content={content}
       />
+
+      <Modal
+        visible={groupModalVisible}
+        onRequestClose={() => {
+          console.log('Modal onRequestClose called');
+          toggleGroupModal();
+        }}
+        transparent={true}
+      >
+        <View style={styles.groupModalOverlay}>
+          <View style={styles.groupModalContent}>
+            <Text style={styles.groupModalTitle}>グループ選択</Text>
+            <TouchableOpacity style={styles.closeModalButton} onPress={toggleGroupModal}>
+              <Text style={styles.closeModalButtonText}>閉じる</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -189,5 +220,34 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     borderRadius: 30
+  },
+  groupModalOverlay: {
+    // TODO: あとで全部消す（グループ選択画面デバッグ用スタイル）
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  groupModalContent: {
+    backgroundColor: 'red',
+    padding: 20,
+    borderRadius: 10,
+    width: '80%',
+    alignItems: 'center'
+  },
+  groupModalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 20
+  },
+  closeModalButton: {
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5
+  },
+  closeModalButtonText: {
+    color: 'white',
+    fontWeight: 'bold'
   }
 });
