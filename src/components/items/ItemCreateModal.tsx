@@ -5,10 +5,12 @@ import {
   TouchableOpacity,
   Button,
   KeyboardAvoidingView,
-  StyleSheet
+  StyleSheet,
+  Text
 } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { ItemInputForm } from './ItemInputForm';
+import { type Group } from '../types/group';
 
 type ItemCreateProps = {
   visible: boolean;
@@ -19,6 +21,9 @@ type ItemCreateProps = {
   onSelectGroup: () => void;
   title: string;
   content: string;
+  groupModalVisible: boolean;
+  toggleGroupModal: () => void;
+  groups: Group[];
 };
 
 const ItemCreateModal: React.FC<ItemCreateProps> = props => {
@@ -30,7 +35,10 @@ const ItemCreateModal: React.FC<ItemCreateProps> = props => {
     onChangeContent,
     onSelectGroup,
     title,
-    content
+    content,
+    groupModalVisible,
+    toggleGroupModal,
+    groups
   } = props;
   return (
     <Modal
@@ -72,6 +80,36 @@ const ItemCreateModal: React.FC<ItemCreateProps> = props => {
           </TouchableWithoutFeedback>
         </View>
       </TouchableWithoutFeedback>
+
+      {/* グループ選択Modal（ItemCreateModalの内部） */}
+      {groupModalVisible && (
+        <Modal animationType="slide" transparent={true}>
+          <TouchableWithoutFeedback onPress={toggleGroupModal}>
+            <View style={styles.groupModalOverlay}>
+              <TouchableWithoutFeedback onPress={() => {}}>
+                <View style={styles.groupModalContent}>
+                  <Text style={styles.groupModalTitle}>グループ選択</Text>
+                  {groups.map(group => (
+                    <TouchableOpacity
+                      key={group.id}
+                      style={[styles.groupItem, { borderLeftColor: group.color }]}
+                      onPress={() => {
+                        console.log('グループが選択されました:', group.name);
+                        toggleGroupModal();
+                      }}
+                    >
+                      <Text style={styles.groupItemText}>{group.name}</Text>
+                    </TouchableOpacity>
+                  ))}
+                  <TouchableOpacity style={styles.closeModalButton} onPress={toggleGroupModal}>
+                    <Text style={styles.closeModalButtonText}>キャンセル</Text>
+                  </TouchableOpacity>
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+      )}
     </Modal>
   );
 };
@@ -103,7 +141,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 16,
     left: 16,
-    zIndex: 1,
     padding: 4
   },
   saveButtonArea: {
@@ -115,6 +152,54 @@ const styles = StyleSheet.create({
   inputArea: {
     marginTop: 20,
     flex: 1
+  },
+  groupModalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  groupModalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    width: '85%',
+    maxHeight: '70%',
+    alignItems: 'stretch',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 10
+  },
+  groupModalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center'
+  },
+  groupItem: {
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
+    borderLeftWidth: 4,
+    marginBottom: 5
+  },
+  groupItemText: {
+    fontSize: 16,
+    fontWeight: '500'
+  },
+  closeModalButton: {
+    backgroundColor: '#007AFF',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+    marginTop: 20,
+    alignSelf: 'center'
+  },
+  closeModalButtonText: {
+    color: 'white',
+    fontWeight: 'bold'
   }
 });
 
