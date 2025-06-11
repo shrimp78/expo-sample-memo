@@ -83,27 +83,28 @@ const ItemCreateModal: React.FC<ItemCreateProps> = props => {
 
       {/* グループ選択Modal（ItemCreateModalの内部） */}
       {groupModalVisible && (
-        <Modal animationType="slide" transparent={true}>
+        <Modal animationType="fade" transparent={true}>
           <TouchableWithoutFeedback onPress={toggleGroupModal}>
             <View style={styles.groupModalOverlay}>
               <TouchableWithoutFeedback onPress={() => {}}>
                 <View style={styles.groupModalContent}>
-                  <Text style={styles.groupModalTitle}>グループ選択</Text>
-                  {groups.map(group => (
-                    <TouchableOpacity
-                      key={group.id}
-                      style={[styles.groupItem, { borderLeftColor: group.color }]}
-                      onPress={() => {
-                        console.log('グループが選択されました:', group.name);
-                        toggleGroupModal();
-                      }}
-                    >
-                      <Text style={styles.groupItemText}>{group.name}</Text>
-                    </TouchableOpacity>
-                  ))}
-                  <TouchableOpacity style={styles.closeModalButton} onPress={toggleGroupModal}>
-                    <Text style={styles.closeModalButtonText}>キャンセル</Text>
+                  <TouchableOpacity style={styles.closeGroupModalButton} onPress={toggleGroupModal}>
+                    <AntDesign name="closecircleo" size={24} color="gray" />
                   </TouchableOpacity>
+                  <View style={styles.groupListContainer}>
+                    {groups.map(group => (
+                      <TouchableOpacity
+                        key={group.id}
+                        style={[styles.groupItem, { borderLeftColor: group.color }]}
+                        onPress={() => {
+                          console.log('グループが選択されました:', group.name);
+                          toggleGroupModal();
+                        }}
+                      >
+                        <Text style={styles.groupItemText}>{group.name}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
                 </View>
               </TouchableWithoutFeedback>
             </View>
@@ -180,8 +181,6 @@ const styles = StyleSheet.create({
   groupItem: {
     paddingVertical: 15,
     paddingHorizontal: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
     borderLeftWidth: 4,
     marginBottom: 5
   },
@@ -189,17 +188,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500'
   },
-  closeModalButton: {
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-    marginTop: 20,
-    alignSelf: 'center'
+  closeGroupModalButton: {
+    position: 'absolute',
+    top: 16,
+    left: 16,
+    padding: 4
   },
-  closeModalButtonText: {
-    color: 'white',
-    fontWeight: 'bold'
+  groupListContainer: {
+    marginTop: 50
   }
 });
 
