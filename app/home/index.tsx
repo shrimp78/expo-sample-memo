@@ -30,6 +30,12 @@ export default function HomeScreen() {
   const [content, setContent] = useState<string>('');
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const toggleCreateModal = () => {
+    if (createModalVisible) {
+      // モーダルを閉じる際に状態をリセット
+      setTitle('');
+      setContent('');
+      setSelectedGroup(null);
+    }
     setCreateModalVisible(!createModalVisible);
   };
 
