@@ -57,9 +57,6 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
         marginBottom={'$2'}
         height={'$12'}
       >
-        <Text fontSize={'$lg'} fontWeight={'$medium'} color="$gray">
-          グループ
-        </Text>
         <TouchableOpacity onPress={onSelectGroup}>
           {selectedGroup ? (
             <HStack alignItems="center" space="sm" marginLeft={'$4'}>
@@ -69,8 +66,8 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
               </Text>
             </HStack>
           ) : (
-            <Text fontSize={'$lg'} fontWeight={'$medium'} color="$gray" marginLeft={'$4'}>
-              グループを選択してください
+            <Text fontSize={'$lg'} fontWeight={'$medium'} color="$gray" marginLeft={'$2'}>
+              グループを選択
             </Text>
           )}
         </TouchableOpacity>
