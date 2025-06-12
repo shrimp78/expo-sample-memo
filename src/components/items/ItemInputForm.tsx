@@ -11,6 +11,7 @@ import {
 import { InputAccessoryView, View, Platform, TouchableOpacity } from 'react-native';
 import { KeyboardCloseButton } from './KeyboardCloseButton';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { Group } from '../types/group';
 
 type ItemInputFormProps = {
   title: string;
@@ -18,6 +19,7 @@ type ItemInputFormProps = {
   onChangeTitle: (text: string) => void;
   onChangeContent: (text: string) => void;
   onSelectGroup: () => void;
+  selectedGroup: Group | null;
 };
 
 const inputAccessoryViewID1 = 'INPUT_ACCESSORY_VIEW_ID_1';
@@ -29,7 +31,7 @@ const inputAccessoryViewID2 = 'INPUT_ACCESSORY_VIEW_ID_2';
  * @returns アイテム入力フォーム
  */
 const ItemInputForm: React.FC<ItemInputFormProps> = props => {
-  const { title, content, onChangeTitle, onChangeContent, onSelectGroup } = props;
+  const { title, content, onChangeTitle, onChangeContent, onSelectGroup, selectedGroup } = props;
 
   return (
     <View style={{ flex: 1, paddingBottom: 20 }}>
@@ -59,12 +61,18 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           グループ
         </Text>
         <TouchableOpacity onPress={onSelectGroup}>
-          <HStack alignItems="center" space="sm" marginLeft={'$4'}>
-            <FontAwesome name="circle" size={24} color="#117A65" />
-            <Text fontSize={'$lg'} fontWeight={'$medium'} color="#117A65">
-              八ヶ岳
+          {selectedGroup ? (
+            <HStack alignItems="center" space="sm" marginLeft={'$4'}>
+              <FontAwesome name="circle" size={24} color={selectedGroup.color} />
+              <Text fontSize={'$lg'} fontWeight={'$medium'} color={selectedGroup.color}>
+                {selectedGroup.name}
+              </Text>
+            </HStack>
+          ) : (
+            <Text fontSize={'$lg'} fontWeight={'$medium'} color="$gray" marginLeft={'$4'}>
+              グループを選択してください
             </Text>
-          </HStack>
+          )}
         </TouchableOpacity>
       </HStack>
 

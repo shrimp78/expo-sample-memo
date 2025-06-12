@@ -24,6 +24,8 @@ type ItemCreateProps = {
   groupModalVisible: boolean;
   toggleGroupModal: () => void;
   groups: Group[];
+  selectedGroup: Group | null;
+  setSelectedGroup: (group: Group | null) => void;
 };
 
 const ItemCreateModal: React.FC<ItemCreateProps> = props => {
@@ -38,7 +40,9 @@ const ItemCreateModal: React.FC<ItemCreateProps> = props => {
     content,
     groupModalVisible,
     toggleGroupModal,
-    groups
+    groups,
+    selectedGroup,
+    setSelectedGroup
   } = props;
   return (
     <Modal
@@ -73,6 +77,7 @@ const ItemCreateModal: React.FC<ItemCreateProps> = props => {
                     onChangeTitle={onChangeTitle}
                     onChangeContent={onChangeContent}
                     onSelectGroup={onSelectGroup}
+                    selectedGroup={selectedGroup}
                   />
                 </KeyboardAvoidingView>
               </View>
@@ -99,6 +104,7 @@ const ItemCreateModal: React.FC<ItemCreateProps> = props => {
                         onPress={() => {
                           console.log('グループが選択されました:', group.name);
                           toggleGroupModal();
+                          setSelectedGroup(group);
                         }}
                       >
                         <Text style={styles.groupItemText}>{group.name}</Text>

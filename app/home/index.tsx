@@ -35,6 +35,7 @@ export default function HomeScreen() {
 
   // グループ選択画面のModal用
   const [groupModalVisible, setGroupModalVisible] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
   const toggleGroupModal = () => {
     setGroupModalVisible(!groupModalVisible);
   };
@@ -48,6 +49,7 @@ export default function HomeScreen() {
   // デバッグ用: groupModalVisibleの状態変化を監視
   useEffect(() => {
     console.log('groupModalVisible state changed:', groupModalVisible);
+    console.log('selectedGroup:', selectedGroup);
   }, [groupModalVisible]);
 
   const loadData = async () => {
@@ -164,6 +166,8 @@ export default function HomeScreen() {
         groupModalVisible={groupModalVisible}
         toggleGroupModal={toggleGroupModal}
         groups={groups}
+        selectedGroup={selectedGroup}
+        setSelectedGroup={setSelectedGroup}
       />
     </View>
   );
