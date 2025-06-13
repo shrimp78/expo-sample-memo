@@ -70,7 +70,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
             ) : (
               <>
                 <FontAwesome name="circle" size={24} color="gray" />
-                <Text fontSize={'$lg'} fontWeight={'$medium'} color="$gray" marginLeft={'$2'}>
+                <Text fontSize={'$lg'} fontWeight={'$medium'} color="$gray">
                   グループ
                 </Text>
               </>

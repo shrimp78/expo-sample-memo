@@ -6,8 +6,7 @@ import {
   Text,
   SectionList,
   LayoutAnimation,
-  TouchableOpacity,
-  Modal
+  TouchableOpacity
 } from 'react-native';
 import { useCallback, useState, useEffect } from 'react';
 import { Feather } from '@expo/vector-icons';
