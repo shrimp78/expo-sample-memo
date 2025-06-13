@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   Input,
   InputField,
@@ -36,13 +37,13 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
   return (
     <View style={{ flex: 1, paddingBottom: 20 }}>
       {/* タイトル入力 */}
-      <Input borderWidth={0} minWidth={'$full'} marginTop={'$4'} marginBottom={'$1'}>
+      <Input borderWidth={0} minWidth={'$full'} marginTop={'$8'} marginBottom={'$1'}>
         <InputField
-          placeholder="タイトルを入力してください"
+          placeholder="タイトル"
           value={title}
           onChangeText={onChangeTitle}
           inputAccessoryViewID={inputAccessoryViewID1}
-          fontSize={'$2xl'}
+          fontSize={'$3xl'}
           fontWeight={'$bold'}
           editable={true}
         />
@@ -52,36 +53,46 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
       <HStack
         alignItems="center"
         paddingHorizontal={'$2'}
-        paddingVertical={'$3'}
         marginTop={'$2'}
-        marginBottom={'$2'}
-        height={'$12'}
+        marginBottom={'$1'}
+        marginLeft={'$2'}
+        height={'$10'}
       >
         <TouchableOpacity onPress={onSelectGroup}>
-          {selectedGroup ? (
-            <HStack alignItems="center" space="sm" marginLeft={'$4'}>
-              <FontAwesome name="circle" size={24} color={selectedGroup.color} />
-              <Text fontSize={'$lg'} fontWeight={'$medium'} color={selectedGroup.color}>
-                {selectedGroup.name}
-              </Text>
-            </HStack>
-          ) : (
-            <Text fontSize={'$lg'} fontWeight={'$medium'} color="$gray" marginLeft={'$2'}>
-              グループを選択
-            </Text>
-          )}
+          <HStack alignItems="center" space="sm">
+            {selectedGroup ? (
+              <>
+                <FontAwesome name="circle" size={24} color={selectedGroup.color} />
+                <Text fontSize={'$lg'} fontWeight={'$medium'} color={selectedGroup.color}>
+                  {selectedGroup.name}
+                </Text>
+              </>
+            ) : (
+              <>
+                <FontAwesome name="circle" size={24} color="gray" />
+                <Text fontSize={'$lg'} fontWeight={'$medium'} color="$gray" marginLeft={'$2'}>
+                  グループ
+                </Text>
+              </>
+            )}
+          </HStack>
         </TouchableOpacity>
       </HStack>
 
       {/* 内容入力 */}
-      <Textarea borderWidth={0} flex={1} minWidth={'$full'} marginTop={'$2'}>
+      <Textarea
+        borderWidth={0}
+        flex={1}
+        minWidth={'$full'}
+        marginTop={'$2'}
+        paddingHorizontal={'$2'}
+      >
         <TextareaInput
-          placeholder="内容を入力してください"
+          placeholder="メモ"
           value={content}
           scrollEnabled={true}
           onChangeText={onChangeContent}
           inputAccessoryViewID={inputAccessoryViewID2}
-          paddingHorizontal={'$5'}
           fontSize={'$md'}
         />
       </Textarea>
