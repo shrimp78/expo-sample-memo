@@ -90,10 +90,14 @@ export default function HomeScreen() {
       Alert.alert('確認', 'コンテンツを入力してください');
       return;
     }
+    if (!selectedGroup) {
+      Alert.alert('確認', 'グループを選択してください');
+      return;
+    }
     // 保存処理
     try {
       const id = Crypto.randomUUID();
-      const group_id = '5e0c991d-cfe6-89fa-5ce4-8db27235f3bb'; //  TODO : グループIDを選択できるようにする
+      const group_id = selectedGroup?.id ?? null;
       await ItemService.createItem(id, title, content, group_id);
       toggleCreateModal();
       await loadData();
