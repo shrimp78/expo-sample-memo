@@ -18,7 +18,7 @@ import { ItemList } from '../../src/components/items/ItemList';
 
 // 新規作成モーダル用
 import * as Crypto from 'expo-crypto';
-import { ItemCreateModal } from '../../src/components/items/ItemCreateModal';
+import ItemCreateModal from '../../src/components/items/ItemCreateModal';
 
 export default function HomeScreen() {
   const [items, setItems] = useState<Item[]>([]);

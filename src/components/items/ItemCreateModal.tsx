@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Text
 } from 'react-native';
+import GroupSelectModal from '../groups/groupSelectModal';
 import { AntDesign } from '@expo/vector-icons';
 import { ItemInputForm } from './ItemInputForm';
 import { type Group } from '../types/group';
@@ -88,34 +89,12 @@ const ItemCreateModal: React.FC<ItemCreateProps> = props => {
 
       {/* グループ選択Modal（ItemCreateModalの内部） */}
       {groupModalVisible && (
-        <Modal animationType="fade" transparent={true}>
-          <TouchableWithoutFeedback onPress={toggleGroupModal}>
-            <View style={styles.groupModalOverlay}>
-              <TouchableWithoutFeedback onPress={() => {}}>
-                <View style={styles.groupModalContent}>
-                  <TouchableOpacity style={styles.closeGroupModalButton} onPress={toggleGroupModal}>
-                    <AntDesign name="closecircleo" size={24} color="gray" />
-                  </TouchableOpacity>
-                  <View style={styles.groupListContainer}>
-                    {groups.map(group => (
-                      <TouchableOpacity
-                        key={group.id}
-                        style={[styles.groupItem, { borderLeftColor: group.color }]}
-                        onPress={() => {
-                          console.log('グループが選択されました:', group.name);
-                          toggleGroupModal();
-                          setSelectedGroup(group);
-                        }}
-                      >
-                        <Text style={styles.groupItemText}>{group.name}</Text>
-                      </TouchableOpacity>
-                    ))}
-                  </View>
-                </View>
-              </TouchableWithoutFeedback>
-            </View>
-          </TouchableWithoutFeedback>
-        </Modal>
+        <GroupSelectModal
+          toggleGroupModal={toggleGroupModal}
+          groups={groups}
+          setSelectedGroup={setSelectedGroup}
+          selectedGroup={selectedGroup}
+        />
       )}
     </Modal>
   );
@@ -159,50 +138,7 @@ const styles = StyleSheet.create({
   inputArea: {
     marginTop: 20,
     flex: 1
-  },
-  groupModalOverlay: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  groupModalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
-    width: '85%',
-    maxHeight: '70%',
-    alignItems: 'stretch',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 10
-  },
-  groupModalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center'
-  },
-  groupItem: {
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    borderLeftWidth: 4,
-    marginBottom: 5
-  },
-  groupItemText: {
-    fontSize: 16,
-    fontWeight: '500'
-  },
-  closeGroupModalButton: {
-    position: 'absolute',
-    top: 16,
-    left: 16,
-    padding: 4
-  },
-  groupListContainer: {
-    marginTop: 50
   }
 });
 
-export { ItemCreateModal };
+export default ItemCreateModal;
