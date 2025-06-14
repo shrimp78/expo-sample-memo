@@ -14,14 +14,11 @@ export default function Layout() {
         <Stack.Screen name="index" options={{ headerShown: false }} />
 
         {/* ホーム */}
-        <Stack.Screen name="home/index" options={{ headerTitle: 'ホーム' }} />
+        <Stack.Screen name="home/index" options={{ headerTitle: '' }} />
 
         {/* アイテム */}
         <Stack.Screen name="items/index" options={{ headerTitle: '' }} />
-        <Stack.Screen
-          name="items/create"
-          options={{ headerTitle: '新規作成' }}
-        />
+        <Stack.Screen name="items/create" options={{ headerTitle: '新規作成' }} />
         <Stack.Screen name="items/[id]" options={{ headerTitle: '' }} />
       </Stack>
     </GluestackUIProvider>
