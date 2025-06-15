@@ -1,4 +1,4 @@
-import { StyleSheet, Button, Alert } from 'react-native';
+import { StyleSheet, Button, Alert, View } from 'react-native';
 import { useLocalSearchParams, useNavigation, router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { KeyboardAvoidingView } from '@gluestack-ui/themed';
@@ -6,6 +6,7 @@ import { ItemInputForm } from '../../src/components/items/ItemInputForm';
 import * as ItemService from '../../src/services/itemService';
 import * as GroupService from '../../src/services/groupService';
 import { type Group } from '../../src/components/types/group';
+import GroupSelectModal from '../../src/components/groups/groupSelectModal';
 
 export default function ItemEditScreen() {
   const { id } = useLocalSearchParams();
@@ -15,6 +16,12 @@ export default function ItemEditScreen() {
   const [content, setContent] = useState('');
   const [groups, setGroups] = useState<Group[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
+
+  // グループ選択画面のModal用
+  const [groupModalVisible, setGroupModalVisible] = useState(false);
+  const toggleGroupModal = () => {
+    setGroupModalVisible(!groupModalVisible);
+  };
 
   // Itemの取得
   useEffect(() => {
@@ -69,16 +76,28 @@ export default function ItemEditScreen() {
   };
 
   return (
-    <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100} style={styles.container}>
-      <ItemInputForm
-        title={title}
-        content={content}
-        onChangeTitle={setTitle}
-        onChangeContent={setContent}
-        onSelectGroup={() => {}}
-        selectedGroup={selectedGroup}
-      />
-    </KeyboardAvoidingView>
+    <View style={styles.container}>
+      <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}>
+        <ItemInputForm
+          title={title}
+          content={content}
+          onChangeTitle={setTitle}
+          onChangeContent={setContent}
+          onSelectGroup={() => {}}
+          selectedGroup={selectedGroup}
+        />
+      </KeyboardAvoidingView>
+
+      {/* グループ選択Modal（ItemCreateModalの内部） */}
+      {groupModalVisible && (
+        <GroupSelectModal
+          toggleGroupModal={toggleGroupModal}
+          groups={groups}
+          setSelectedGroup={setSelectedGroup}
+          selectedGroup={selectedGroup}
+        />
+      )}
+    </View>
   );
 }
 
