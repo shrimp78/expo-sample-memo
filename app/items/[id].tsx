@@ -22,6 +22,9 @@ export default function ItemEditScreen() {
   const toggleGroupModal = () => {
     setGroupModalVisible(!groupModalVisible);
   };
+  const onSelectGroup = () => {
+    toggleGroupModal();
+  };
 
   // Itemの取得
   useEffect(() => {
@@ -51,7 +54,7 @@ export default function ItemEditScreen() {
         return <Button title="保存" onPress={handleSaveItemPress} />;
       }
     });
-  }, [title, content]);
+  }, [title, content, selectedGroup]);
 
   // 保存ボタン押下時の処理
   const handleSaveItemPress = async () => {
@@ -83,7 +86,7 @@ export default function ItemEditScreen() {
           content={content}
           onChangeTitle={setTitle}
           onChangeContent={setContent}
-          onSelectGroup={() => {}}
+          onSelectGroup={onSelectGroup}
           selectedGroup={selectedGroup}
         />
       </KeyboardAvoidingView>
