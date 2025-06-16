@@ -15,4 +15,4 @@ const KeyboardCloseButton: React.FC = () => {
   );
 };
 
-export { KeyboardCloseButton };
+export default KeyboardCloseButton;

@@ -2,10 +2,10 @@ import { StyleSheet, Button, Alert, View } from 'react-native';
 import { useLocalSearchParams, useNavigation, router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { KeyboardAvoidingView } from '@gluestack-ui/themed';
-import { ItemInputForm } from '../../src/components/items/ItemInputForm';
 import * as ItemService from '../../src/services/itemService';
 import * as GroupService from '../../src/services/groupService';
 import { type Group } from '../../src/components/types/group';
+import ItemInputForm from '../../src/components/items/ItemInputForm';
 import GroupSelectModal from '../../src/components/groups/groupSelectModal';
 
 export default function ItemEditScreen() {

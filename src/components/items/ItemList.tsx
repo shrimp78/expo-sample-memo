@@ -58,4 +58,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export { ItemList };
+export default ItemList;

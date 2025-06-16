@@ -10,7 +10,7 @@ import {
   ButtonText
 } from '@gluestack-ui/themed';
 import { InputAccessoryView, View, Platform, TouchableOpacity } from 'react-native';
-import { KeyboardCloseButton } from './KeyboardCloseButton';
+import KeyboardCloseButton from './KeyboardCloseButton';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Group } from '../types/group';
 
@@ -112,4 +112,4 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
   );
 };
 
-export { ItemInputForm };
+export default ItemInputForm;

@@ -17,4 +17,4 @@ const GroupList: React.FC<GroupListProps> = props => {
   );
 };
 
-export { GroupList };
+export default GroupList;
