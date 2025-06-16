@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  Input,
-  InputField,
-  Textarea,
-  TextareaInput,
-  Text,
-  HStack,
-  Button,
-  ButtonText
-} from '@gluestack-ui/themed';
+import { Input, InputField, Textarea, TextareaInput, Text, HStack } from '@gluestack-ui/themed';
 import { InputAccessoryView, View, Platform, TouchableOpacity } from 'react-native';
 import KeyboardCloseButton from './KeyboardCloseButton';
 import FontAwesome from '@expo/vector-icons/FontAwesome';

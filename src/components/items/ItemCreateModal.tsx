@@ -5,8 +5,7 @@ import {
   TouchableOpacity,
   Button,
   KeyboardAvoidingView,
-  StyleSheet,
-  Text
+  StyleSheet
 } from 'react-native';
 import GroupSelectModal from '../groups/groupSelectModal';
 import { AntDesign } from '@expo/vector-icons';

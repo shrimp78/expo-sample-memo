@@ -1,5 +1,4 @@
-import { Button, ListItem } from '@rneui/base';
-import { StyleSheet } from 'react-native';
+import { ListItem } from '@rneui/base';
 
 type GroupListProps = {
   name: string;
