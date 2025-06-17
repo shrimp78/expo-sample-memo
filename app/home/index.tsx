@@ -1,4 +1,4 @@
-import { router, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect, Stack } from 'expo-router';
 import {
   Alert,
   View,
@@ -6,10 +6,12 @@ import {
   Text,
   SectionList,
   LayoutAnimation,
-  TouchableOpacity
+  TouchableOpacity,
+  Modal,
+  Animated
 } from 'react-native';
 import { useCallback, useState, useEffect } from 'react';
-import { Feather } from '@expo/vector-icons';
+import { Feather, Entypo } from '@expo/vector-icons';
 import * as ItemService from '../../src/services/itemService';
 import * as GroupService from '../../src/services/groupService';
 import { type Item } from '../../src/components/types/item';
@@ -43,6 +45,20 @@ export default function HomeScreen() {
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
   const toggleGroupModal = () => {
     setGroupModalVisible(!groupModalVisible);
+  };
+
+  // メニュー用
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+
+  const toggleMenu = () => {
+    setMenuVisible(!menuVisible);
+  };
+
+  const handleMenuPress = (event: any) => {
+    const { pageX, pageY } = event.nativeEvent;
+    setMenuPosition({ x: pageX - 150, y: pageY + 10 }); // メニューの位置を調整
+    toggleMenu();
   };
 
   useFocusEffect(
@@ -138,6 +154,15 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
+      <Stack.Screen
+        options={{
+          headerRight: () => (
+            <TouchableOpacity onPress={handleMenuPress} style={{ marginRight: 16 }}>
+              <Entypo name="dots-three-horizontal" size={24} color="black" />
+            </TouchableOpacity>
+          )
+        }}
+      />
       <SectionList
         sections={sections}
         keyExtractor={item => item.id}
@@ -178,6 +203,36 @@ export default function HomeScreen() {
         selectedGroup={selectedGroup}
         setSelectedGroup={setSelectedGroup}
       />
+
+      <Modal
+        visible={menuVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={toggleMenu}
+      >
+        <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={toggleMenu}>
+          <View
+            style={[
+              styles.menuContainer,
+              {
+                position: 'absolute',
+                top: menuPosition.y,
+                left: menuPosition.x
+              }
+            ]}
+          >
+            <TouchableOpacity style={styles.menuItem}>
+              <Text style={styles.menuText}>設定</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem}>
+              <Text style={styles.menuText}>ヘルプ</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem}>
+              <Text style={styles.menuText}>フィードバック</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 }
@@ -217,5 +272,31 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     borderRadius: 30
+  }, // ---- Menu modal用 ----
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.1)'
+  },
+  menuContainer: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 8,
+    width: 150,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
+  },
+  menuItem: {
+    paddingVertical: 12,
+    paddingHorizontal: 16
+  },
+  menuText: {
+    fontSize: 16,
+    color: '#333'
   }
 });
