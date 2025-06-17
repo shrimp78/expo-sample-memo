@@ -61,6 +61,7 @@ export default function HomeScreen() {
     toggleMenu();
   };
 
+  // リストのデータを都度更新するためのフック
   useFocusEffect(
     useCallback(() => {
       loadData();
@@ -158,7 +159,7 @@ export default function HomeScreen() {
         options={{
           headerRight: () => (
             <TouchableOpacity onPress={handleMenuPress} style={{ marginRight: 16 }}>
-              <Entypo name="dots-three-horizontal" size={24} color="black" />
+              <Entypo name="dots-three-horizontal" size={24} color="gray" />
             </TouchableOpacity>
           )
         }}
@@ -274,14 +275,12 @@ const styles = StyleSheet.create({
     borderRadius: 30
   }, // ---- Menu modal用 ----
   modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.1)'
+    flex: 1
   },
   menuContainer: {
     backgroundColor: 'white',
     borderRadius: 8,
     padding: 8,
-    width: 150,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
