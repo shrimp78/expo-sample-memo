@@ -6,9 +6,7 @@ import {
   Text,
   SectionList,
   LayoutAnimation,
-  TouchableOpacity,
-  Modal,
-  Animated
+  TouchableOpacity
 } from 'react-native';
 import { useCallback, useState, useEffect } from 'react';
 import { Feather, Entypo } from '@expo/vector-icons';
@@ -21,6 +19,7 @@ import ItemList from '../../src/components/items/ItemList';
 // 新規作成モーダル用
 import * as Crypto from 'expo-crypto';
 import ItemCreateModal from '../../src/components/items/ItemCreateModal';
+import HomeMenuModal from '../../src/components/screens/home/HomeMenuModal';
 
 export default function HomeScreen() {
   const [items, setItems] = useState<Item[]>([]);
@@ -47,7 +46,7 @@ export default function HomeScreen() {
     setGroupModalVisible(!groupModalVisible);
   };
 
-  // メニュー用
+  // ホームメニュー用
   const [menuVisible, setMenuVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
 
@@ -205,35 +204,7 @@ export default function HomeScreen() {
         setSelectedGroup={setSelectedGroup}
       />
 
-      <Modal
-        visible={menuVisible}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={toggleMenu}
-      >
-        <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={toggleMenu}>
-          <View
-            style={[
-              styles.menuContainer,
-              {
-                position: 'absolute',
-                top: menuPosition.y,
-                left: menuPosition.x
-              }
-            ]}
-          >
-            <TouchableOpacity style={styles.menuItem}>
-              <Text style={styles.menuText}>設定</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem}>
-              <Text style={styles.menuText}>ヘルプ</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem}>
-              <Text style={styles.menuText}>フィードバック</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity>
-      </Modal>
+      <HomeMenuModal visible={menuVisible} onClose={toggleMenu} menuPosition={menuPosition} />
     </View>
   );
 }
@@ -273,29 +244,5 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     borderRadius: 30
-  }, // ---- Menu modal用 ----
-  modalOverlay: {
-    flex: 1
-  },
-  menuContainer: {
-    backgroundColor: 'white',
-    borderRadius: 8,
-    padding: 8,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5
-  },
-  menuItem: {
-    paddingVertical: 12,
-    paddingHorizontal: 16
-  },
-  menuText: {
-    fontSize: 16,
-    color: '#333'
   }
 });
