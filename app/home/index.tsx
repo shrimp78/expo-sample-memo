@@ -6,7 +6,8 @@ import {
   Text,
   SectionList,
   LayoutAnimation,
-  TouchableOpacity
+  TouchableOpacity,
+  GestureResponderEvent
 } from 'react-native';
 import { useCallback, useState, useEffect } from 'react';
 import { Feather, Entypo } from '@expo/vector-icons';
@@ -54,7 +55,7 @@ export default function HomeScreen() {
     setMenuVisible(!menuVisible);
   };
 
-  const handleMenuPress = (event: any) => {
+  const handleMenuPress = (event: GestureResponderEvent) => {
     const { pageX, pageY } = event.nativeEvent;
     setMenuPosition({ x: pageX - 150, y: pageY + 10 }); // メニューの位置を調整
     toggleMenu();
