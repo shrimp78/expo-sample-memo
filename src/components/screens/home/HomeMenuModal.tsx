@@ -5,7 +5,7 @@ interface HomeMenuModalProps {
   visible: boolean;
   onClose: () => void;
   menuPosition: { x: number; y: number };
-  onSettingPress?: () => void;
+  onDeleteAllItemPress?: () => void;
   onHelpPress?: () => void;
   onFeedbackPress?: () => void;
 }
@@ -14,7 +14,7 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
   visible,
   onClose,
   menuPosition,
-  onSettingPress,
+  onDeleteAllItemPress,
   onHelpPress,
   onFeedbackPress
 }) => {
@@ -47,7 +47,7 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
           ]}
           onLayout={handleLayout}
         >
-          <TouchableOpacity style={styles.menuItem} onPress={onSettingPress}>
+          <TouchableOpacity style={styles.menuItem} onPress={onDeleteAllItemPress}>
             <Text style={styles.menuText}>全てのアイテムを削除する</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={onHelpPress}>

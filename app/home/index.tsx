@@ -48,7 +48,7 @@ export default function HomeScreen() {
     setGroupModalVisible(!groupModalVisible);
   };
 
-  // ホームメニュー用
+  // ホームメニューModal用
   const [menuVisible, setMenuVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
 
@@ -75,6 +75,24 @@ export default function HomeScreen() {
 
     setMenuPosition({ x, y: pageY + 10 });
     toggleMenu();
+  };
+
+  const handleDeleteAllItemPress = () => {
+    console.log('全てのアイテムを削除するが押されました');
+    toggleMenu();
+    Alert.alert('確認', '全てのアイテムを削除しますか？', [
+      {
+        text: 'キャンセル',
+        style: 'cancel'
+      },
+      { text: '削除', onPress: () => deleteAllItem() }
+    ]);
+  };
+
+  const deleteAllItem = async () => {
+    console.log('全てのアイテムを削除するが押されました');
+    await ItemService.deleteAllItems();
+    await loadData();
   };
 
   // リストのデータを都度更新するためのフック
@@ -221,7 +239,12 @@ export default function HomeScreen() {
         setSelectedGroup={setSelectedGroup}
       />
 
-      <HomeMenuModal visible={menuVisible} onClose={toggleMenu} menuPosition={menuPosition} />
+      <HomeMenuModal
+        visible={menuVisible}
+        onClose={toggleMenu}
+        menuPosition={menuPosition}
+        onDeleteAllItemPress={handleDeleteAllItemPress}
+      />
     </View>
   );
 }
