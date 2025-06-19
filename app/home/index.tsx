@@ -181,11 +181,13 @@ export default function HomeScreen() {
   };
 
   // グループセクション用のデータ整形
-  const sections = groups.map(group => ({
-    title: group.name,
-    color: group.color,
-    data: items.filter(item => item.group_id === group.id)
-  }));
+  const sections = groups
+    .map(group => ({
+      title: group.name,
+      color: group.color,
+      data: items.filter(item => item.group_id === group.id)
+    }))
+    .filter(section => section.data.length > 0); // アイテムが1つ以上あるセクションのみを表示
 
   return (
     <View style={styles.container}>
