@@ -217,6 +217,11 @@ export default function HomeScreen() {
             onDeletePress={() => handleDeletePress(item.id)}
           />
         )}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyText}>アイテムは１つもありません</Text>
+          </View>
+        }
         ListFooterComponent={<View style={styles.bottomContainer} />}
         contentContainerStyle={{ paddingBottom: 100 }}
         stickySectionHeadersEnabled={false}
@@ -286,5 +291,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     borderRadius: 30
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  emptyText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'gray'
   }
 });
