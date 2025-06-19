@@ -7,7 +7,8 @@ import {
   SectionList,
   LayoutAnimation,
   TouchableOpacity,
-  GestureResponderEvent
+  GestureResponderEvent,
+  Dimensions
 } from 'react-native';
 import { useCallback, useState, useEffect } from 'react';
 import { Feather, Entypo } from '@expo/vector-icons';
@@ -57,7 +58,22 @@ export default function HomeScreen() {
 
   const handleMenuPress = (event: GestureResponderEvent) => {
     const { pageX, pageY } = event.nativeEvent;
-    setMenuPosition({ x: pageX - 150, y: pageY + 10 }); // メニューの位置を調整
+    const screenWidth = Dimensions.get('window').width;
+
+    // メニューボタンの位置を画面の右端に近い場合は左寄せに、左端に近い場合は右寄せに調整 TODO: この部分キモいから後で直す
+    const margin = 20;
+    const estimatedMenuWidth = 150; // より現実的な推定値
+
+    let x = pageX - estimatedMenuWidth / 2; // 中央揃えを試みる
+
+    // 画面内に収まるように調整
+    if (x < margin) {
+      x = margin;
+    } else if (x + estimatedMenuWidth > screenWidth - margin) {
+      x = screenWidth - estimatedMenuWidth - margin;
+    }
+
+    setMenuPosition({ x, y: pageY + 10 });
     toggleMenu();
   };
 

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Modal, TouchableOpacity, View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { Modal, TouchableOpacity, View, Text, StyleSheet, Dimensions } from 'react-native';
 
 interface HomeMenuModalProps {
   visible: boolean;
@@ -18,6 +18,21 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
   onHelpPress,
   onFeedbackPress
 }) => {
+  const [modalWidth, setModalWidth] = useState(0);
+  const screenWidth = Dimensions.get('window').width;
+  const margin = 20; // 画面端からの余白
+
+  // 位置を調整して画面内に収める
+  const adjustedPosition = {
+    x: Math.min(Math.max(margin, menuPosition.x), screenWidth - modalWidth - margin),
+    y: menuPosition.y
+  };
+
+  const handleLayout = (event: any) => {
+    const { width } = event.nativeEvent.layout;
+    setModalWidth(width);
+  };
+
   return (
     <Modal visible={visible} transparent={true} animationType="fade" onRequestClose={onClose}>
       <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={onClose}>
@@ -26,13 +41,14 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
             styles.menuContainer,
             {
               position: 'absolute',
-              top: menuPosition.y,
-              left: menuPosition.x
+              top: adjustedPosition.y,
+              left: adjustedPosition.x
             }
           ]}
+          onLayout={handleLayout}
         >
           <TouchableOpacity style={styles.menuItem} onPress={onSettingPress}>
-            <Text style={styles.menuText}>設定</Text>
+            <Text style={styles.menuText}>全てのアイテムを削除する</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={onHelpPress}>
             <Text style={styles.menuText}>ヘルプ</Text>
