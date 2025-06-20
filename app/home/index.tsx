@@ -219,7 +219,7 @@ export default function HomeScreen() {
         )}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>アイテムは１つもありません</Text>
+            <Text style={styles.emptyText}>No items</Text>
           </View>
         }
         ListFooterComponent={<View style={styles.bottomContainer} />}
@@ -294,6 +294,7 @@ const styles = StyleSheet.create({
   },
   emptyContainer: {
     flex: 1,
+    minHeight: Dimensions.get('window').height * 0.7, // 画面の高さのX%
     justifyContent: 'center',
     alignItems: 'center'
   },
