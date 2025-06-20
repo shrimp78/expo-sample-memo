@@ -16,8 +16,8 @@ const createTable = async () => {
  * @param name グループ名
  * @param color 色
  */
-const insertGroup = async (id: string, name: string, color: string) => {
-  await execute({ sql: GroupQueries.INSERT_GROUP, params: [id, name, color] });
+const insertGroup = async (id: string, name: string, color: string, position: number) => {
+  await execute({ sql: GroupQueries.INSERT_GROUP, params: [id, name, color, position] });
 };
 
 /**
@@ -40,7 +40,8 @@ const getAllGroups = async (): Promise<Group[]> => {
     return {
       id: row.id,
       name: row.name,
-      color: row.color
+      color: row.color,
+      position: row.position
     };
   });
   return groups;
