@@ -6,7 +6,7 @@ interface HomeMenuModalProps {
   onClose: () => void;
   menuPosition: { x: number; y: number };
   onDeleteAllItemPress?: () => void;
-  onHelpPress?: () => void;
+  onGroupEditPress?: () => void;
   onFeedbackPress?: () => void;
 }
 
@@ -15,7 +15,7 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
   onClose,
   menuPosition,
   onDeleteAllItemPress,
-  onHelpPress,
+  onGroupEditPress,
   onFeedbackPress
 }) => {
   const [modalWidth, setModalWidth] = useState(0);
@@ -47,11 +47,11 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
           ]}
           onLayout={handleLayout}
         >
+          <TouchableOpacity style={styles.menuItem} onPress={onGroupEditPress}>
+            <Text style={styles.menuText}>グループの編集</Text>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={onDeleteAllItemPress}>
             <Text style={styles.menuText}>全てのアイテムを削除する</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={onHelpPress}>
-            <Text style={styles.menuText}>ヘルプ</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={onFeedbackPress}>
             <Text style={styles.menuText}>フィードバック</Text>

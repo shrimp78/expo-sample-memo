@@ -89,6 +89,12 @@ export default function HomeScreen() {
     ]);
   };
 
+  const handleGroupEditPress = () => {
+    console.log('グループの編集が押されました');
+    router.push({ pathname: `/groups` });
+    toggleMenu();
+  };
+
   const deleteAllItem = async () => {
     console.log('全てのアイテムを削除するが押されました');
     await ItemService.deleteAllItems();
@@ -250,6 +256,7 @@ export default function HomeScreen() {
         visible={menuVisible}
         onClose={toggleMenu}
         menuPosition={menuPosition}
+        onGroupEditPress={handleGroupEditPress}
         onDeleteAllItemPress={handleDeleteAllItemPress}
       />
     </View>

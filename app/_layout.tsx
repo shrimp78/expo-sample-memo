@@ -19,6 +19,9 @@ export default function Layout() {
         {/* アイテム */}
         <Stack.Screen name="items/index" options={{ headerTitle: '' }} />
         <Stack.Screen name="items/[id]" options={{ headerTitle: '' }} />
+
+        {/* グループ */}
+        <Stack.Screen name="groups/index" options={{ headerTitle: 'Groups' }} />
       </Stack>
     </GluestackUIProvider>
   );
