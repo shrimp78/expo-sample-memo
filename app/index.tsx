@@ -56,7 +56,8 @@ export default function InitialScreen() {
         await GroupService.insertGroup(
           initialGroupData[key].id,
           initialGroupData[key].name,
-          initialGroupData[key].color
+          initialGroupData[key].color,
+          initialGroupData[key].position
         );
       }
     }

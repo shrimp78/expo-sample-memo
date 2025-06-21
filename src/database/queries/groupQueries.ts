@@ -15,12 +15,13 @@ CREATE TABLE IF NOT EXISTS groups
  * @param id id
  * @param name グループ名
  * @param color 色
+ * @param position 位置
  */
 const InsertGroup = `
   INSERT INTO groups (
-    id, name, color
+    id, name, color, position
   ) VALUES (
-    ?, ?, ?
+    ?, ?, ?, ?
   )
 `;
 
@@ -35,7 +36,7 @@ const CountGroups = `
  * 全てのItemを取得
  */
 const GetAllGroups = `
-  SELECT * FROM groups ORDER BY updated_at DESC
+  SELECT * FROM groups ORDER BY position ASC
 `;
 
 const GroupQueries = Object.freeze({
