@@ -114,6 +114,7 @@ export default function HomeScreen() {
     console.log('selectedGroup:', selectedGroup);
   }, [groupModalVisible]);
 
+  // 初回データ読み込み
   const loadData = async () => {
     const items = await ItemService.getAllItems();
     setItems(items);
