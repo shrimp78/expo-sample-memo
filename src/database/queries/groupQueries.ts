@@ -39,11 +39,19 @@ const GetAllGroups = `
   SELECT * FROM groups ORDER BY position ASC
 `;
 
+/**
+ * グループのposition値を更新
+ */
+const UpdateGroupPosition = `
+  UPDATE groups SET position = ?, updated_at = DATETIME('now', 'localtime') WHERE id = ?
+`;
+
 const GroupQueries = Object.freeze({
   CRATE_TABLE: CreateGroupTable,
   INSERT_GROUP: InsertGroup,
   COUNT_GROUPS: CountGroups,
-  GET_ALL_GROUPS: GetAllGroups
+  GET_ALL_GROUPS: GetAllGroups,
+  UPDATE_GROUP_POSITION: UpdateGroupPosition
 });
 
 export { GroupQueries };

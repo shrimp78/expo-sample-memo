@@ -72,31 +72,39 @@ export default function GroupIndexScreen() {
   };
 
   // ドラッグ操作時の処理
-  const handleDragEnd = ({ data, from, to }: { data: Group[]; from: number; to: number }) => {
+  const handleDragEnd = async ({ data, from, to }: { data: Group[]; from: number; to: number }) => {
     if (from === to) return;
 
-    const movedGroup = groups[from];
-    const newGroups = [...data];
+    console.log('=== Drag End Debug ===');
+    console.log(`Moving from ${from} to ${to}`);
+    console.log(
+      'Data received:',
+      data.map((g, i) => `${i}: ${g.name}`)
+    );
 
-    // 新しいposition値を計算
-    const newPosition = calculateNewPosition(from, to, newGroups);
+    try {
+      // dataをそのまま使用（DraggableFlatListが既に順序を変更済み）
+      setGroups(data);
 
-    // 移動したグループのposition値を更新
-    const updatedGroup = { ...movedGroup, position: newPosition };
-    newGroups[to] = updatedGroup;
+      // 移動したグループの新しいposition値を計算してデータベースに保存
+      const movedGroup = data[to];
+      const newPosition = calculateNewPosition(from, to, data);
 
-    // ログ出力
-    console.log('=== Group Position Update ===');
-    console.log(`Group "${movedGroup.name}" moved from index ${from} to ${to}`);
-    console.log(`Old position: ${movedGroup.position}`);
-    console.log(`New position: ${newPosition}`);
-    console.log('Updated group list positions:');
-    newGroups.forEach((group, index) => {
-      console.log(`  ${index}: ${group.name} - position: ${group.position}`);
-    });
-    console.log('==============================');
+      console.log(`Updating ${movedGroup.name} position to ${newPosition}`);
 
-    setGroups(newGroups);
+      // データベースのposition値を更新
+      const { updateGroupPosition } = require('../../src/services/groupService');
+      await updateGroupPosition(movedGroup.id, newPosition);
+
+      // position値をローカルstateにも反映
+      const updatedData = [...data];
+      updatedData[to] = { ...movedGroup, position: newPosition };
+      setGroups(updatedData);
+    } catch (error) {
+      console.error('Error updating group position:', error);
+      // エラーの場合は元の状態に戻す
+      loadGroups();
+    }
   };
 
   // グループ項目のレンダリング
@@ -104,10 +112,18 @@ export default function GroupIndexScreen() {
     return (
       <TouchableOpacity
         style={[styles.groupItem, { backgroundColor: item.color }, isActive && styles.activeItem]}
-        onLongPress={isReorderMode ? drag : undefined}
+        onLongPress={() => {
+          if (isReorderMode) {
+            console.log(`Starting drag for: ${item.name}`);
+            drag();
+          }
+        }}
+        delayLongPress={100}
+        disabled={!isReorderMode}
       >
         <Text style={styles.groupName}>{item.name}</Text>
         <Text style={styles.positionText}>Position: {item.position.toFixed(1)}</Text>
+        {isReorderMode && <Text style={styles.dragHint}>長押しでドラッグ</Text>}
       </TouchableOpacity>
     );
   };
@@ -134,7 +150,12 @@ export default function GroupIndexScreen() {
         keyExtractor={item => item.id}
         renderItem={renderGroupItem}
         containerStyle={{ flex: 1 }}
-        contentContainerStyle={{ flexGrow: 1 }}
+        contentContainerStyle={{ paddingBottom: 20 }}
+        scrollEnabled={!isReorderMode}
+        dragItemOverflow={true}
+        activationDistance={5}
+        autoscrollThreshold={50}
+        dragHitSlop={10}
       />
     </View>
   );
@@ -209,5 +230,10 @@ const styles = StyleSheet.create({
   positionText: {
     fontSize: 12,
     color: 'rgba(255, 255, 255, 0.8)'
+  },
+  dragHint: {
+    fontSize: 10,
+    color: 'rgba(255, 255, 255, 0.6)',
+    fontStyle: 'italic'
   }
 });

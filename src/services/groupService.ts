@@ -47,4 +47,13 @@ const getAllGroups = async (): Promise<Group[]> => {
   return groups;
 };
 
-export { createTable, insertGroup, countGroups, getAllGroups };
+/**
+ * グループのposition値を更新
+ * @param id グループID
+ * @param position 新しいposition値
+ */
+const updateGroupPosition = async (id: string, position: number) => {
+  await execute({ sql: GroupQueries.UPDATE_GROUP_POSITION, params: [position, id] });
+};
+
+export { createTable, insertGroup, countGroups, getAllGroups, updateGroupPosition };
