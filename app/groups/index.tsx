@@ -41,7 +41,7 @@ export default function GroupIndexScreen() {
     } else {
       // 中間に移動する場合
       const prevPosition = groupsList[toIndex - 1].position;
-      const nextPosition = groupsList[toIndex].position;
+      const nextPosition = groupsList[toIndex + 1].position;
       return (prevPosition + nextPosition) / 2;
     }
   };
