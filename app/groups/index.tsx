@@ -10,32 +10,7 @@ export default function GroupIndexScreen() {
 
   // グループデータを読み込み
   useEffect(() => {
-    const initializeAndLoadGroups = async () => {
-      try {
-        // テーブル作成を確実に実行
-        await require('../../src/services/groupService').createTable();
-
-        // データがない場合は初期データを挿入
-        const count = await require('../../src/services/groupService').countGroups();
-        if (count === 0) {
-          const initialData = require('../../src/data/initialGroupData.json');
-          for (const group of initialData) {
-            await require('../../src/services/groupService').insertGroup(
-              group.id,
-              group.name,
-              group.color,
-              group.position
-            );
-          }
-        }
-
-        await loadGroups();
-      } catch (error) {
-        console.error('Error initializing groups:', error);
-      }
-    };
-
-    initializeAndLoadGroups();
+    loadGroups();
   }, []);
 
   const loadGroups = async () => {
