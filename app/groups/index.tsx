@@ -97,8 +97,6 @@ export default function GroupIndexScreen() {
         disabled={!isReorderMode}
       >
         <Text style={styles.groupName}>{item.name}</Text>
-        <Text style={styles.positionText}>Position: {item.position.toFixed(1)}</Text>
-        {isReorderMode && <Text style={styles.dragHint}>長押しでドラッグ</Text>}
       </TouchableOpacity>
     );
   };
@@ -106,7 +104,6 @@ export default function GroupIndexScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>グループ一覧</Text>
         <TouchableOpacity
           style={[styles.reorderButton, isReorderMode && styles.reorderButtonActive]}
           onPress={() => setIsReorderMode(!isReorderMode)}
@@ -148,11 +145,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333'
-  },
   reorderButton: {
     backgroundColor: '#007AFF',
     paddingHorizontal: 16,
@@ -181,14 +173,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginVertical: 4,
     borderRadius: 8,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 1
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22
+    elevation: 2
   },
   activeItem: {
     transform: [{ scale: 1.05 }],
@@ -201,14 +186,5 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: 'white',
     marginBottom: 4
-  },
-  positionText: {
-    fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.8)'
-  },
-  dragHint: {
-    fontSize: 10,
-    color: 'rgba(255, 255, 255, 0.6)',
-    fontStyle: 'italic'
   }
 });
