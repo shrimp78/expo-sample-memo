@@ -86,7 +86,7 @@ export default function GroupIndexScreen() {
   const renderGroupItem = ({ item, drag, isActive }: RenderItemParams<Group>) => {
     return (
       <TouchableOpacity
-        style={[styles.groupItem, { backgroundColor: item.color }, isActive && styles.activeItem]}
+        style={[styles.groupItem, { borderLeftColor: item.color }, isActive && styles.activeItem]}
         onLongPress={() => {
           if (isReorderMode) {
             console.log(`Starting drag for: ${item.name}`);
@@ -172,8 +172,8 @@ const styles = StyleSheet.create({
   groupItem: {
     padding: 16,
     marginVertical: 4,
-    borderRadius: 8,
-    elevation: 2
+    borderLeftWidth: 6,
+    backgroundColor: 'white'
   },
   activeItem: {
     transform: [{ scale: 1.05 }],
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
   groupName: {
     fontSize: 18,
     fontWeight: '600',
-    color: 'white',
+    color: 'gray',
     marginBottom: 4
   }
 });

@@ -22,7 +22,7 @@ export default function Layout() {
           <Stack.Screen name="items/[id]" options={{ headerTitle: '' }} />
 
           {/* グループ */}
-          <Stack.Screen name="groups/index" options={{ headerTitle: 'Groups' }} />
+          <Stack.Screen name="groups/index" options={{ headerTitle: 'グループの編集' }} />
         </Stack>
       </GluestackUIProvider>
     </GestureHandlerRootView>
