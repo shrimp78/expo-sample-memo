@@ -3,6 +3,7 @@ import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flat
 import { useState, useEffect } from 'react';
 import { getAllGroups } from '../../src/services/groupService';
 import { type Group } from '../../src/components/types/group';
+import FloatingPlusButton from '../../src/components/common/floatingPlusButton';
 
 export default function GroupIndexScreen() {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -101,6 +102,10 @@ export default function GroupIndexScreen() {
     );
   };
 
+  const addGroupPress = () => {
+    console.log('addGroupPress');
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -129,6 +134,7 @@ export default function GroupIndexScreen() {
         autoscrollThreshold={50}
         dragHitSlop={10}
       />
+      <FloatingPlusButton onPress={addGroupPress} />
     </View>
   );
 }
