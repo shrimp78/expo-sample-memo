@@ -4,10 +4,14 @@ import { useState, useEffect } from 'react';
 import { getAllGroups } from '../../src/services/groupService';
 import { type Group } from '../../src/components/types/group';
 import FloatingPlusButton from '../../src/components/common/floatingPlusButton';
+import GroupCreateModal from '../../src/components/groups/groupCreateModal';
 
 export default function GroupIndexScreen() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [isReorderMode, setIsReorderMode] = useState(false);
+  const [groupCreateModalVisible, setGroupCreateModalVisible] = useState(false);
+  const [groupName, setGroupName] = useState('');
+  const [groupColor, setGroupColor] = useState('#007AFF');
 
   // グループデータを読み込み
   useEffect(() => {
@@ -102,8 +106,21 @@ export default function GroupIndexScreen() {
     );
   };
 
+  // グループ追加に関連する項目
   const addGroupPress = () => {
-    console.log('addGroupPress');
+    setGroupCreateModalVisible(true);
+  };
+
+  const toggleGroupCreateModal = () => {
+    setGroupCreateModalVisible(!groupCreateModalVisible);
+  };
+
+  const handleSaveGroupPress = () => {
+    console.log('handleSaveGroupPress', { groupName, groupColor });
+  };
+
+  const handleChangeGroupColor = (color: string) => {
+    setGroupColor(color);
   };
 
   return (
@@ -135,6 +152,15 @@ export default function GroupIndexScreen() {
         dragHitSlop={10}
       />
       <FloatingPlusButton onPress={addGroupPress} />
+      <GroupCreateModal
+        visible={groupCreateModalVisible}
+        toggleCreateModal={toggleGroupCreateModal}
+        onSave={handleSaveGroupPress}
+        groupName={groupName}
+        groupColor={groupColor}
+        onChangeGroupName={setGroupName}
+        onChangeGroupColor={handleChangeGroupColor}
+      />
     </View>
   );
 }
