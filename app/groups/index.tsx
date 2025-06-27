@@ -5,6 +5,8 @@ import { getAllGroups } from '../../src/services/groupService';
 import { type Group } from '../../src/components/types/group';
 import FloatingPlusButton from '../../src/components/common/floatingPlusButton';
 import GroupCreateModal from '../../src/components/groups/groupCreateModal';
+import * as Crypto from 'expo-crypto';
+import * as GroupService from '../../src/services/groupService';
 
 export default function GroupIndexScreen() {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -115,12 +117,43 @@ export default function GroupIndexScreen() {
     setGroupCreateModalVisible(!groupCreateModalVisible);
   };
 
-  const handleSaveGroupPress = () => {
-    console.log('handleSaveGroupPress', { groupName, groupColor });
+  const handleChangeGroupColor = (color: string) => {
+    console.log('グループの色が指定されました', color);
+    setGroupColor(color);
   };
 
-  const handleChangeGroupColor = (color: string) => {
-    setGroupColor(color);
+  // グループの保存処理
+  const handleSaveGroupPress = async () => {
+    console.log('グループの保存が押されました');
+
+    // バリデーション
+    if (!groupName) {
+      Alert.alert('確認', 'グループ名を入力してください');
+      return;
+    }
+    if (!groupColor) {
+      Alert.alert('確認', 'グループの色を選択してください');
+      return;
+    }
+
+    // 保存処理
+    try {
+      const id = Crypto.randomUUID();
+
+      // 新しいグループの位置を動的に計算
+      const maxPosition = await GroupService.getMaxPosition();
+      const newPosition = maxPosition + 65536;
+
+      await GroupService.insertGroup(id, groupName, groupColor, newPosition);
+      toggleGroupCreateModal();
+      await loadGroups();
+    } catch (e) {
+      Alert.alert('エラー', '保存に失敗しました');
+      console.error(e);
+    } finally {
+      setGroupName('');
+      setGroupColor('#007AFF');
+    }
   };
 
   return (

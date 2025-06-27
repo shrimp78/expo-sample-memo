@@ -46,12 +46,20 @@ const UpdateGroupPosition = `
   UPDATE groups SET position = ?, updated_at = DATETIME('now', 'localtime') WHERE id = ?
 `;
 
+/**
+ * 最大position値を取得
+ */
+const GetMaxPosition = `
+  SELECT MAX(position) as max_position FROM groups
+`;
+
 const GroupQueries = Object.freeze({
   CRATE_TABLE: CreateGroupTable,
   INSERT_GROUP: InsertGroup,
   COUNT_GROUPS: CountGroups,
   GET_ALL_GROUPS: GetAllGroups,
-  UPDATE_GROUP_POSITION: UpdateGroupPosition
+  UPDATE_GROUP_POSITION: UpdateGroupPosition,
+  GET_MAX_POSITION: GetMaxPosition
 });
 
 export { GroupQueries };

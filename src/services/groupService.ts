@@ -56,4 +56,17 @@ const updateGroupPosition = async (id: string, position: number) => {
   await execute({ sql: GroupQueries.UPDATE_GROUP_POSITION, params: [position, id] });
 };
 
-export { createTable, insertGroup, countGroups, getAllGroups, updateGroupPosition };
+/**
+ * 現在のグループの最大position値を取得
+ * @returns 最大position値（グループが存在しない場合は0）
+ */
+const getMaxPosition = async (): Promise<number> => {
+  const result = await fetch<{ max_position: number | null }>({
+    sql: GroupQueries.GET_MAX_POSITION
+  });
+
+  // グループが存在しない場合はnullが返されるので、0を返す
+  return result[0]?.max_position ?? 0;
+};
+
+export { createTable, insertGroup, countGroups, getAllGroups, updateGroupPosition, getMaxPosition };
