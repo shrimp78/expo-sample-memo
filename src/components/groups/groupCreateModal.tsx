@@ -24,14 +24,17 @@ type ItemCreateProps = {
 
 // グループカラーのプリセット
 const colorOptions = [
-  '#FF6B6B', // 赤
-  '#4ECDC4', // ターコイズ
-  '#45B7D1', // 青
-  '#96CEB4', // 緑
-  '#FFEAA7', // 黄色
-  '#DDA0DD', // 紫
-  '#FFB347', // オレンジ
-  '#FF69B4' // ピンク
+  '#C0392B', // 赤
+  '#2E86C1', // 青
+  '#5DADE2', // 水色
+  '#117A65', // 緑
+  '#58D68D', // 黄緑
+  '#E67E22', // オレンジ
+  '#F8C471', // 黄
+  '#E91E63', // ピンク
+  '#8E44AD', // 紫
+  '#85929E', // グレー
+  '#2C3E50' // 黒
 ];
 
 const ItemCreateModal: React.FC<ItemCreateProps> = props => {
@@ -99,7 +102,7 @@ const ItemCreateModal: React.FC<ItemCreateProps> = props => {
                       color={groupColor}
                       paddingLeft={'$2'}
                     >
-                      グループカラー
+                      カラー
                     </Text>
                   </HStack>
 
