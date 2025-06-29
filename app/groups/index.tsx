@@ -7,6 +7,7 @@ import FloatingPlusButton from '../../src/components/common/floatingPlusButton';
 import GroupCreateModal from '../../src/components/groups/groupCreateModal';
 import * as Crypto from 'expo-crypto';
 import * as GroupService from '../../src/services/groupService';
+import { router } from 'expo-router';
 
 export default function GroupIndexScreen() {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -91,17 +92,27 @@ export default function GroupIndexScreen() {
 
   // グループ項目のレンダリング
   const renderGroupItem = ({ item, drag, isActive }: RenderItemParams<Group>) => {
+    const handleGroupPress = () => {
+      if (!isReorderMode) {
+        // 並び替えモードでない場合は編集画面に遷移
+        router.push(`/groups/${item.id}`);
+      }
+    };
+
+    const handleLongPress = () => {
+      if (isReorderMode) {
+        console.log(`Starting drag for: ${item.name}`);
+        drag();
+      }
+    };
+
     return (
       <TouchableOpacity
         style={[styles.groupItem, { borderLeftColor: item.color }, isActive && styles.activeItem]}
-        onLongPress={() => {
-          if (isReorderMode) {
-            console.log(`Starting drag for: ${item.name}`);
-            drag();
-          }
-        }}
+        onPress={handleGroupPress}
+        onLongPress={handleLongPress}
         delayLongPress={100}
-        disabled={!isReorderMode}
+        disabled={false} // 常にタップを有効にする
       >
         <Text style={styles.groupName}>{item.name}</Text>
       </TouchableOpacity>

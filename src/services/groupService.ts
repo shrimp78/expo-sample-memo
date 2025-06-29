@@ -69,4 +69,42 @@ const getMaxPosition = async (): Promise<number> => {
   return result[0]?.max_position ?? 0;
 };
 
-export { createTable, insertGroup, countGroups, getAllGroups, updateGroupPosition, getMaxPosition };
+/**
+ * IDでグループを取得
+ * @param id グループID
+ * @returns グループ情報
+ */
+const getGroupById = async (id: string): Promise<Group | null> => {
+  const rows = await fetch<GroupSchema>({ sql: GroupQueries.GET_GROUP_BY_ID, params: [id] });
+  if (rows.length === 0) {
+    return null;
+  }
+
+  const row = rows[0];
+  return {
+    id: row.id,
+    name: row.name,
+    color: row.color,
+    position: row.position
+  };
+};
+
+/**
+ * グループ名を更新
+ * @param id グループID
+ * @param name 新しいグループ名
+ */
+const updateGroupName = async (id: string, name: string) => {
+  await execute({ sql: GroupQueries.UPDATE_GROUP_NAME, params: [name, id] });
+};
+
+export {
+  createTable,
+  insertGroup,
+  countGroups,
+  getAllGroups,
+  updateGroupPosition,
+  getMaxPosition,
+  getGroupById,
+  updateGroupName
+};

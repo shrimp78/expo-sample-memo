@@ -40,10 +40,24 @@ const GetAllGroups = `
 `;
 
 /**
+ * IDでグループを取得
+ */
+const GetGroupById = `
+  SELECT * FROM groups WHERE id = ?
+`;
+
+/**
  * グループのposition値を更新
  */
 const UpdateGroupPosition = `
   UPDATE groups SET position = ?, updated_at = DATETIME('now', 'localtime') WHERE id = ?
+`;
+
+/**
+ * グループ名を更新
+ */
+const UpdateGroupName = `
+  UPDATE groups SET name = ?, updated_at = DATETIME('now', 'localtime') WHERE id = ?
 `;
 
 /**
@@ -58,8 +72,10 @@ const GroupQueries = Object.freeze({
   INSERT_GROUP: InsertGroup,
   COUNT_GROUPS: CountGroups,
   GET_ALL_GROUPS: GetAllGroups,
-  UPDATE_GROUP_POSITION: UpdateGroupPosition,
-  GET_MAX_POSITION: GetMaxPosition
+  GET_GROUP_BY_ID: GetGroupById,
+  GET_MAX_POSITION: GetMaxPosition,
+  UPDATE_GROUP_NAME: UpdateGroupName,
+  UPDATE_GROUP_POSITION: UpdateGroupPosition
 });
 
 export { GroupQueries };

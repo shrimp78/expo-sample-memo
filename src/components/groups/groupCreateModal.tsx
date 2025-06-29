@@ -10,7 +10,6 @@ import {
 import { AntDesign } from '@expo/vector-icons';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Input, InputField, Text, HStack } from '@gluestack-ui/themed';
-import { type Group } from '../types/group';
 
 type ItemCreateProps = {
   visible: boolean;
