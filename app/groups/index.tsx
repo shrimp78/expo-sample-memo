@@ -7,7 +7,8 @@ import FloatingPlusButton from '../../src/components/common/floatingPlusButton';
 import GroupCreateModal from '../../src/components/groups/groupCreateModal';
 import * as Crypto from 'expo-crypto';
 import * as GroupService from '../../src/services/groupService';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
+import React from 'react';
 
 export default function GroupIndexScreen() {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -20,6 +21,13 @@ export default function GroupIndexScreen() {
   useEffect(() => {
     loadGroups();
   }, []);
+
+  // 画面がフォーカスされたときにグループを再取得
+  useFocusEffect(
+    React.useCallback(() => {
+      loadGroups();
+    }, [])
+  );
 
   const loadGroups = async () => {
     try {
