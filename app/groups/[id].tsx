@@ -63,12 +63,7 @@ export default function GroupEditScreen() {
 
     try {
       await updateGroupName(id, groupName.trim());
-      Alert.alert('完了', 'グループ名を更新しました', [
-        {
-          text: 'OK',
-          onPress: () => router.back()
-        }
-      ]);
+      router.back();
     } catch (error) {
       console.error('Error updating group:', error);
       Alert.alert('エラー', 'グループ名の更新に失敗しました');
