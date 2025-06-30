@@ -1,8 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, Button } from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Alert,
+  Button,
+  Platform,
+  InputAccessoryView
+} from 'react-native';
 import { useLocalSearchParams, router, useNavigation } from 'expo-router';
 import { getGroupById, updateGroupName } from '../../src/services/groupService';
+import { KeyboardAvoidingView, Input, InputField } from '@gluestack-ui/themed';
 import { type Group } from '../../src/components/types/group';
+import KeyboardCloseButton from '../../src/components/common/KeyboardCloseButton';
+
+const inputAccessoryViewID = 'INPUT_ACCESSORY_VIEW_ID_GROUP';
 
 export default function GroupEditScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -72,20 +85,32 @@ export default function GroupEditScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.content}>
-        <View style={styles.inputSection}>
-          <Text style={styles.inputLabel}>グループ名</Text>
-          <TextInput
-            style={styles.textInput}
-            value={groupName}
-            onChangeText={setGroupName}
-            placeholder="グループ名を入力"
-            maxLength={50}
-            autoFocus={true}
-          />
+      <KeyboardAvoidingView style={{ flex: 1 }}>
+        <View style={{ paddingBottom: 20 }}>
+          {/* タイトル入力 */}
+          <Input borderWidth={0} minWidth={'$full'} marginTop={'$8'} marginBottom={'$1'}>
+            <InputField
+              placeholder="グループ名"
+              value={groupName}
+              onChangeText={setGroupName}
+              inputAccessoryViewID={inputAccessoryViewID}
+              fontSize={'$3xl'}
+              fontWeight={'$bold'}
+              editable={true}
+            />
+          </Input>
+
+          {/* iOSのみキーボードの閉じるボタンを表示 */}
+          {Platform.OS === 'ios' && (
+            <InputAccessoryView nativeID={inputAccessoryViewID} backgroundColor={'#F1F1F1'}>
+              <KeyboardCloseButton />
+            </InputAccessoryView>
+          )}
+        </View>
+        <View>
           <Text style={styles.characterCount}>{groupName.length}/50</Text>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </View>
   );
 }
@@ -93,18 +118,7 @@ export default function GroupEditScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5'
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5'
-  },
-  loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: '#666'
+    backgroundColor: '#ffffff'
   },
   errorContainer: {
     flex: 1,
@@ -116,38 +130,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666'
   },
-  content: {
-    flex: 1,
-    padding: 16
-  },
-  inputSection: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2
-  },
   inputLabel: {
     fontSize: 14,
     fontWeight: '600',
     color: '#333',
     marginBottom: 8
   },
-  textInput: {
-    fontSize: 16,
-    color: '#333',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-    paddingVertical: 8,
-    paddingHorizontal: 0
-  },
   characterCount: {
-    fontSize: 12,
+    fontSize: 16,
     color: '#999',
-    textAlign: 'right',
-    marginTop: 4
+    textAlign: 'left',
+    marginTop: 4,
+    marginLeft: 12
   }
 });
