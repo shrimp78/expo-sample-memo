@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
-  Alert,
-  ActivityIndicator
-} from 'react-native';
-import { useLocalSearchParams, router } from 'expo-router';
+import { View, Text, TextInput, StyleSheet, Alert, Button } from 'react-native';
+import { useLocalSearchParams, router, useNavigation } from 'expo-router';
 import { getGroupById, updateGroupName } from '../../src/services/groupService';
 import { type Group } from '../../src/components/types/group';
 
@@ -16,11 +8,20 @@ export default function GroupEditScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [group, setGroup] = useState<Group | null>(null);
   const [groupName, setGroupName] = useState('');
-  const [saving, setSaving] = useState(false);
+  const navigation = useNavigation();
 
   useEffect(() => {
     loadGroup();
   }, [id]);
+
+  // TitleとContentの変更を監視
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return <Button title="保存" onPress={handleSavePress} />;
+      }
+    });
+  }, [groupName, group]);
 
   const loadGroup = async () => {
     try {
@@ -41,13 +42,12 @@ export default function GroupEditScreen() {
     }
   };
 
-  const handleSave = async () => {
+  const handleSavePress = async () => {
     if (!id || !groupName.trim()) {
       Alert.alert('確認', 'グループ名を入力してください');
       return;
     }
 
-    setSaving(true);
     try {
       await updateGroupName(id, groupName.trim());
       Alert.alert('完了', 'グループ名を更新しました', [
@@ -59,19 +59,6 @@ export default function GroupEditScreen() {
     } catch (error) {
       console.error('Error updating group:', error);
       Alert.alert('エラー', 'グループ名の更新に失敗しました');
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const handleCancel = () => {
-    if (groupName !== group?.name) {
-      Alert.alert('確認', '変更内容が保存されていません。戻りますか？', [
-        { text: 'キャンセル', style: 'cancel' },
-        { text: '戻る', style: 'destructive', onPress: () => router.back() }
-      ]);
-    } else {
-      router.back();
     }
   };
 
@@ -85,20 +72,6 @@ export default function GroupEditScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={[styles.saveButton, saving && styles.saveButtonDisabled]}
-          onPress={handleSave}
-          disabled={saving}
-        >
-          {saving ? (
-            <ActivityIndicator size="small" color="white" />
-          ) : (
-            <Text style={styles.saveButtonText}>保存</Text>
-          )}
-        </TouchableOpacity>
-      </View>
-
       <View style={styles.content}>
         <View style={styles.inputSection}>
           <Text style={styles.inputLabel}>グループ名</Text>
@@ -142,32 +115,6 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 16,
     color: '#666'
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0'
-  },
-  saveButton: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    minWidth: 60,
-    alignItems: 'center'
-  },
-  saveButtonDisabled: {
-    backgroundColor: '#ccc'
-  },
-  saveButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600'
   },
   content: {
     flex: 1,
