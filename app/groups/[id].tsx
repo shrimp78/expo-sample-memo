@@ -1,19 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  Alert,
-  Button,
-  Platform,
-  InputAccessoryView
-} from 'react-native';
+import { View, Text, StyleSheet, Alert, Button, Platform, InputAccessoryView } from 'react-native';
 import { useLocalSearchParams, router, useNavigation } from 'expo-router';
 import { getGroupById, updateGroupName } from '../../src/services/groupService';
 import { KeyboardAvoidingView, Input, InputField } from '@gluestack-ui/themed';
 import { type Group } from '../../src/components/types/group';
 import KeyboardCloseButton from '../../src/components/common/KeyboardCloseButton';
+import GroupColorSelector from '../../src/components/groups/groupColorSelector';
 
 const inputAccessoryViewID = 'INPUT_ACCESSORY_VIEW_ID_GROUP';
 
@@ -21,6 +13,7 @@ export default function GroupEditScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [group, setGroup] = useState<Group | null>(null);
   const [groupName, setGroupName] = useState('');
+  const [groupColor, setGroupColor] = useState('');
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -44,6 +37,7 @@ export default function GroupEditScreen() {
       if (groupData) {
         setGroup(groupData);
         setGroupName(groupData.name);
+        setGroupColor(groupData.color);
       } else {
         Alert.alert('エラー', 'グループが見つかりません');
         router.back();
@@ -106,6 +100,8 @@ export default function GroupEditScreen() {
           <Text style={styles.characterCount}>{groupName.length}/50</Text>
         </View>
       </KeyboardAvoidingView>
+      {/* カラーオプション */}
+      <GroupColorSelector groupColor={groupColor} onChangeGroupColor={setGroupColor} />
     </View>
   );
 }
