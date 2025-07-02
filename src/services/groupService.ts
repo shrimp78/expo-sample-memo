@@ -90,12 +90,35 @@ const getGroupById = async (id: string): Promise<Group | null> => {
 };
 
 /**
- * グループ名を更新
- * @param id グループID
- * @param name 新しいグループ名
+ * グループ情報を更新
+ * @param params 更新パラメータ
+ * @param params.id グループID（必須）
+ * @param params.name 新しいグループ名（オプショナル）
+ * @param params.color 新しい色（オプショナル）
  */
-const updateGroupName = async (id: string, name: string) => {
-  await execute({ sql: GroupQueries.UPDATE_GROUP_NAME, params: [name, id] });
+const updateGroup = async (params: { id: string; name?: string; color?: string }) => {
+  const { id, name, color } = params;
+  const updates: string[] = [];
+  const sqlParams: any[] = [];
+
+  if (name !== undefined) {
+    updates.push('name = ?');
+    sqlParams.push(name);
+  }
+
+  if (color !== undefined) {
+    updates.push('color = ?');
+    sqlParams.push(color);
+  }
+
+  if (updates.length === 0) {
+    return; // 更新する項目がない場合は何もしない
+  }
+
+  sqlParams.push(id); // WHERE句のidパラメータ
+  const sql = `UPDATE groups SET ${updates.join(', ')} WHERE id = ?`;
+
+  await execute({ sql, params: sqlParams });
 };
 
 export {
@@ -106,5 +129,5 @@ export {
   updateGroupPosition,
   getMaxPosition,
   getGroupById,
-  updateGroupName
+  updateGroup
 };

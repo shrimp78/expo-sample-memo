@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Alert, Button, Platform, InputAccessoryView } from 'react-native';
 import { useLocalSearchParams, router, useNavigation } from 'expo-router';
-import { getGroupById, updateGroupName } from '../../src/services/groupService';
+import { getGroupById, updateGroup } from '../../src/services/groupService';
 import { KeyboardAvoidingView, Input, InputField } from '@gluestack-ui/themed';
 import { type Group } from '../../src/components/types/group';
 import KeyboardCloseButton from '../../src/components/common/KeyboardCloseButton';
@@ -50,17 +50,25 @@ export default function GroupEditScreen() {
   };
 
   const handleSavePress = async () => {
-    if (!id || !groupName.trim()) {
+    if (!groupName) {
       Alert.alert('確認', 'グループ名を入力してください');
+      return;
+    }
+    if (!groupColor) {
+      Alert.alert('確認', 'グループの色を選択してください');
       return;
     }
 
     try {
-      await updateGroupName(id, groupName.trim());
+      await updateGroup({
+        id,
+        name: groupName.trim(),
+        color: groupColor
+      });
       router.back();
     } catch (error) {
       console.error('Error updating group:', error);
-      Alert.alert('エラー', 'グループ名の更新に失敗しました');
+      Alert.alert('エラー', 'グループの更新に失敗しました');
     }
   };
 
@@ -99,9 +107,11 @@ export default function GroupEditScreen() {
         <View>
           <Text style={styles.characterCount}>{groupName.length}/50</Text>
         </View>
+        {/* カラーオプション */}
+        <View style={styles.colorSelectorContainer}>
+          <GroupColorSelector groupColor={groupColor} onChangeGroupColor={setGroupColor} />
+        </View>
       </KeyboardAvoidingView>
-      {/* カラーオプション */}
-      <GroupColorSelector groupColor={groupColor} onChangeGroupColor={setGroupColor} />
     </View>
   );
 }
@@ -121,17 +131,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666'
   },
-  inputLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 8
-  },
   characterCount: {
     fontSize: 16,
     color: '#999',
     textAlign: 'left',
     marginTop: 4,
-    marginLeft: 12
+    marginLeft: 20
+  },
+  colorSelectorContainer: {
+    flex: 1
   }
 });
