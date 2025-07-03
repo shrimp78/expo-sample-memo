@@ -19,7 +19,7 @@ type ItemCreateProps = {
   onChangeGroupName: (text: string) => void;
   groupName: string;
   groupColor: string;
-  onChangeGroupColor: ((color: string) => void) | null;
+  onChangeGroupColor: (color: string) => void;
 };
 
 const ItemCreateModal: React.FC<ItemCreateProps> = props => {
