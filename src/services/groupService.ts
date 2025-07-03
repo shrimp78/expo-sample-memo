@@ -121,6 +121,28 @@ const updateGroup = async (params: { id: string; name?: string; color?: string }
   await execute({ sql, params: sqlParams });
 };
 
+/**
+ * 移動後のPosition値を計算(Trello方式)
+ * @param toIndex 移動先のインデックス
+ * @param groupsList グループリスト
+ */
+const calculateNewPosition = (toIndex: number, groupsList: Group[]): number => {
+  if (toIndex === 0) {
+    // 最初に移動する場合
+    const nextPosition = groupsList[0].position;
+    return nextPosition / 2;
+  } else if (toIndex === groupsList.length - 1) {
+    // 最後に移動する場合
+    const prevPosition = groupsList[groupsList.length - 1].position;
+    return prevPosition + 65536; // 新しい位置は前の位置より大きく
+  } else {
+    // 中間に移動する場合
+    const prevPosition = groupsList[toIndex - 1].position;
+    const nextPosition = groupsList[toIndex + 1].position;
+    return (prevPosition + nextPosition) / 2;
+  }
+};
+
 export {
   createTable,
   insertGroup,
@@ -129,5 +151,6 @@ export {
   updateGroupPosition,
   getMaxPosition,
   getGroupById,
-  updateGroup
+  updateGroup,
+  calculateNewPosition
 };
