@@ -104,9 +104,6 @@ export default function GroupEditScreen() {
             </InputAccessoryView>
           )}
         </View>
-        <View>
-          <Text style={styles.characterCount}>{groupName.length}/50</Text>
-        </View>
         {/* カラーオプション */}
         <View style={styles.colorSelectorContainer}>
           <GroupColorSelector groupColor={groupColor} onChangeGroupColor={setGroupColor} />
@@ -130,13 +127,6 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 16,
     color: '#666'
-  },
-  characterCount: {
-    fontSize: 16,
-    color: '#999',
-    textAlign: 'left',
-    marginTop: 4,
-    marginLeft: 20
   },
   colorSelectorContainer: {
     flex: 1
