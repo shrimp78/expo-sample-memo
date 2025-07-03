@@ -27,7 +27,7 @@ export default function GroupEditScreen() {
         return <Button title="保存" onPress={handleSavePress} />;
       }
     });
-  }, [groupName, group]);
+  }, [groupName, groupColor, group]);
 
   const loadGroup = async () => {
     try {
