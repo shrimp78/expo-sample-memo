@@ -9,6 +9,10 @@ import * as Crypto from 'expo-crypto';
 import * as GroupService from '../../src/services/groupService';
 import { router, useFocusEffect } from 'expo-router';
 import React from 'react';
+import { Feather } from '@expo/vector-icons';
+
+// ハンバーガーメニューアイコンコンポーネント
+const HamburgerIcon = () => <Feather name="menu" size={20} color="#999" />;
 
 export default function GroupIndexScreen() {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -99,7 +103,12 @@ export default function GroupIndexScreen() {
         delayLongPress={100}
         disabled={false} // 常にタップを有効にする
       >
-        <Text style={styles.groupName}>{item.name}</Text>
+        <View style={styles.groupItemContent}>
+          {isReorderMode && <HamburgerIcon />}
+          <Text style={[styles.groupName, isReorderMode && styles.groupNameWithIcon]}>
+            {item.name}
+          </Text>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -236,6 +245,10 @@ const styles = StyleSheet.create({
     borderLeftWidth: 6,
     backgroundColor: 'white'
   },
+  groupItemContent: {
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
   activeItem: {
     transform: [{ scale: 1.05 }],
     shadowOpacity: 0.4,
@@ -247,5 +260,9 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: 'gray',
     marginBottom: 4
+  },
+  groupNameWithIcon: {
+    marginLeft: 12,
+    marginBottom: 0
   }
 });
