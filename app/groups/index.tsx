@@ -62,8 +62,7 @@ export default function GroupIndexScreen() {
       console.log(`Updating ${movedGroup.name} position to ${newPosition}`);
 
       // データベースのposition値を更新
-      const { updateGroupPosition } = require('../../src/services/groupService');
-      await updateGroupPosition(movedGroup.id, newPosition);
+      await GroupService.updateGroupPosition(movedGroup.id, newPosition);
 
       // position値をローカルstateにも反映
       const updatedData = [...data];
