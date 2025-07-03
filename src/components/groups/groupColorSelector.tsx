@@ -4,7 +4,7 @@ import { FontAwesome } from '@expo/vector-icons';
 
 type GroupColorSelectorProps = {
   groupColor: string;
-  onChangeGroupColor: ((color: string) => void) | null;
+  onChangeGroupColor: (color: string) => void;
 };
 
 // グループカラーのプリセット
@@ -30,7 +30,7 @@ const GroupColorSelector: React.FC<GroupColorSelectorProps> = props => {
         {colorOptions.map(color => (
           <TouchableOpacity
             key={color}
-            onPress={() => onChangeGroupColor?.(color)}
+            onPress={() => onChangeGroupColor(color)}
             style={[styles.colorOption, groupColor === color && styles.selectedColorOption]}
           >
             <FontAwesome name="circle" size={32} color={color} />

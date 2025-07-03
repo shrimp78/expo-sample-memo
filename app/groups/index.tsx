@@ -159,7 +159,7 @@ export default function GroupIndexScreen() {
     try {
       const id = Crypto.randomUUID();
 
-      // 新しいグループの位置を動的に計算
+      // 新しいグループは必ず一番最後の位置に保存する
       const maxPosition = await GroupService.getMaxPosition();
       const newPosition = maxPosition + 65536;
 
