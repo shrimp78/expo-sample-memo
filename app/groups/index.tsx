@@ -11,9 +11,6 @@ import { router, useFocusEffect } from 'expo-router';
 import React from 'react';
 import { Feather, FontAwesome } from '@expo/vector-icons';
 
-// ハンバーガーメニューアイコンコンポーネント
-const HamburgerIcon = () => <Feather name="menu" size={20} color="#999" />;
-
 export default function GroupIndexScreen() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [isReorderMode, setIsReorderMode] = useState(false);
@@ -104,8 +101,10 @@ export default function GroupIndexScreen() {
         disabled={false} // 常にタップを有効にする
       >
         <View style={styles.groupItemContent}>
-          {isReorderMode && <HamburgerIcon />}
-          <FontAwesome name="circle" size={32} color={item.color} />
+          {isReorderMode && (
+            <Feather name="menu" size={20} color="#999" style={styles.hamburgerIcon} />
+          )}
+          <FontAwesome name="circle" size={32} color={item.color} style={styles.groupColorIcon} />
           <Text style={[styles.groupName, isReorderMode && styles.groupNameWithIcon]}>
             {item.name}
           </Text>
@@ -245,6 +244,12 @@ const styles = StyleSheet.create({
   groupItemContent: {
     flexDirection: 'row',
     alignItems: 'center'
+  },
+  hamburgerIcon: {
+    marginRight: 12
+  },
+  groupColorIcon: {
+    marginRight: 4
   },
   activeItem: {
     transform: [{ scale: 1.05 }],
