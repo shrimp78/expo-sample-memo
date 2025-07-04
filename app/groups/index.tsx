@@ -94,7 +94,11 @@ export default function GroupIndexScreen() {
 
     return (
       <TouchableOpacity
-        style={[styles.groupItem, isActive && styles.activeItem]}
+        style={[
+          styles.groupItem,
+          isActive && styles.activeItem,
+          isReorderMode && styles.groupItemReorderMode
+        ]}
         onPress={handleGroupPress}
         onLongPress={handleLongPress}
         delayLongPress={100}
@@ -240,6 +244,9 @@ const styles = StyleSheet.create({
     marginVertical: 4,
     borderBottomWidth: 1,
     borderBottomColor: 'lightgray'
+  },
+  groupItemReorderMode: {
+    borderBottomWidth: 0
   },
   groupItemContent: {
     flexDirection: 'row',
