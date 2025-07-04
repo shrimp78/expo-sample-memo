@@ -7,9 +7,9 @@ import FloatingPlusButton from '../../src/components/common/floatingPlusButton';
 import GroupCreateModal from '../../src/components/groups/groupCreateModal';
 import * as Crypto from 'expo-crypto';
 import * as GroupService from '../../src/services/groupService';
-import { router, useFocusEffect } from 'expo-router';
+import { useFocusEffect } from 'expo-router';
 import React from 'react';
-import { Feather, FontAwesome } from '@expo/vector-icons';
+import RenderGroupItem from '../../src/components/groups/renderGroupItem';
 
 export default function GroupIndexScreen() {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -76,47 +76,6 @@ export default function GroupIndexScreen() {
     }
   };
 
-  // グループ項目のレンダリング
-  const renderGroupItem = ({ item, drag, isActive }: RenderItemParams<Group>) => {
-    const handleGroupPress = () => {
-      if (!isReorderMode) {
-        // 並び替えモードでない場合は編集画面に遷移
-        router.push(`/groups/${item.id}`);
-      }
-    };
-
-    const handleLongPress = () => {
-      if (isReorderMode) {
-        console.log(`Starting drag for: ${item.name}`);
-        drag();
-      }
-    };
-
-    return (
-      <TouchableOpacity
-        style={[
-          styles.groupItem,
-          isActive && styles.activeItem,
-          isReorderMode && styles.groupItemReorderMode
-        ]}
-        onPress={handleGroupPress}
-        onLongPress={handleLongPress}
-        delayLongPress={100}
-        disabled={false} // 常にタップを有効にする
-      >
-        <View style={styles.groupItemContent}>
-          {isReorderMode && (
-            <Feather name="menu" size={20} color="#999" style={styles.hamburgerIcon} />
-          )}
-          <FontAwesome name="circle" size={32} color={item.color} style={styles.groupColorIcon} />
-          <Text style={[styles.groupName, isReorderMode && styles.groupNameWithIcon]}>
-            {item.name}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
   // グループ追加に関連する項目
   const addGroupPress = () => {
     setGroupCreateModalVisible(true);
@@ -180,7 +139,14 @@ export default function GroupIndexScreen() {
         data={groups}
         onDragEnd={handleDragEnd}
         keyExtractor={item => item.id}
-        renderItem={renderGroupItem}
+        renderItem={({ item, drag, isActive }) => (
+          <RenderGroupItem
+            item={item}
+            drag={drag}
+            isActive={isActive}
+            isReorderMode={isReorderMode}
+          />
+        )}
         containerStyle={{ flex: 1 }}
         contentContainerStyle={{ paddingBottom: 20 }}
         scrollEnabled={!isReorderMode}
@@ -238,41 +204,5 @@ const styles = StyleSheet.create({
   },
   list: {
     flex: 1
-  },
-  groupItem: {
-    padding: 12,
-    marginVertical: 4,
-    borderBottomWidth: 1,
-    borderBottomColor: 'lightgray'
-  },
-  groupItemReorderMode: {
-    borderBottomWidth: 0
-  },
-  groupItemContent: {
-    flexDirection: 'row',
-    alignItems: 'center'
-  },
-  hamburgerIcon: {
-    marginRight: 12
-  },
-  groupColorIcon: {
-    marginRight: 4
-  },
-  activeItem: {
-    transform: [{ scale: 1.05 }],
-    shadowOpacity: 0.4,
-    shadowRadius: 4,
-    elevation: 8
-  },
-  groupName: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: 'gray',
-    marginBottom: 4,
-    marginLeft: 12
-  },
-  groupNameWithIcon: {
-    marginLeft: 12,
-    marginBottom: 0
   }
 });
