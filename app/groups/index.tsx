@@ -9,7 +9,7 @@ import * as Crypto from 'expo-crypto';
 import * as GroupService from '../../src/services/groupService';
 import { router, useFocusEffect } from 'expo-router';
 import React from 'react';
-import { Feather } from '@expo/vector-icons';
+import { Feather, FontAwesome } from '@expo/vector-icons';
 
 // ハンバーガーメニューアイコンコンポーネント
 const HamburgerIcon = () => <Feather name="menu" size={20} color="#999" />;
@@ -97,7 +97,7 @@ export default function GroupIndexScreen() {
 
     return (
       <TouchableOpacity
-        style={[styles.groupItem, { borderLeftColor: item.color }, isActive && styles.activeItem]}
+        style={[styles.groupItem, isActive && styles.activeItem]}
         onPress={handleGroupPress}
         onLongPress={handleLongPress}
         delayLongPress={100}
@@ -105,6 +105,7 @@ export default function GroupIndexScreen() {
       >
         <View style={styles.groupItemContent}>
           {isReorderMode && <HamburgerIcon />}
+          <FontAwesome name="circle" size={32} color={item.color} />
           <Text style={[styles.groupName, isReorderMode && styles.groupNameWithIcon]}>
             {item.name}
           </Text>
@@ -172,10 +173,6 @@ export default function GroupIndexScreen() {
         </TouchableOpacity>
       </View>
 
-      {isReorderMode && (
-        <Text style={styles.instructionText}>長押ししてドラッグで順番を変更できます</Text>
-      )}
-
       <DraggableFlatList
         data={groups}
         onDragEnd={handleDragEnd}
@@ -240,10 +237,10 @@ const styles = StyleSheet.create({
     flex: 1
   },
   groupItem: {
-    padding: 16,
+    padding: 12,
     marginVertical: 4,
-    borderLeftWidth: 6,
-    backgroundColor: 'white'
+    borderBottomWidth: 1,
+    borderBottomColor: 'lightgray'
   },
   groupItemContent: {
     flexDirection: 'row',
@@ -259,7 +256,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: 'gray',
-    marginBottom: 4
+    marginBottom: 4,
+    marginLeft: 12
   },
   groupNameWithIcon: {
     marginLeft: 12,
