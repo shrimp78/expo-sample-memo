@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import DraggableFlatList, { RenderItemParams } from 'react-native-draggable-flatlist';
+import DraggableFlatList from 'react-native-draggable-flatlist';
 import { useState, useEffect } from 'react';
 import { getAllGroups } from '../../src/services/groupService';
 import { type Group } from '../../src/components/types/group';
@@ -194,15 +194,5 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: '600'
-  },
-  instructionText: {
-    fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: 12,
-    fontStyle: 'italic'
-  },
-  list: {
-    flex: 1
   }
 });
