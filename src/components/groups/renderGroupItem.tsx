@@ -54,7 +54,6 @@ const RenderGroupItem: React.FC<RenderGroupItemParams> = props => {
 
 const styles = StyleSheet.create({
   activeItem: {
-    transform: [{ scale: 1.05 }],
     shadowOpacity: 0.4,
     shadowRadius: 4,
     elevation: 8
