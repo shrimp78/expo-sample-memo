@@ -7,8 +7,7 @@ import {
   KeyboardAvoidingView,
   StyleSheet
 } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { AntDesign, FontAwesome } from '@expo/vector-icons';
 import { Input, InputField, Text, HStack } from '@gluestack-ui/themed';
 import GroupColorSelector from './groupColorSelector';
 

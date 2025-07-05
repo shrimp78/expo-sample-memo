@@ -80,7 +80,6 @@ const styles = StyleSheet.create({
   groupName: {
     fontSize: 18,
     fontWeight: '600',
-    color: 'gray',
     marginBottom: 4,
     marginLeft: 12
   },

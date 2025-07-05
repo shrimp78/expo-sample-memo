@@ -11,7 +11,7 @@ import {
   Dimensions
 } from 'react-native';
 import { useCallback, useState, useEffect } from 'react';
-import { Feather, Entypo } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 import * as ItemService from '../../src/services/itemService';
 import * as GroupService from '../../src/services/groupService';
 import { type Item } from '../../src/components/types/item';
