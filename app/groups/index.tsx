@@ -10,6 +10,7 @@ import * as GroupService from '../../src/services/groupService';
 import { useFocusEffect } from 'expo-router';
 import React from 'react';
 import RenderGroupItem from '../../src/components/groups/renderGroupItem';
+import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function GroupIndexScreen() {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -128,10 +129,14 @@ export default function GroupIndexScreen() {
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity
-          style={[styles.reorderButton, isReorderMode && styles.reorderButtonActive]}
+          style={styles.reorderButton}
           onPress={() => setIsReorderMode(!isReorderMode)}
         >
-          <Text style={styles.reorderButtonText}>{isReorderMode ? '完了' : '並び替え'}</Text>
+          {isReorderMode ? (
+            <AntDesign name="save" size={24} color="gray" />
+          ) : (
+            <MaterialCommunityIcons name="sort" size={24} color="gray" />
+          )}
         </TouchableOpacity>
       </View>
 
@@ -182,17 +187,8 @@ const styles = StyleSheet.create({
     marginBottom: 16
   },
   reorderButton: {
-    backgroundColor: '#007AFF',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8
-  },
-  reorderButtonActive: {
-    backgroundColor: '#FF3B30'
-  },
-  reorderButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600'
   }
 });
