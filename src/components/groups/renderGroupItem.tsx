@@ -29,11 +29,7 @@ const RenderGroupItem: React.FC<RenderGroupItemParams> = props => {
 
   return (
     <TouchableOpacity
-      style={[
-        styles.groupItem,
-        isActive && styles.activeItem,
-        isReorderMode && styles.groupItemReorderMode
-      ]}
+      style={[styles.groupItem, isActive && styles.activeItem]}
       onPress={handleGroupPress}
       onLongPress={handleLongPress}
       delayLongPress={100}
@@ -60,12 +56,7 @@ const styles = StyleSheet.create({
   },
   groupItem: {
     padding: 12,
-    marginVertical: 4,
-    borderBottomWidth: 1,
-    borderBottomColor: 'lightgray'
-  },
-  groupItemReorderMode: {
-    borderBottomWidth: 0
+    marginVertical: 4
   },
   groupItemContent: {
     flexDirection: 'row',
