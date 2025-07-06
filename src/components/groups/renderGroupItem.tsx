@@ -49,11 +49,7 @@ const RenderGroupItem: React.FC<RenderGroupItemParams> = props => {
 };
 
 const styles = StyleSheet.create({
-  activeItem: {
-    shadowOpacity: 0.4,
-    shadowRadius: 4,
-    elevation: 8
-  },
+  activeItem: {},
   groupItem: {
     padding: 12,
     marginVertical: 4
