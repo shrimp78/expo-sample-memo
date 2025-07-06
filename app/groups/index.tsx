@@ -10,7 +10,7 @@ import * as GroupService from '../../src/services/groupService';
 import { useFocusEffect } from 'expo-router';
 import React from 'react';
 import RenderGroupItem from '../../src/components/groups/renderGroupItem';
-import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function GroupIndexScreen() {
   const [groups, setGroups] = useState<Group[]>([]);
@@ -133,9 +133,9 @@ export default function GroupIndexScreen() {
           onPress={() => setIsReorderMode(!isReorderMode)}
         >
           {isReorderMode ? (
-            <AntDesign name="save" size={24} color="gray" />
+            <Text style={styles.saveText}>保存</Text>
           ) : (
-            <MaterialCommunityIcons name="sort" size={24} color="gray" />
+            <MaterialCommunityIcons name="sort" size={28} color="gray" />
           )}
         </TouchableOpacity>
       </View>
@@ -190,5 +190,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8
+  },
+  saveText: {
+    color: '#007AFF',
+    fontSize: 20
   }
 });
