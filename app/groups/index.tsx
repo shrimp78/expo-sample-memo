@@ -156,9 +156,9 @@ export default function GroupIndexScreen() {
         contentContainerStyle={{ paddingBottom: 20 }}
         scrollEnabled={!isReorderMode}
         dragItemOverflow={true}
-        activationDistance={5}
+        activationDistance={10}
         autoscrollThreshold={50}
-        dragHitSlop={10}
+        dragHitSlop={5}
       />
       <FloatingPlusButton onPress={addGroupPress} />
       <GroupCreateModal

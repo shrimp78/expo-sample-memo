@@ -16,6 +16,7 @@ const RenderGroupItem: React.FC<RenderGroupItemParams> = props => {
   const handleGroupPress = () => {
     if (!isReorderMode) {
       // 並び替えモードでない場合は編集画面に遷移
+      console.log('handleGroupPress -> item.id', item.id);
       router.push(`/groups/${item.id}`);
     }
   };
@@ -32,8 +33,10 @@ const RenderGroupItem: React.FC<RenderGroupItemParams> = props => {
       style={styles.groupItem}
       onPress={handleGroupPress}
       onLongPress={handleLongPress}
-      delayLongPress={100}
-      disabled={false} // 常にタップを有効にする
+      delayLongPress={500} // 短すぎるとタップの判定が難しくなる
+      disabled={isReorderMode} // 並び替えモードの時はタップを無効にする
+      activeOpacity={0.7}
+      hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
     >
       <View style={styles.groupItemContent}>
         {isReorderMode && (
