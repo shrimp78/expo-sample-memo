@@ -29,7 +29,7 @@ const RenderGroupItem: React.FC<RenderGroupItemParams> = props => {
 
   return (
     <TouchableOpacity
-      style={[styles.groupItem, isActive && styles.groupItemActive]}
+      style={styles.groupItem}
       onPress={handleGroupPress}
       onLongPress={handleLongPress}
       delayLongPress={100}
@@ -52,12 +52,6 @@ const styles = StyleSheet.create({
   groupItem: {
     padding: 12,
     marginVertical: 4
-  },
-  groupItemActive: {
-    // Dragを開始したときにちょっと上げる
-    // ※transformを使うと、inActiveになっても元に戻らないのでpaddingを使う
-    paddingTop: 10,
-    paddingBottom: 14
   },
   groupItemContent: {
     flexDirection: 'row',
