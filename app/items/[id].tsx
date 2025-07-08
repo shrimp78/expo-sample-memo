@@ -28,8 +28,6 @@ export default function ItemEditScreen() {
 
   // Itemの取得
   useEffect(() => {
-    console.log('useEffect -> id', id);
-
     const fetchItem = async () => {
       try {
         const item = await ItemService.getItemById(id as string);

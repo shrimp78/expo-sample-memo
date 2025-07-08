@@ -90,16 +90,15 @@ export default function HomeScreen() {
     ]);
   };
 
+  const deleteAllItem = async () => {
+    await ItemService.deleteAllItems();
+    await loadData();
+  };
+
   const handleGroupEditPress = () => {
     console.log('グループの編集が押されました');
     router.push({ pathname: `/groups` });
     toggleMenu();
-  };
-
-  const deleteAllItem = async () => {
-    console.log('全てのアイテムを削除するが押されました');
-    await ItemService.deleteAllItems();
-    await loadData();
   };
 
   // リストのデータを都度更新するためのフック
@@ -108,12 +107,6 @@ export default function HomeScreen() {
       loadData();
     }, [])
   );
-
-  // デバッグ用: groupModalVisibleの状態変化を監視
-  useEffect(() => {
-    console.log('groupModalVisible state changed:', groupModalVisible);
-    console.log('selectedGroup:', selectedGroup);
-  }, [groupModalVisible]);
 
   // 初回データ読み込み
   const loadData = async () => {

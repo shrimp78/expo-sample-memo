@@ -28,9 +28,6 @@ const ItemList: React.FC<ItemListProps> = props => {
         />
       )}
       onPress={onPress}
-      onLongPress={() => {
-        console.log('ListItem onLongPress');
-      }}
     >
       <ListItem.Content>
         <ListItem.Title style={styles.title}> {name}</ListItem.Title>

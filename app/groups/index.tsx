@@ -46,13 +46,6 @@ export default function GroupIndexScreen() {
   const handleDragEnd = async ({ data, from, to }: { data: Group[]; from: number; to: number }) => {
     if (from === to) return;
 
-    console.log('=== Drag End Debug ===');
-    console.log(`Moving from ${from} to ${to}`);
-    console.log(
-      'Data received:',
-      data.map((g, i) => `${i}: ${g.name}`)
-    );
-
     try {
       // dataをそのまま使用（DraggableFlatListが既に順序を変更済み）
       setGroups(data);
@@ -60,8 +53,6 @@ export default function GroupIndexScreen() {
       // 移動したグループの新しいposition値を計算してデータベースに保存
       const movedGroup = data[to];
       const newPosition = GroupService.calculateNewPosition(to, data);
-
-      console.log(`Updating ${movedGroup.name} position to ${newPosition}`);
 
       // データベースのposition値を更新
       await GroupService.updateGroupPosition(movedGroup.id, newPosition);
@@ -87,7 +78,6 @@ export default function GroupIndexScreen() {
   };
 
   const handleChangeGroupColor = (color: string) => {
-    console.log('グループの色が指定されました', color);
     setGroupColor(color);
   };
 

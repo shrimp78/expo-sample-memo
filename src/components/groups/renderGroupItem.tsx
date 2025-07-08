@@ -23,7 +23,6 @@ const RenderGroupItem: React.FC<RenderGroupItemParams> = props => {
 
   const handleLongPress = () => {
     if (isReorderMode) {
-      console.log(`Starting drag for: ${item.name}`);
       drag();
     }
   };
