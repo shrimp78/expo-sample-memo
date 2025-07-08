@@ -60,7 +60,7 @@ const ItemCreateModal: React.FC<ItemCreateProps> = props => {
           >
             <View style={styles.createModalContent}>
               <TouchableOpacity style={styles.closeButton} onPress={toggleCreateModal}>
-                <AntDesign name="closecircleo" size={24} color="gray" />
+                <AntDesign name="closecircleo" size={24} color="#808080" />
               </TouchableOpacity>
               <View style={styles.saveButtonArea}>
                 <Button title="保存" onPress={onSave} />
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     top: 80, // TODO: これ、デバイスによって違うので、デバイスの高さによって変える必要がある
     width: '96%',
     bottom: 0,
-    backgroundColor: 'white',
+    backgroundColor: '#ffffff',
     padding: 20,
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,

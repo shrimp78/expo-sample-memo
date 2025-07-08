@@ -16,8 +16,8 @@ const ItemList: React.FC<ItemListProps> = props => {
       rightContent={reset => (
         <Button
           title="削除"
-          icon={{ name: 'delete', color: 'white' }}
-          buttonStyle={{ minHeight: '100%', backgroundColor: 'red' }}
+          icon={{ name: 'delete', color: '#ffffff' }}
+          buttonStyle={{ minHeight: '100%', backgroundColor: '#ff0000' }}
           onPress={() => {
             console.log('DeleteButton onPress');
             if (onDeletePress) {

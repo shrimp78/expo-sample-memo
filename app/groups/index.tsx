@@ -135,7 +135,7 @@ export default function GroupIndexScreen() {
           {isReorderMode ? (
             <Text style={styles.saveText}>保存</Text>
           ) : (
-            <MaterialCommunityIcons name="sort" size={28} color="gray" />
+            <MaterialCommunityIcons name="sort" size={28} color="#808080" />
           )}
         </TouchableOpacity>
       </View>
@@ -177,7 +177,7 @@ export default function GroupIndexScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#ffffff',
     padding: 16
   },
   header: {

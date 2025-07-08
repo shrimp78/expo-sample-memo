@@ -26,7 +26,7 @@ const GroupSelectModal: React.FC<GroupSelectModalProps> = props => {
           <TouchableWithoutFeedback onPress={() => {}}>
             <View style={styles.groupModalContent}>
               <TouchableOpacity style={styles.closeGroupModalButton} onPress={toggleGroupModal}>
-                <AntDesign name="closecircleo" size={24} color="gray" />
+                <AntDesign name="closecircleo" size={24} color="#808080" />
               </TouchableOpacity>
               <View style={styles.groupListContainer}>
                 {groups.map(group => (
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   groupModalContent: {
-    backgroundColor: 'white',
+    backgroundColor: '#ffffff',
     padding: 20,
     borderRadius: 10,
     width: '85%',

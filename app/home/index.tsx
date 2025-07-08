@@ -203,7 +203,7 @@ export default function HomeScreen() {
         options={{
           headerRight: () => (
             <TouchableOpacity onPress={handleMenuPress} style={{ marginRight: 16 }}>
-              <Entypo name="dots-three-horizontal" size={24} color="gray" />
+              <Entypo name="dots-three-horizontal" size={24} color="#808080" />
             </TouchableOpacity>
           )
         }}
@@ -292,6 +292,6 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'gray'
+    color: '#808080'
   }
 });

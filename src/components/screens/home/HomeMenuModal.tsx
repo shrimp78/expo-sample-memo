@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   menuContainer: {
-    backgroundColor: 'white',
+    backgroundColor: '#ffffff',
     borderRadius: 8,
     padding: 8,
     shadowColor: '#000',
