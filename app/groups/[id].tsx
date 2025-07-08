@@ -62,7 +62,7 @@ export default function GroupEditScreen() {
     try {
       await updateGroup({
         id,
-        name: groupName.trim(),
+        name: groupName,
         color: groupColor
       });
       router.back();

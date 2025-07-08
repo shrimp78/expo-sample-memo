@@ -16,15 +16,10 @@ const createTable = async () => {
  * @param content コンテンツ
  * @param group_id グループID(nullの場合はundefined)
  */
-const createItem = async (
-  id: string,
-  title: string,
-  content: string,
-  group_id: string | null
-) => {
+const createItem = async (id: string, title: string, content: string, group_id: string | null) => {
   let queries: SqlArgs[] = [];
   // Itemの追加
-  queries.push({ sql: ItemQueries.INSERT, params: [id, title, content] });
+  queries.push({ sql: ItemQueries.INSERT, params: [id, title.trim(), content] });
   // GroupIDの追加
   if (group_id !== undefined) {
     queries.push({
@@ -98,7 +93,7 @@ const updateItemById = async (
 ) => {
   await execute({
     sql: ItemQueries.UPDATE_ITEM_BY_ID,
-    params: [title, content, group_id, id]
+    params: [title.trim(), content, group_id, id]
   });
 };
 

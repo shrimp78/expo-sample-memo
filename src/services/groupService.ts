@@ -17,7 +17,7 @@ const createTable = async () => {
  * @param color 色
  */
 const insertGroup = async (id: string, name: string, color: string, position: number) => {
-  await execute({ sql: GroupQueries.INSERT_GROUP, params: [id, name, color, position] });
+  await execute({ sql: GroupQueries.INSERT_GROUP, params: [id, name.trim(), color, position] });
 };
 
 /**
@@ -103,7 +103,7 @@ const updateGroup = async (params: { id: string; name?: string; color?: string }
 
   if (name !== undefined) {
     updates.push('name = ?');
-    sqlParams.push(name);
+    sqlParams.push(name.trim());
   }
 
   if (color !== undefined) {
