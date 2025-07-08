@@ -141,6 +141,13 @@ const calculateNewPosition = (toIndex: number, groupsList: Group[]): number => {
   }
 };
 
+/**
+ * Groupテーブルのデータを全件削除
+ */
+const deleteAllGroups = async () => {
+  await execute({ sql: GroupQueries.DELETE_ALL_GROUPS });
+};
+
 export {
   createTable,
   insertGroup,
@@ -150,5 +157,6 @@ export {
   getMaxPosition,
   getGroupById,
   updateGroup,
-  calculateNewPosition
+  calculateNewPosition,
+  deleteAllGroups
 };

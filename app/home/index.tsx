@@ -92,6 +92,7 @@ export default function HomeScreen() {
 
   const deleteAllItem = async () => {
     await ItemService.deleteAllItems();
+    await GroupService.deleteAllGroups();
     await loadData();
   };
 

@@ -67,6 +67,13 @@ const GetMaxPosition = `
   SELECT MAX(position) as max_position FROM groups
 `;
 
+/**
+ * Groupテーブルのデータを全件削除
+ */
+const DeleteAllGroups = `
+  DELETE FROM groups
+`;
+
 const GroupQueries = Object.freeze({
   CRATE_TABLE: CreateGroupTable,
   INSERT_GROUP: InsertGroup,
@@ -75,7 +82,8 @@ const GroupQueries = Object.freeze({
   GET_GROUP_BY_ID: GetGroupById,
   GET_MAX_POSITION: GetMaxPosition,
   UPDATE_GROUP_NAME: UpdateGroupName,
-  UPDATE_GROUP_POSITION: UpdateGroupPosition
+  UPDATE_GROUP_POSITION: UpdateGroupPosition,
+  DELETE_ALL_GROUPS: DeleteAllGroups
 });
 
 export { GroupQueries };
