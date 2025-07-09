@@ -33,7 +33,6 @@ const RenderGroupItem: React.FC<RenderGroupItemParams> = props => {
       onPress={handleGroupPress}
       onLongPress={handleLongPress}
       delayLongPress={500} // 短すぎるとタップの判定が難しくなる
-      disabled={isReorderMode} // 並び替えモードの時はタップを無効にする
       activeOpacity={0.7}
       hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}
     >
