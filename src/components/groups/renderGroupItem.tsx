@@ -1,6 +1,7 @@
 import { Group } from '../types/group';
 import { router } from 'expo-router';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
+import { Button } from '@rneui/base';
 import { Feather, FontAwesome } from '@expo/vector-icons';
 
 type RenderGroupItemParams = {
@@ -44,6 +45,16 @@ const RenderGroupItem: React.FC<RenderGroupItemParams> = props => {
         <Text style={[styles.groupName, isReorderMode && styles.groupNameWithIcon]}>
           {item.name}
         </Text>
+        {!isReorderMode && (
+          <Button
+            icon={{ name: 'trash-can', type: 'material-community', color: '#9E9E9E' }}
+            buttonStyle={styles.deleteButton}
+            containerStyle={{ marginLeft: 'auto' }}
+            onPress={() => {
+              console.log('DeleteButton onPress');
+            }}
+          />
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -73,6 +84,11 @@ const styles = StyleSheet.create({
   groupNameWithIcon: {
     marginLeft: 12,
     marginBottom: 0
+  },
+  deleteButton: {
+    backgroundColor: 'transparent',
+    alignItems: 'flex-end',
+    padding: 0
   }
 });
 
