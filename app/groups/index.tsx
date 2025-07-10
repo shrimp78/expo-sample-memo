@@ -115,8 +115,9 @@ export default function GroupIndexScreen() {
     }
   };
 
+  // グループの削除処理
   const handleDeleteGroup = async (groupId: string) => {
-    await GroupService.deleteGroup(groupId);
+    await GroupService.deleteGroupById(groupId);
     await loadGroups();
   };
 

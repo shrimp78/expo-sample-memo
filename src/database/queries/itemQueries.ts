@@ -90,6 +90,14 @@ const DeleteItemById = `
 `;
 
 /**
+ * 指定されたグループIDのアイテムをすべて削除
+ * @param group_id グループID
+ */
+const DeleteItemsByGroupId = `
+  DELETE FROM items WHERE group_id = ?
+`;
+
+/**
  * Itemテーブルのデータを全件削除
  */
 const DeleteAllItems = `
@@ -105,6 +113,7 @@ const ItemQueries = Object.freeze({
   UPDATE_ITEM_BY_ID: UpdateItemById,
   UPDATE_ITEM_GROUP_BY_ID: UpdateItemGroupById,
   DELETE_ITEM_BY_ID: DeleteItemById,
+  DELETE_ITEMS_BY_GROUP_ID: DeleteItemsByGroupId,
   DELETE_ALL_ITEMS: DeleteAllItems
 });
 

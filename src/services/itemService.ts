@@ -106,6 +106,14 @@ const deleteItemById = async (id: string) => {
 };
 
 /**
+ * 指定されたグループIDのアイテムをすべて削除
+ * @param group_id グループID
+ */
+const deleteItemsByGroupId = async (group_id: string) => {
+  await execute({ sql: ItemQueries.DELETE_ITEMS_BY_GROUP_ID, params: [group_id] });
+};
+
+/**
  * Itemテーブルのデータを全件削除
  */
 const deleteAllItems = async () => {
@@ -120,5 +128,6 @@ export {
   getItemById,
   updateItemById,
   deleteItemById,
+  deleteItemsByGroupId,
   deleteAllItems
 };

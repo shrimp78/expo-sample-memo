@@ -74,6 +74,13 @@ const DeleteAllGroups = `
   DELETE FROM groups
 `;
 
+/**
+ * グループを削除
+ */
+const DeleteGroup = `
+  DELETE FROM groups WHERE id = ?
+`;
+
 const GroupQueries = Object.freeze({
   CRATE_TABLE: CreateGroupTable,
   INSERT_GROUP: InsertGroup,
@@ -83,7 +90,8 @@ const GroupQueries = Object.freeze({
   GET_MAX_POSITION: GetMaxPosition,
   UPDATE_GROUP_NAME: UpdateGroupName,
   UPDATE_GROUP_POSITION: UpdateGroupPosition,
-  DELETE_ALL_GROUPS: DeleteAllGroups
+  DELETE_ALL_GROUPS: DeleteAllGroups,
+  DELETE_GROUP: DeleteGroup
 });
 
 export { GroupQueries };

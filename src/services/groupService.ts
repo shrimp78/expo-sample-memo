@@ -2,6 +2,7 @@ import { execute, fetch } from '../database/dbService';
 import { GroupQueries } from '../database/queries/groupQueries';
 import { type Group } from '../components/types/group';
 import { type GroupSchema } from '../database/schemas/groupSchema';
+import { deleteItemsByGroupId } from './itemService';
 
 /**
  * グループテーブルを作成
@@ -148,6 +149,18 @@ const deleteAllGroups = async () => {
   await execute({ sql: GroupQueries.DELETE_ALL_GROUPS });
 };
 
+/**
+ * グループを削除
+ * @param id グループID
+ */
+const deleteGroupById = async (id: string) => {
+  // グループに紐づくアイテムを先に削除
+  await deleteItemsByGroupId(id);
+
+  // グループを削除
+  await execute({ sql: GroupQueries.DELETE_GROUP, params: [id] });
+};
+
 export {
   createTable,
   insertGroup,
@@ -158,5 +171,6 @@ export {
   getGroupById,
   updateGroup,
   calculateNewPosition,
-  deleteAllGroups
+  deleteAllGroups,
+  deleteGroupById
 };
