@@ -47,7 +47,7 @@ const RenderGroupItem: React.FC<RenderGroupItemParams> = props => {
         </Text>
         {!isReorderMode && (
           <Button
-            icon={{ name: 'trash-can', type: 'material-community', color: '#9E9E9E' }}
+            icon={{ name: 'trash-can', type: 'material-community', color: '#ffa38c' }}
             buttonStyle={styles.deleteButton}
             containerStyle={{ marginLeft: 'auto' }}
             onPress={() => {
