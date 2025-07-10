@@ -116,7 +116,22 @@ export default function GroupIndexScreen() {
   };
 
   // グループの削除処理
-  const handleDeleteGroup = async (groupId: string) => {
+  const handleDeleteGroupPress = (groupId: string) => {
+    console.log('グループ削除ボタンが押されました');
+    Alert.alert(
+      '注意',
+      '⚠️ このグループに紐づく全てのアイテムも同時に削除されますが、よろしいですか？',
+      [
+        {
+          text: 'キャンセル',
+          style: 'cancel'
+        },
+        { text: '削除', style: 'destructive', onPress: () => deleteGroup(groupId) }
+      ]
+    );
+  };
+
+  const deleteGroup = async (groupId: string) => {
     await GroupService.deleteGroupById(groupId);
     await loadGroups();
   };
@@ -144,7 +159,7 @@ export default function GroupIndexScreen() {
           <RenderGroupItem
             item={item}
             drag={drag}
-            onDeletePress={() => handleDeleteGroup(item.id)}
+            onDeletePress={() => handleDeleteGroupPress(item.id)}
             isReorderMode={isReorderMode}
           />
         )}
