@@ -115,6 +115,11 @@ export default function GroupIndexScreen() {
     }
   };
 
+  const handleDeleteGroup = async (groupId: string) => {
+    await GroupService.deleteGroup(groupId);
+    await loadGroups();
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -134,11 +139,11 @@ export default function GroupIndexScreen() {
         data={groups}
         onDragEnd={handleDragEnd}
         keyExtractor={item => item.id}
-        renderItem={({ item, drag, isActive }) => (
+        renderItem={({ item, drag }) => (
           <RenderGroupItem
             item={item}
             drag={drag}
-            isActive={isActive}
+            onDeletePress={() => handleDeleteGroup(item.id)}
             isReorderMode={isReorderMode}
           />
         )}

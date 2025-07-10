@@ -7,12 +7,12 @@ import { Feather, FontAwesome } from '@expo/vector-icons';
 type RenderGroupItemParams = {
   item: Group;
   drag: () => void;
-  isActive: boolean;
+  onDeletePress: () => void;
   isReorderMode: boolean;
 };
 
 const RenderGroupItem: React.FC<RenderGroupItemParams> = props => {
-  const { item, drag, isActive, isReorderMode } = props;
+  const { item, drag, onDeletePress, isReorderMode } = props;
 
   const handleGroupPress = () => {
     if (!isReorderMode) {
@@ -50,9 +50,7 @@ const RenderGroupItem: React.FC<RenderGroupItemParams> = props => {
             icon={{ name: 'trash-can', type: 'material-community', color: '#ffa38c' }}
             buttonStyle={styles.deleteButton}
             containerStyle={{ marginLeft: 'auto' }}
-            onPress={() => {
-              console.log('DeleteButton onPress');
-            }}
+            onPress={onDeletePress}
           />
         )}
       </View>
