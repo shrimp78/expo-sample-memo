@@ -34,6 +34,14 @@ const CountItems = `
 `;
 
 /**
+ * 指定されたグループIDのアイテム数を取得
+ * @param group_id グループID
+ */
+const CountItemsByGroupId = `
+  SELECT COUNT(*) FROM items WHERE group_id = ?
+`;
+
+/**
  * 全てのItemを取得
  */
 const GetAllItems = `
@@ -108,6 +116,7 @@ const ItemQueries = Object.freeze({
   CREATE_TABLE: CreateTableItems,
   INSERT: InsertItem,
   COUNT: CountItems,
+  COUNT_BY_GROUP_ID: CountItemsByGroupId,
   GET_ALL_ITEMS: GetAllItems,
   GET_ITEM_BY_ID: GetItemById,
   UPDATE_ITEM_BY_ID: UpdateItemById,

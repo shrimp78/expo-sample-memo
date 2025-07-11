@@ -42,6 +42,19 @@ const countItems = async (): Promise<number> => {
 };
 
 /**
+ * 指定されたグループIDのアイテム数を取得
+ * @param group_id グループID
+ */
+const countItemsByGroupId = async (group_id: string): Promise<number> => {
+  const result = await fetch<{ 'COUNT(*)': number }>({
+    sql: ItemQueries.COUNT_BY_GROUP_ID,
+    params: [group_id]
+  });
+  const count = result.map(row => row['COUNT(*)']);
+  return count[0];
+};
+
+/**
  * 全てのItemを取得
  */
 const getAllItems = async (): Promise<Item[]> => {
@@ -124,6 +137,7 @@ export {
   createTable,
   createItem,
   countItems,
+  countItemsByGroupId,
   getAllItems,
   getItemById,
   updateItemById,

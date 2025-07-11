@@ -7,6 +7,7 @@ import FloatingPlusButton from '../../src/components/common/floatingPlusButton';
 import GroupCreateModal from '../../src/components/groups/groupCreateModal';
 import * as Crypto from 'expo-crypto';
 import * as GroupService from '../../src/services/groupService';
+import { countItemsByGroupId } from '../../src/services/itemService';
 import { useFocusEffect } from 'expo-router';
 import React from 'react';
 import RenderGroupItem from '../../src/components/groups/renderGroupItem';
@@ -116,19 +117,40 @@ export default function GroupIndexScreen() {
   };
 
   // グループの削除処理
-  const handleDeleteGroupPress = (groupId: string) => {
+  const handleDeleteGroupPress = async (groupId: string) => {
     console.log('グループ削除ボタンが押されました');
-    Alert.alert(
-      '注意',
-      '⚠️ このグループに紐づく全てのアイテムも同時に削除されますが、よろしいですか？',
-      [
-        {
-          text: 'キャンセル',
-          style: 'cancel'
-        },
-        { text: '削除', style: 'destructive', onPress: () => deleteGroup(groupId) }
-      ]
-    );
+
+    try {
+      // グループに紐づくアイテム数を取得
+      const itemCount = await countItemsByGroupId(groupId);
+
+      if (itemCount === 0) {
+        // アイテムが0件の場合
+        Alert.alert('確認', '削除しますが、よろしいですか？', [
+          {
+            text: 'キャンセル',
+            style: 'cancel'
+          },
+          { text: '削除', style: 'destructive', onPress: () => deleteGroup(groupId) }
+        ]);
+      } else {
+        // アイテムが1件以上ある場合
+        Alert.alert(
+          '注意',
+          `グループに所属する、${itemCount}件のItemも同時に削除されますが、本当に削除しますか？`,
+          [
+            {
+              text: 'キャンセル',
+              style: 'cancel'
+            },
+            { text: '削除', style: 'destructive', onPress: () => deleteGroup(groupId) }
+          ]
+        );
+      }
+    } catch (error) {
+      console.error('Error counting items:', error);
+      Alert.alert('エラー', 'アイテム数の取得に失敗しました');
+    }
   };
 
   const deleteGroup = async (groupId: string) => {
