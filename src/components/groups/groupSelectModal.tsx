@@ -4,7 +4,8 @@ import {
   View,
   TouchableOpacity,
   Text,
-  StyleSheet
+  StyleSheet,
+  ScrollView
 } from 'react-native';
 import { Group } from '../types/group';
 import { AntDesign } from '@expo/vector-icons';
@@ -29,19 +30,21 @@ const GroupSelectModal: React.FC<GroupSelectModalProps> = props => {
                 <AntDesign name="closecircleo" size={24} color="#808080" />
               </TouchableOpacity>
               <View style={styles.groupListContainer}>
-                {groups.map(group => (
-                  <TouchableOpacity
-                    key={group.id}
-                    style={[styles.groupItem, { borderLeftColor: group.color }]}
-                    onPress={() => {
-                      console.log('グループが選択されました:', group.name);
-                      toggleGroupModal();
-                      setSelectedGroup(group);
-                    }}
-                  >
-                    <Text style={styles.groupItemText}>{group.name}</Text>
-                  </TouchableOpacity>
-                ))}
+                <ScrollView showsVerticalScrollIndicator={true}>
+                  {groups.map(group => (
+                    <TouchableOpacity
+                      key={group.id}
+                      style={[styles.groupItem, { borderLeftColor: group.color }]}
+                      onPress={() => {
+                        console.log('グループが選択されました:', group.name);
+                        toggleGroupModal();
+                        setSelectedGroup(group);
+                      }}
+                    >
+                      <Text style={styles.groupItemText}>{group.name}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
               </View>
             </View>
           </TouchableWithoutFeedback>
