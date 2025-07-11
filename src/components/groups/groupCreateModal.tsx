@@ -7,8 +7,8 @@ import {
   KeyboardAvoidingView,
   StyleSheet
 } from 'react-native';
-import { AntDesign, FontAwesome } from '@expo/vector-icons';
-import { Input, InputField, Text, HStack } from '@gluestack-ui/themed';
+import { AntDesign } from '@expo/vector-icons';
+import { Input, InputField } from '@gluestack-ui/themed';
 import GroupColorSelector from './groupColorSelector';
 
 type ItemCreateProps = {
@@ -69,26 +69,6 @@ const ItemCreateModal: React.FC<ItemCreateProps> = props => {
                       editable={true}
                     />
                   </Input>
-
-                  {/* グループカラー選択エリア */}
-                  <HStack
-                    alignItems="center"
-                    paddingHorizontal={'$2'}
-                    marginTop={'$4'}
-                    marginBottom={'$1'}
-                    marginLeft={'$2'}
-                    height={'$10'}
-                  >
-                    <FontAwesome name="circle" size={24} color={groupColor} />
-                    <Text
-                      fontSize={'$lg'}
-                      fontWeight={'$medium'}
-                      color={groupColor}
-                      paddingLeft={'$2'}
-                    >
-                      カラー
-                    </Text>
-                  </HStack>
 
                   {/* カラーオプション */}
                   <GroupColorSelector
