@@ -18,7 +18,7 @@ export default function GroupIndexScreen() {
   const [isReorderMode, setIsReorderMode] = useState(false);
   const [groupCreateModalVisible, setGroupCreateModalVisible] = useState(false);
   const [groupName, setGroupName] = useState('');
-  const [groupColor, setGroupColor] = useState('#007AFF');
+  const [groupColor, setGroupColor] = useState('#2196f3');
 
   // グループデータを読み込み
   useEffect(() => {
@@ -112,7 +112,7 @@ export default function GroupIndexScreen() {
       console.error(e);
     } finally {
       setGroupName('');
-      setGroupColor('#007AFF');
+      setGroupColor('#2196f3');
     }
   };
 
