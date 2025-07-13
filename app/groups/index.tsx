@@ -12,13 +12,14 @@ import { useFocusEffect } from 'expo-router';
 import React from 'react';
 import RenderGroupItem from '../../src/components/groups/renderGroupItem';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { colorOptions } from '../../constants/colors';
 
 export default function GroupIndexScreen() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [isReorderMode, setIsReorderMode] = useState(false);
   const [groupCreateModalVisible, setGroupCreateModalVisible] = useState(false);
   const [groupName, setGroupName] = useState('');
-  const [groupColor, setGroupColor] = useState('#2196f3');
+  const [groupColor, setGroupColor] = useState(colorOptions[0]);
 
   // グループデータを読み込み
   useEffect(() => {

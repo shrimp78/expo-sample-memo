@@ -5,8 +5,8 @@ import * as ItemService from '../src/services/itemService';
 import * as Crypto from 'expo-crypto';
 import * as GroupService from '../src/services/groupService';
 
-import initialItemData from '../src/data/initialItemData.json';
-import initialGroupData from '../src/data/initialGroupData.json';
+import { initialItemData, initialGroupData } from '../constants/initialData';
+
 export default function InitialScreen() {
   useEffect(() => {
     initApp();
@@ -37,14 +37,9 @@ export default function InitialScreen() {
     const itemNum = await ItemService.countItems();
     if (itemNum === 0) {
       console.log('Item Count が0件なので初期アイテムデータをINSERTします');
-      for (const key in initialItemData) {
+      for (const item of initialItemData) {
         const id = Crypto.randomUUID();
-        await ItemService.createItem(
-          id,
-          initialItemData[key].title,
-          initialItemData[key].content,
-          initialItemData[key].group_id
-        );
+        await ItemService.createItem(id, item.title, item.content, item.group_id);
       }
     }
 
@@ -52,13 +47,8 @@ export default function InitialScreen() {
     const groupNum = await GroupService.countGroups();
     if (groupNum === 0) {
       console.log('Group Count が0件なので初期グループデータをINSERTします');
-      for (const key in initialGroupData) {
-        await GroupService.insertGroup(
-          initialGroupData[key].id,
-          initialGroupData[key].name,
-          initialGroupData[key].color,
-          initialGroupData[key].position
-        );
+      for (const group of initialGroupData) {
+        await GroupService.insertGroup(group.id, group.name, group.color, group.position);
       }
     }
   };
