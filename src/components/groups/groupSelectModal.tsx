@@ -41,8 +41,10 @@ const GroupSelectModal: React.FC<GroupSelectModalProps> = props => {
                         setSelectedGroup(group);
                       }}
                     >
-                      <FontAwesome name="circle" size={24} color={group.color} />
-                      <Text style={styles.groupItemText}>{group.name}</Text>
+                      <FontAwesome name="circle" size={28} color={group.color} />
+                      <Text style={[styles.groupItemText, { color: group.color }]}>
+                        {group.name}
+                      </Text>
                     </TouchableOpacity>
                   ))}
                 </ScrollView>
@@ -80,10 +82,11 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12
+    gap: 16
   },
   groupItemText: {
-    fontSize: 16
+    fontSize: 20,
+    fontWeight: 'bold'
   },
   closeGroupModalButton: {
     position: 'absolute',
