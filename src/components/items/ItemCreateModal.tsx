@@ -92,7 +92,6 @@ const ItemCreateModal: React.FC<ItemCreateProps> = props => {
           toggleGroupModal={toggleGroupModal}
           groups={groups}
           setSelectedGroup={setSelectedGroup}
-          selectedGroup={selectedGroup}
         />
       )}
     </Modal>

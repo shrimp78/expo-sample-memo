@@ -14,12 +14,11 @@ import { FontAwesome } from '@expo/vector-icons';
 type GroupSelectModalProps = {
   toggleGroupModal: () => void;
   groups: Group[];
-  selectedGroup: Group | null;
   setSelectedGroup: (group: Group | null) => void;
 };
 
 const GroupSelectModal: React.FC<GroupSelectModalProps> = props => {
-  const { toggleGroupModal, groups, setSelectedGroup, selectedGroup } = props;
+  const { toggleGroupModal, groups, setSelectedGroup } = props;
 
   return (
     <Modal animationType="fade" transparent={true}>
@@ -75,14 +74,8 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 10
   },
-  groupModalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center'
-  },
   groupItem: {
-    paddingVertical: 15,
+    paddingVertical: 10,
     paddingHorizontal: 10,
     marginBottom: 5,
     flexDirection: 'row',
@@ -90,8 +83,7 @@ const styles = StyleSheet.create({
     gap: 12
   },
   groupItemText: {
-    fontSize: 16,
-    fontWeight: '500'
+    fontSize: 16
   },
   closeGroupModalButton: {
     position: 'absolute',
