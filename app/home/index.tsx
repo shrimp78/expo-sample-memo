@@ -22,6 +22,7 @@ import ItemList from '../../src/components/items/ItemList';
 import * as Crypto from 'expo-crypto';
 import ItemCreateModal from '../../src/components/items/ItemCreateModal';
 import HomeMenuModal from '../../src/components/screens/home/HomeMenuModal';
+import FloatingFolderButton from '../../src/components/common/floatingFolderButton';
 import FloatingPlusButton from '../../src/components/common/floatingPlusButton';
 
 export default function HomeScreen() {
@@ -228,6 +229,7 @@ export default function HomeScreen() {
         contentContainerStyle={{ paddingBottom: 100 }}
         stickySectionHeadersEnabled={false}
       />
+      <FloatingFolderButton onPress={handleAddItemPress} />
       <FloatingPlusButton onPress={handleAddItemPress} />
 
       <ItemCreateModal
