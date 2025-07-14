@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { Group } from '../types/group';
 import { AntDesign } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 
 type GroupSelectModalProps = {
   toggleGroupModal: () => void;
@@ -34,13 +35,14 @@ const GroupSelectModal: React.FC<GroupSelectModalProps> = props => {
                   {groups.map(group => (
                     <TouchableOpacity
                       key={group.id}
-                      style={[styles.groupItem, { borderLeftColor: group.color }]}
+                      style={styles.groupItem}
                       onPress={() => {
                         console.log('グループが選択されました:', group.name);
                         toggleGroupModal();
                         setSelectedGroup(group);
                       }}
                     >
+                      <FontAwesome name="circle" size={24} color={group.color} />
                       <Text style={styles.groupItemText}>{group.name}</Text>
                     </TouchableOpacity>
                   ))}
@@ -82,8 +84,10 @@ const styles = StyleSheet.create({
   groupItem: {
     paddingVertical: 15,
     paddingHorizontal: 10,
-    borderLeftWidth: 4,
-    marginBottom: 5
+    marginBottom: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12
   },
   groupItemText: {
     fontSize: 16,
