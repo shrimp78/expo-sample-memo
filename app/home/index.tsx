@@ -97,10 +97,9 @@ export default function HomeScreen() {
     await loadData();
   };
 
-  const handleGroupEditPress = () => {
-    console.log('グループの編集が押されました');
+  const handleFolderIconPress = () => {
+    console.log('フォルダーのアイコンが押されました');
     router.push({ pathname: `/groups` });
-    toggleMenu();
   };
 
   // リストのデータを都度更新するためのフック
@@ -229,7 +228,7 @@ export default function HomeScreen() {
         contentContainerStyle={{ paddingBottom: 100 }}
         stickySectionHeadersEnabled={false}
       />
-      <FloatingFolderButton onPress={handleAddItemPress} />
+      <FloatingFolderButton onPress={handleFolderIconPress} />
       <FloatingPlusButton onPress={handleAddItemPress} />
 
       <ItemCreateModal
@@ -252,7 +251,6 @@ export default function HomeScreen() {
         visible={menuVisible}
         onClose={toggleMenu}
         menuPosition={menuPosition}
-        onGroupEditPress={handleGroupEditPress}
         onDeleteAllItemPress={handleDeleteAllItemPress}
       />
     </View>

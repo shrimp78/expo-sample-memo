@@ -15,7 +15,6 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
   onClose,
   menuPosition,
   onDeleteAllItemPress,
-  onGroupEditPress,
   onFeedbackPress
 }) => {
   const [modalWidth, setModalWidth] = useState(0);
@@ -47,9 +46,6 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
           ]}
           onLayout={handleLayout}
         >
-          <TouchableOpacity style={styles.menuItem} onPress={onGroupEditPress}>
-            <Text style={styles.menuText}>グループの編集</Text>
-          </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={onDeleteAllItemPress}>
             <Text style={styles.menuText}>全てのアイテムを削除する</Text>
           </TouchableOpacity>
