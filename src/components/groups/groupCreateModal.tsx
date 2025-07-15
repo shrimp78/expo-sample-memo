@@ -67,6 +67,7 @@ const ItemCreateModal: React.FC<ItemCreateProps> = props => {
                       fontSize={'$3xl'}
                       fontWeight={'$bold'}
                       editable={true}
+                      autoFocus={true}
                     />
                   </Input>
 

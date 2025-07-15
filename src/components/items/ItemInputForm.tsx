@@ -37,6 +37,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           fontSize={'$3xl'}
           fontWeight={'$bold'}
           editable={true}
+          autoFocus={true}
         />
       </Input>
 
