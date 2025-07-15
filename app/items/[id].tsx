@@ -5,8 +5,8 @@ import { KeyboardAvoidingView } from '@gluestack-ui/themed';
 import * as ItemService from '../../src/services/itemService';
 import * as GroupService from '../../src/services/groupService';
 import { type Group } from '../../src/components/types/group';
-import ItemInputForm from '../../src/components/items/ItemInputForm';
-import GroupSelectModal from '../../src/components/groups/groupSelectModal';
+import ItemInputForm from '../../src/components/common/ItemInputForm';
+import GroupSelectModal from '../../src/components/common/groupSelectModal';
 
 export default function ItemEditScreen() {
   const { id } = useLocalSearchParams();
@@ -95,7 +95,6 @@ export default function ItemEditScreen() {
           toggleGroupModal={toggleGroupModal}
           groups={groups}
           setSelectedGroup={setSelectedGroup}
-          selectedGroup={selectedGroup}
         />
       )}
     </View>
