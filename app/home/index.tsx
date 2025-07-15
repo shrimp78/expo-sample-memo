@@ -16,11 +16,11 @@ import * as ItemService from '../../src/services/itemService';
 import * as GroupService from '../../src/services/groupService';
 import { type Item } from '../../src/components/types/item';
 import { type Group } from '../../src/components/types/group';
-import ItemList from '../../src/components/items/ItemList';
+import ItemList from '../../src/components/screens/home/ItemList';
 
 // 新規作成モーダル用
 import * as Crypto from 'expo-crypto';
-import ItemCreateModal from '../../src/components/items/ItemCreateModal';
+import ItemCreateModal from '../../src/components/screens/home/ItemCreateModal';
 import HomeMenuModal from '../../src/components/screens/home/HomeMenuModal';
 import FloatingFolderButton from '../../src/components/common/floatingFolderButton';
 import FloatingPlusButton from '../../src/components/common/floatingPlusButton';

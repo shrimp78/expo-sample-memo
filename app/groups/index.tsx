@@ -4,13 +4,13 @@ import { useState, useEffect } from 'react';
 import { getAllGroups } from '../../src/services/groupService';
 import { type Group } from '../../src/components/types/group';
 import FloatingPlusButton from '../../src/components/common/floatingPlusButton';
-import GroupCreateModal from '../../src/components/groups/groupCreateModal';
+import GroupCreateModal from '../../src/components/screens/groups/groupCreateModal';
 import * as Crypto from 'expo-crypto';
 import * as GroupService from '../../src/services/groupService';
 import { countItemsByGroupId } from '../../src/services/itemService';
 import { useFocusEffect } from 'expo-router';
 import React from 'react';
-import RenderGroupItem from '../../src/components/groups/renderGroupItem';
+import RenderGroupItem from '../../src/components/screens/groups/renderGroupItem';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colorOptions } from '../../constants/colors';
 
