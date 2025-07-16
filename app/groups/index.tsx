@@ -138,7 +138,7 @@ export default function GroupIndexScreen() {
         // アイテムが1件以上ある場合
         Alert.alert(
           '注意',
-          `グループに所属する、${itemCount}件のItemも同時に削除されますが、本当に削除しますか？`,
+          `このグループには${itemCount}件のItemがあります。\nこれらも同時に削除されますが、よろしいですか？`,
           [
             {
               text: 'キャンセル',
