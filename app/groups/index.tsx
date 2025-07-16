@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Dimensions } from 'react-native';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import { useState, useEffect } from 'react';
 import { getAllGroups } from '../../src/services/groupService';
@@ -193,6 +193,11 @@ export default function GroupIndexScreen() {
         activationDistance={10}
         autoscrollThreshold={50}
         dragHitSlop={5}
+        ListEmptyComponent={() => (
+          <View style={styles.emptyGroupContainer}>
+            <Text style={styles.emptyGroupText}>グループを作成してください</Text>
+          </View>
+        )}
       />
       <FloatingPlusButton onPress={addGroupPress} />
       <GroupCreateModal
@@ -228,5 +233,16 @@ const styles = StyleSheet.create({
   saveText: {
     color: '#007AFF',
     fontSize: 20
+  },
+  emptyGroupContainer: {
+    flex: 1,
+    minHeight: Dimensions.get('window').height * 0.5, // 画面の高さのX%
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  emptyGroupText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#808080'
   }
 });
