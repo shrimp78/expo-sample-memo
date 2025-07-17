@@ -25,9 +25,14 @@ import HomeMenuModal from '../../src/components/screens/home/HomeMenuModal';
 import FloatingFolderButton from '../../src/components/common/floatingFolderButton';
 import FloatingPlusButton from '../../src/components/common/floatingPlusButton';
 
+// グループ作成モーダル用
+import GroupCreateModal from '../../src/components/screens/groups/groupCreateModal';
+
 export default function HomeScreen() {
   const [items, setItems] = useState<Item[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
+  const [groupName, setGroupName] = useState<string>('');
+  const [groupColor, setGroupColor] = useState<string>('#2196f3');
 
   // 新規作成画面のModal用
   const [title, setTitle] = useState<string>('');
@@ -41,6 +46,12 @@ export default function HomeScreen() {
       setSelectedGroup(null);
     }
     setCreateModalVisible(!createModalVisible);
+  };
+
+  // グループ作成モーダル用
+  const [groupCreateModalVisible, setGroupCreateModalVisible] = useState(false);
+  const toggleGroupCreateModal = () => {
+    setGroupCreateModalVisible(!groupCreateModalVisible);
   };
 
   // グループ選択画面のModal用
@@ -120,7 +131,12 @@ export default function HomeScreen() {
   // アイテムの新規作成
   const handleAddItemPress = () => {
     console.log('アイテムの新規作成が押されました');
-    toggleCreateModal();
+    if (groups.length === 0) {
+      Alert.alert('確認', '現在グループがありません。先にグループを作成してください');
+      setGroupCreateModalVisible(true);
+    } else {
+      toggleCreateModal();
+    }
   };
 
   // グループ選択処理
@@ -179,6 +195,21 @@ export default function HomeScreen() {
     } catch (e) {
       Alert.alert('エラー', '削除に失敗しました');
       throw e;
+    }
+  };
+
+  // グループの保存処理
+  const handleSaveGroupPress = async () => {
+    const id = Crypto.randomUUID();
+    const position = 65536;
+    console.log('グループの保存が押されました');
+    try {
+      await GroupService.insertGroup(id, groupName, groupColor, position);
+      await loadData();
+      toggleGroupCreateModal();
+      toggleCreateModal();
+    } catch (e) {
+      Alert.alert('エラー', '保存に失敗しました');
     }
   };
 
@@ -252,6 +283,16 @@ export default function HomeScreen() {
         onClose={toggleMenu}
         menuPosition={menuPosition}
         onDeleteAllItemPress={handleDeleteAllItemPress}
+      />
+
+      <GroupCreateModal
+        visible={groupCreateModalVisible}
+        toggleCreateModal={toggleGroupCreateModal}
+        onSave={handleSaveGroupPress}
+        groupName={groupName}
+        groupColor={groupColor}
+        onChangeGroupName={setGroupName}
+        onChangeGroupColor={setGroupColor}
       />
     </View>
   );
