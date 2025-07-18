@@ -17,6 +17,7 @@ import * as GroupService from '../../src/services/groupService';
 import { type Item } from '../../src/components/types/item';
 import { type Group } from '../../src/components/types/group';
 import ItemList from '../../src/components/screens/home/ItemList';
+import { useGroups } from '../../src/context/GroupContext';
 
 // 新規作成モーダル用
 import * as Crypto from 'expo-crypto';
@@ -29,8 +30,8 @@ import FloatingPlusButton from '../../src/components/common/floatingPlusButton';
 import GroupCreateModal from '../../src/components/screens/groups/groupCreateModal';
 
 export default function HomeScreen() {
+  const { groups, loadGroups } = useGroups();
   const [items, setItems] = useState<Item[]>([]);
-  const [groups, setGroups] = useState<Group[]>([]);
   const [groupName, setGroupName] = useState<string>('');
   const [groupColor, setGroupColor] = useState<string>('#2196f3');
 
@@ -115,7 +116,9 @@ export default function HomeScreen() {
   const deleteAllItem = async () => {
     await ItemService.deleteAllItems();
     await GroupService.deleteAllGroups();
-    await loadData();
+    const items = await ItemService.getAllItems();
+    setItems(items);
+    await loadGroups();
   };
 
   const handleFolderIconPress = () => {
@@ -127,15 +130,14 @@ export default function HomeScreen() {
   useFocusEffect(
     useCallback(() => {
       loadData();
-    }, [])
+    }, [loadGroups]) // loadGroupsが変更された時も再実行
   );
 
   // 初回データ読み込み
   const loadData = async () => {
     const items = await ItemService.getAllItems();
     setItems(items);
-    const groups = await GroupService.getAllGroups();
-    setGroups(groups);
+    await loadGroups();
   };
 
   // アイテムの新規作成
@@ -178,7 +180,9 @@ export default function HomeScreen() {
       const group_id = selectedGroup?.id ?? null;
       await ItemService.createItem(id, title, content, group_id);
       toggleCreateModal();
-      await loadData();
+      const items = await ItemService.getAllItems();
+      setItems(items);
+      await loadGroups();
     } catch (e) {
       Alert.alert('エラー', '保存に失敗しました');
       console.error(e);
@@ -215,7 +219,9 @@ export default function HomeScreen() {
     console.log('グループの保存が押されました');
     try {
       await GroupService.insertGroup(id, groupName, groupColor, position);
-      await loadData();
+      const items = await ItemService.getAllItems();
+      setItems(items);
+      await loadGroups();
       toggleGroupCreateModal();
       toggleCreateModal();
     } catch (e) {

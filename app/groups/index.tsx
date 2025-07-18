@@ -13,9 +13,10 @@ import React from 'react';
 import RenderGroupItem from '../../src/components/screens/groups/renderGroupItem';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colorOptions } from '../../constants/colors';
+import { useGroups } from '../../src/context/GroupContext';
 
 export default function GroupIndexScreen() {
-  const [groups, setGroups] = useState<Group[]>([]);
+  const { groups, loadGroups, updateGroupsOrder } = useGroups();
   const [isReorderMode, setIsReorderMode] = useState(false);
   const [groupCreateModalVisible, setGroupCreateModalVisible] = useState(false);
   const [groupName, setGroupName] = useState('');
@@ -24,25 +25,14 @@ export default function GroupIndexScreen() {
   // グループデータを読み込み
   useEffect(() => {
     loadGroups();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // 画面がフォーカスされたときにグループを再取得
   useFocusEffect(
     React.useCallback(() => {
       loadGroups();
-    }, [])
+    }, [loadGroups])
   );
-
-  const loadGroups = async () => {
-    try {
-      const allGroups = await getAllGroups();
-      // positionでソート
-      const sortedGroups = allGroups.sort((a, b) => a.position - b.position);
-      setGroups(sortedGroups);
-    } catch (error) {
-      console.error('Error loading groups:', error);
-    }
-  };
 
   // ドラッグ操作時の処理
   const handleDragEnd = async ({ data, from, to }: { data: Group[]; from: number; to: number }) => {
@@ -50,7 +40,7 @@ export default function GroupIndexScreen() {
 
     try {
       // dataをそのまま使用（DraggableFlatListが既に順序を変更済み）
-      setGroups(data);
+      updateGroupsOrder(data);
 
       // 移動したグループの新しいposition値を計算してデータベースに保存
       const movedGroup = data[to];
@@ -62,7 +52,7 @@ export default function GroupIndexScreen() {
       // position値をローカルstateにも反映
       const updatedData = [...data];
       updatedData[to] = { ...movedGroup, position: newPosition };
-      setGroups(updatedData);
+      updateGroupsOrder(updatedData);
     } catch (error) {
       console.error('Error updating group position:', error);
       // エラーの場合は元の状態に戻す
