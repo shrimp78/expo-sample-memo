@@ -44,6 +44,11 @@ export default function HomeScreen() {
       setTitle('');
       setContent('');
       setSelectedGroup(null);
+    } else {
+      // モーダルを開く際、groupsが1個しかない場合は自動選択
+      if (groups.length === 1) {
+        setSelectedGroup(groups[0]);
+      }
     }
     setCreateModalVisible(!createModalVisible);
   };
@@ -51,6 +56,11 @@ export default function HomeScreen() {
   // グループ作成モーダル用
   const [groupCreateModalVisible, setGroupCreateModalVisible] = useState(false);
   const toggleGroupCreateModal = () => {
+    if (groupCreateModalVisible) {
+      // モーダルを閉じる際に状態をリセット
+      setGroupName('');
+      setGroupColor('#2196f3');
+    }
     setGroupCreateModalVisible(!groupCreateModalVisible);
   };
 
