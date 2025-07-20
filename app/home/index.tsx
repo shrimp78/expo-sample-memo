@@ -221,6 +221,16 @@ export default function HomeScreen() {
       const items = await ItemService.getAllItems();
       setItems(items);
       await loadGroups();
+
+      // 新しく作成されたグループを選択状態に設定
+      const newGroup: Group = {
+        id,
+        name: groupName,
+        color: groupColor,
+        position
+      };
+      setSelectedGroup(newGroup);
+
       toggleGroupCreateModal();
       toggleCreateModal();
     } catch (e) {
