@@ -117,8 +117,8 @@ export default function HomeScreen() {
     await ItemService.deleteAllItems();
     await GroupService.deleteAllGroups();
     const items = await ItemService.getAllItems();
-    setItems(items);
     await loadGroups();
+    setItems(items);
   };
 
   const handleFolderIconPress = () => {
@@ -182,7 +182,6 @@ export default function HomeScreen() {
       toggleCreateModal();
       const items = await ItemService.getAllItems();
       setItems(items);
-      await loadGroups();
     } catch (e) {
       Alert.alert('エラー', '保存に失敗しました');
       console.error(e);
