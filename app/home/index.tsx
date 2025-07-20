@@ -10,7 +10,7 @@ import {
   GestureResponderEvent,
   Dimensions
 } from 'react-native';
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState } from 'react';
 import { Entypo } from '@expo/vector-icons';
 import * as ItemService from '../../src/services/itemService';
 import * as GroupService from '../../src/services/groupService';
@@ -130,7 +130,7 @@ export default function HomeScreen() {
   useFocusEffect(
     useCallback(() => {
       loadData();
-    }, [loadGroups]) // loadGroupsが変更された時も再実行
+    }, [])
   );
 
   // 初回データ読み込み

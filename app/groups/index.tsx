@@ -1,7 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet, Alert, Dimensions } from 'react-native';
 import DraggableFlatList from 'react-native-draggable-flatlist';
-import { useState, useEffect } from 'react';
-import { getAllGroups } from '../../src/services/groupService';
+import { useState, useCallback } from 'react';
 import { type Group } from '../../src/components/types/group';
 import FloatingPlusButton from '../../src/components/common/floatingPlusButton';
 import GroupCreateModal from '../../src/components/screens/groups/groupCreateModal';
@@ -9,7 +8,6 @@ import * as Crypto from 'expo-crypto';
 import * as GroupService from '../../src/services/groupService';
 import { countItemsByGroupId } from '../../src/services/itemService';
 import { useFocusEffect } from 'expo-router';
-import React from 'react';
 import RenderGroupItem from '../../src/components/screens/groups/renderGroupItem';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colorOptions } from '../../constants/colors';
@@ -22,16 +20,11 @@ export default function GroupIndexScreen() {
   const [groupName, setGroupName] = useState('');
   const [groupColor, setGroupColor] = useState(colorOptions[0]);
 
-  // グループデータを読み込み
-  useEffect(() => {
-    loadGroups();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // 画面がフォーカスされたときにグループを再取得
+  //  画面がフォーカスされたときにグループを再取得;
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       loadGroups();
-    }, [loadGroups])
+    }, [])
   );
 
   // ドラッグ操作時の処理
