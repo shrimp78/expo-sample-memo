@@ -2,7 +2,7 @@ import { config } from '@gluestack-ui/config';
 import { GluestackUIProvider } from '@gluestack-ui/themed';
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { GroupProvider } from '../src/context/GroupContext';
+import { GroupProvider } from '@context/GroupContext';
 
 export default function Layout() {
   return (
