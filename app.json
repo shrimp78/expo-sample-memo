@@ -13,7 +13,8 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.shrimp78.mt-app"
     },
     "android": {
       "adaptiveIcon": {
