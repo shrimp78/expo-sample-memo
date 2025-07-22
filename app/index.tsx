@@ -6,14 +6,23 @@ import * as Crypto from 'expo-crypto';
 import * as GroupService from '../src/services/groupService';
 
 import { initialItemData, initialGroupData } from '../constants/initialData';
+import { useAuth } from '../src/context/AuthContext';
+import LoginScreen from '../src/components/screens/auth/LoginScreen';
 
 export default function InitialScreen() {
+  const { isLoggedIn, isLoading } = useAuth();
+
   useEffect(() => {
-    initApp();
-  }, []);
+    // ログイン状態が確定したら処理を開始
+    if (!isLoading) {
+      if (isLoggedIn) {
+        initApp();
+      }
+    }
+  }, [isLoggedIn, isLoading]);
 
   /**
-   * アプリ起動時処理
+   * アプリ起動時処理（ログイン済みの場合のみ）
    */
   const initApp = async () => {
     try {
@@ -53,9 +62,24 @@ export default function InitialScreen() {
     }
   };
 
+  // 認証状態のロード中
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.title}>アプリ起動中...</Text>
+      </View>
+    );
+  }
+
+  // ログインしていない場合はログイン画面を表示
+  if (!isLoggedIn) {
+    return <LoginScreen />;
+  }
+
+  // ログイン済みで初期化中
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>アプリ起動中...</Text>
+      <Text style={styles.title}>データを準備中...</Text>
     </View>
   );
 }
