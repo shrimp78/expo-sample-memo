@@ -28,7 +28,8 @@ export default {
     },
     plugins: ['expo-router', 'expo-sqlite'],
     extra: {
-      iosClientId: process.env.IOS_GCP_OAUTH_CLIENT_ID
+      iosClientId: process.env.IOS_GCP_OAUTH_CLIENT_ID,
+      androidClientId: process.env.AND_GCP_OAUTH_CLIENT_ID
     }
   },
   scheme: 'mt-app'
