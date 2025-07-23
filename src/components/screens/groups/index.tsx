@@ -2,13 +2,13 @@ import { View, Text, TouchableOpacity, StyleSheet, Alert, Dimensions } from 'rea
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import { useState, useCallback } from 'react';
 import { type Group } from '@models/group';
-import FloatingPlusButton from '@components/common/floatingPlusButton';
-import GroupCreateModal from '@screens/groups/groupCreateModal';
+import FloatingPlusButton from '@components/common/FloatingPlusButton';
+import GroupCreateModal from '@screens/groups/GroupCreateModal';
 import * as Crypto from 'expo-crypto';
 import * as GroupService from '@services/groupService';
 import { countItemsByGroupId } from '@services/itemService';
 import { useFocusEffect } from 'expo-router';
-import RenderGroupItem from '@screens/groups/renderGroupItem';
+import RenderGroupItem from '@screens/groups/RenderGroupItem';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colorOptions } from '@constants/colors';
 import { useGroups } from '@context/GroupContext';

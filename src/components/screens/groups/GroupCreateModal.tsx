@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { Input, InputField } from '@gluestack-ui/themed';
-import GroupColorSelector from './groupColorSelector';
+import GroupColorSelector from './GroupColorSelector';
 
 type ItemCreateProps = {
   visible: boolean;

@@ -7,7 +7,7 @@ import {
   KeyboardAvoidingView,
   StyleSheet
 } from 'react-native';
-import GroupSelectModal from '../../common/groupSelectModal';
+import GroupSelectModal from '../../common/GroupSelectModal';
 import { AntDesign } from '@expo/vector-icons';
 import ItemInputForm from '../../common/ItemInputForm';
 import { type Group } from '../../types/group';

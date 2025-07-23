@@ -6,7 +6,7 @@ import * as ItemService from '@services/itemService';
 import * as GroupService from '@services/groupService';
 import { type Group } from '@models/group';
 import ItemInputForm from '@components/common/ItemInputForm';
-import GroupSelectModal from '@components/common/groupSelectModal';
+import GroupSelectModal from '@components/common/GroupSelectModal';
 
 export default function ItemEditScreen() {
   const { id } = useLocalSearchParams();

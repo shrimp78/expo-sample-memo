@@ -23,11 +23,11 @@ import { useGroups } from '@context/GroupContext';
 import * as Crypto from 'expo-crypto';
 import ItemCreateModal from '@screens/home/ItemCreateModal';
 import HomeMenuModal from '@screens/home/HomeMenuModal';
-import FloatingFolderButton from '@components/common/floatingFolderButton';
-import FloatingPlusButton from '@components/common/floatingPlusButton';
+import FloatingFolderButton from '@components/common/FloatingFolderButton';
+import FloatingPlusButton from '@components/common/FloatingPlusButton';
 
 // グループ作成モーダル用
-import GroupCreateModal from '@screens/groups/groupCreateModal';
+import GroupCreateModal from '@screens/groups/GroupCreateModal';
 
 export default function HomeIndexScreen() {
   const { groups, loadGroups } = useGroups();
