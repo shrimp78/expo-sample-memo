@@ -1,3 +1,3 @@
-import GroupIndexScreen from '@screens/groups/index';
+import GroupIndexScreen from '@screens/groups/GroupIndexScreen';
 
 export default GroupIndexScreen;
