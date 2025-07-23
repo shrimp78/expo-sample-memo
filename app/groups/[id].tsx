@@ -1,3 +1,3 @@
-import GroupDetailScreen from '@screens/groups/[id]';
+import GroupEditScreen from '@screens/groups/GroupEditScreen';
 
-export default GroupDetailScreen;
+export default GroupEditScreen;

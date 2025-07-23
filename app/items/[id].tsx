@@ -1,3 +1,3 @@
-import ItemEditScreen from '@screens/items/[id]';
+import ItemEditScreen from '@screens/items/ItemEditScreen';
 
 export default ItemEditScreen;
