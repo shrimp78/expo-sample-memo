@@ -10,7 +10,7 @@ import {
   GestureResponderEvent,
   Dimensions
 } from 'react-native';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { Entypo } from '@expo/vector-icons';
 import * as ItemService from '@services/itemService';
 import * as GroupService from '@services/groupService';
@@ -18,6 +18,7 @@ import { type Item } from '@models/item';
 import { type Group } from '@models/group';
 import ItemList from '@screens/home/ItemList';
 import { useGroups } from '@context/GroupContext';
+import { useAuth } from '@context/AuthContext';
 
 // 新規作成モーダル用
 import * as Crypto from 'expo-crypto';
@@ -30,6 +31,7 @@ import FloatingPlusButton from '@components/common/FloatingPlusButton';
 import GroupCreateModal from '@screens/groups/GroupCreateModal';
 
 export default function HomeIndexScreen() {
+  const { isLoggedIn, isLoading, logout } = useAuth();
   const { groups, loadGroups } = useGroups();
   const [items, setItems] = useState<Item[]>([]);
   const [groupName, setGroupName] = useState<string>('');
@@ -111,6 +113,28 @@ export default function HomeIndexScreen() {
       },
       { text: '削除', onPress: () => deleteAllItem() }
     ]);
+  };
+
+  const handleLogoutPress = () => {
+    console.log('ログアウトが押されました');
+    toggleMenu();
+    Alert.alert('確認', 'ログアウトしますか？', [
+      {
+        text: 'キャンセル',
+        style: 'cancel'
+      },
+      { text: 'ログアウト', onPress: () => performLogout() }
+    ]);
+  };
+
+  const performLogout = async () => {
+    try {
+      await logout();
+      router.replace('/');
+    } catch (error) {
+      Alert.alert('エラー', 'ログアウトに失敗しました');
+      console.error(error);
+    }
   };
 
   const deleteAllItem = async () => {
@@ -247,6 +271,28 @@ export default function HomeIndexScreen() {
     }))
     .filter(section => section.data.length > 0); // アイテムが1つ以上あるセクションのみを表示
 
+  // 認証状態チェック
+  useEffect(() => {
+    if (!isLoading && !isLoggedIn) {
+      // 未ログインの場合はルート画面にリダイレクト
+      router.replace('/');
+    }
+  }, [isLoggedIn, isLoading]);
+
+  // 認証状態のロード中
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>読み込み中...</Text>
+      </View>
+    );
+  }
+
+  // 未ログインの場合は何も表示しない（リダイレクト処理中）
+  if (!isLoggedIn) {
+    return null;
+  }
+
   return (
     <View style={styles.container}>
       <Stack.Screen
@@ -308,6 +354,7 @@ export default function HomeIndexScreen() {
         onClose={toggleMenu}
         menuPosition={menuPosition}
         onDeleteAllItemPress={handleDeleteAllItemPress}
+        onLogoutPress={handleLogoutPress}
       />
 
       <GroupCreateModal
@@ -350,6 +397,17 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   emptyText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#808080'
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#EFEFF4'
+  },
+  loadingText: {
     fontSize: 18,
     fontWeight: 'bold',
     color: '#808080'

@@ -8,6 +8,7 @@ interface HomeMenuModalProps {
   onDeleteAllItemPress?: () => void;
   onGroupEditPress?: () => void;
   onFeedbackPress?: () => void;
+  onLogoutPress?: () => void;
 }
 
 const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
@@ -15,7 +16,8 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
   onClose,
   menuPosition,
   onDeleteAllItemPress,
-  onFeedbackPress
+  onFeedbackPress,
+  onLogoutPress
 }) => {
   const [modalWidth, setModalWidth] = useState(0);
   const screenWidth = Dimensions.get('window').width;
@@ -52,6 +54,9 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
           <TouchableOpacity style={styles.menuItem} onPress={onFeedbackPress}>
             <Text style={styles.menuText}>フィードバック</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={onLogoutPress}>
+            <Text style={[styles.menuText, styles.logoutText]}>ログアウト</Text>
+          </TouchableOpacity>
         </View>
       </TouchableOpacity>
     </Modal>
@@ -82,6 +87,9 @@ const styles = StyleSheet.create({
   menuText: {
     fontSize: 16,
     color: '#333'
+  },
+  logoutText: {
+    color: '#ff0000' // ログアウトボタンのテキスト色を赤に設定
   }
 });
 
