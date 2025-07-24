@@ -6,31 +6,19 @@ import { KeyboardAvoidingView, Input, InputField } from '@gluestack-ui/themed';
 import { type Group } from '@models/Group';
 import KeyboardCloseButton from '@components/common/KeyboardCloseButton';
 import GroupColorSelector from '@screens/groups/GroupColorSelector';
-import { useAuth } from '@context/AuthContext';
 
 const inputAccessoryViewID = 'INPUT_ACCESSORY_VIEW_ID_GROUP';
 
 export default function GroupEditScreen() {
-  const { isLoggedIn } = useAuth();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [group, setGroup] = useState<Group | null>(null);
   const [groupName, setGroupName] = useState('');
   const [groupColor, setGroupColor] = useState('');
   const navigation = useNavigation();
 
-  // 認証状態チェック
   useEffect(() => {
-    if (!isLoggedIn) {
-      // 未ログインの場合はルート画面にリダイレクト
-      router.replace('/');
-    }
-  }, [isLoggedIn]);
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      loadGroup();
-    }
-  }, [id, isLoggedIn]);
+    loadGroup();
+  }, [id]);
 
   // TitleとContentの変更を監視
   useEffect(() => {
@@ -90,11 +78,6 @@ export default function GroupEditScreen() {
         <Text style={styles.errorText}>グループが見つかりません</Text>
       </View>
     );
-  }
-
-  // 未ログインの場合は何も表示しない（リダイレクト処理中）
-  if (!isLoggedIn) {
-    return null;
   }
 
   return (
