@@ -7,8 +7,10 @@ import * as GroupService from '@services/groupService';
 import { type Group } from '@models/Group';
 import ItemInputForm from '@components/common/ItemInputForm';
 import GroupSelectModal from '@components/common/GroupSelectModal';
+import { useAuth } from '@context/AuthContext';
 
 export default function ItemEditScreen() {
+  const { isLoggedIn } = useAuth();
   const { id } = useLocalSearchParams();
   const navigation = useNavigation();
   // タイトルと内容の状態
@@ -25,6 +27,14 @@ export default function ItemEditScreen() {
   const onSelectGroup = () => {
     toggleGroupModal();
   };
+
+  // 認証状態チェック
+  useEffect(() => {
+    if (!isLoggedIn) {
+      // 未ログインの場合はルート画面にリダイレクト
+      router.replace('/');
+    }
+  }, [isLoggedIn]);
 
   // Itemの取得
   useEffect(() => {
@@ -75,6 +85,11 @@ export default function ItemEditScreen() {
       console.error(e);
     }
   };
+
+  // 未ログインの場合は何も表示しない（リダイレクト処理中）
+  if (!isLoggedIn) {
+    return null;
+  }
 
   return (
     <View style={styles.container}>
