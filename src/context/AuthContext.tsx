@@ -1,4 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import * as AuthSession from 'expo-auth-session';
+import * as Crypto from 'expo-crypto';
+import Constants from 'expo-constants';
+import { Platform } from 'react-native';
+
+// Google OAuth設定
+const GOOGLE_CLIENT_ID = Constants.expoConfig?.extra?.googleClientId;
 
 // ユーザー情報の型定義
 // TODO : これって types の下に持っていった法が良いんじゃないのかな
@@ -53,20 +60,81 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const login = React.useCallback(async () => {
     try {
       setIsLoading(true);
-      // TODO: Googleログインの実装
-      // 1. OAuth認証フローの開始
-      // 2. ユーザー情報の取得
-      // 3. トークンの保存
-      // 4. ユーザー状態の更新
 
-      // サンプル実装（実際のログイン後に置き換える）
-      const mockUser: User = {
-        id: 'mock_id',
-        email: 'user@example.com',
-        name: 'Test User',
-        picture: 'https://example.com/avatar.jpg'
-      };
-      setUser(mockUser);
+      // 1. OAuth認証フローの設定
+      // Google Cloud Consoleが受け入れるリダイレクトURIを使用
+      const redirectUri = __DEV__
+        ? 'http://localhost:8081'
+        : AuthSession.makeRedirectUri({
+            scheme: 'mt-app'
+          });
+
+      // デバッグ: リダイレクトURIをコンソールに出力
+      console.log('=== Google OAuth Debug Info ===');
+      console.log('Redirect URI:', redirectUri);
+      console.log('Client ID:', GOOGLE_CLIENT_ID);
+      console.log('Platform:', Platform.OS);
+      console.log('==============================');
+
+      // PKCE (Proof Key for Code Exchange) 設定
+      const codeVerifier = Math.random().toString(36).substring(2, 15);
+      const codeChallenge = await Crypto.digestStringAsync(
+        Crypto.CryptoDigestAlgorithm.SHA256,
+        codeVerifier,
+        { encoding: Crypto.CryptoEncoding.BASE64 }
+      );
+
+      const request = new AuthSession.AuthRequest({
+        clientId: GOOGLE_CLIENT_ID,
+        scopes: ['openid', 'profile', 'email'],
+        redirectUri,
+        responseType: AuthSession.ResponseType.Code,
+        codeChallenge,
+        codeChallengeMethod: AuthSession.CodeChallengeMethod.S256,
+        state: Math.random().toString(36).substring(2, 15)
+      });
+
+      // 2. 認証フローの開始
+      const result = await request.promptAsync({
+        authorizationEndpoint: 'https://accounts.google.com/o/oauth2/v2/auth'
+      });
+
+      if (result.type === 'success') {
+        // 3. 認証コードの取得とアクセストークンの交換
+        const tokenResult = await AuthSession.exchangeCodeAsync(
+          {
+            clientId: GOOGLE_CLIENT_ID,
+            code: result.params.code,
+            redirectUri,
+            extraParams: {}
+          },
+          {
+            tokenEndpoint: 'https://oauth2.googleapis.com/token'
+          }
+        );
+
+        // 4. ユーザー情報の取得
+        const userInfoResponse = await fetch(
+          `https://www.googleapis.com/oauth2/v2/userinfo?access_token=${tokenResult.accessToken}`
+        );
+        const userInfo = await userInfoResponse.json();
+
+        // 5. ユーザー状態の更新
+        const user: User = {
+          id: userInfo.id,
+          email: userInfo.email,
+          name: userInfo.name,
+          picture: userInfo.picture
+        };
+
+        setUser(user);
+
+        // TODO: トークンをSecureStoreに保存
+        // await SecureStore.setItemAsync('access_token', tokenResult.accessToken);
+        // await SecureStore.setItemAsync('refresh_token', tokenResult.refreshToken);
+      } else {
+        throw new Error('ログインがキャンセルされました');
+      }
     } catch (error) {
       console.error('Login error:', error);
       throw error;
