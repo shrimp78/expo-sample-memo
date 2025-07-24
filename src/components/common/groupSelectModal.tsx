@@ -7,7 +7,7 @@ import {
   StyleSheet,
   ScrollView
 } from 'react-native';
-import { Group } from '../types/group';
+import { Group } from '../types/Group';
 import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 

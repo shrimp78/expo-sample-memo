@@ -1,4 +1,4 @@
-import { Group } from '../../types/group';
+import { Group } from '../../types/Group';
 import { router } from 'expo-router';
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native';
 import { Button } from '@rneui/base';

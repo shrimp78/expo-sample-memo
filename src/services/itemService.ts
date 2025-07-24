@@ -1,7 +1,7 @@
 import { execute, fetch, SqlArgs } from '../database/dbService';
 import { ItemQueries } from '../database/queries/itemQueries';
 import { type ItemSchema } from '../database/schemas/itemSchema';
-import { type Item } from '../components/types/item';
+import { type Item } from '../components/types/Item';
 
 /**
  * Itemテーブルの作成

@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet, Alert, Dimensions } from 'react-native';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import { useState, useCallback } from 'react';
-import { type Group } from '@models/group';
+import { type Group } from '@models/Group';
 import FloatingPlusButton from '@components/common/FloatingPlusButton';
 import GroupCreateModal from '@screens/groups/GroupCreateModal';
 import * as Crypto from 'expo-crypto';

@@ -10,7 +10,7 @@ import {
 import GroupSelectModal from '../../common/GroupSelectModal';
 import { AntDesign } from '@expo/vector-icons';
 import ItemInputForm from '../../common/ItemInputForm';
-import { type Group } from '../../types/group';
+import { type Group } from '../../types/Group';
 
 type ItemCreateProps = {
   visible: boolean;

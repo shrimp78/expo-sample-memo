@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Alert, Button, Platform, InputAccessoryView } f
 import { useLocalSearchParams, router, useNavigation } from 'expo-router';
 import { getGroupById, updateGroup } from '@services/groupService';
 import { KeyboardAvoidingView, Input, InputField } from '@gluestack-ui/themed';
-import { type Group } from '@models/group';
+import { type Group } from '@models/Group';
 import KeyboardCloseButton from '@components/common/KeyboardCloseButton';
 import GroupColorSelector from '@screens/groups/GroupColorSelector';
 

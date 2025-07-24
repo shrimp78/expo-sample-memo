@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { KeyboardAvoidingView } from '@gluestack-ui/themed';
 import * as ItemService from '@services/itemService';
 import * as GroupService from '@services/groupService';
-import { type Group } from '@models/group';
+import { type Group } from '@models/Group';
 import ItemInputForm from '@components/common/ItemInputForm';
 import GroupSelectModal from '@components/common/GroupSelectModal';
 

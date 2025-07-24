@@ -1,6 +1,6 @@
 import { execute, fetch } from '../database/dbService';
 import { GroupQueries } from '../database/queries/groupQueries';
-import { type Group } from '../components/types/group';
+import { type Group } from '../components/types/Group';
 import { type GroupSchema } from '../database/schemas/groupSchema';
 import { deleteItemsByGroupId } from './itemService';
 
