@@ -43,16 +43,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     const setupGoogleSignin = async () => {
       try {
-        // プラットフォームに応じてクライアントIDを選択
-        const clientId = Platform.OS === 'ios' ? IOS_GCP_CLIENT_ID : GOOGLE_CLIENT_ID;
-
-        if (!clientId) {
-          console.error('Google Client ID is not configured');
-          return;
-        }
-
         GoogleSignin.configure({
-          webClientId: clientId, // Webクライアント ID (必須)
+          iosClientId: IOS_GCP_CLIENT_ID, // ClientID
           offlineAccess: true, // オフラインアクセス（リフレッシュトークン取得）
           hostedDomain: '', // GSuite組織ドメイン（空の場合は全てのGoogleアカウント）
           forceCodeForRefreshToken: true, // iOS でリフレッシュトークンを強制取得
@@ -108,7 +100,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // デバッグ: GoogleSignin設定確認
       console.log('=== Google Sign-In Debug Info ===');
       console.log('Platform:', Platform.OS);
-      console.log('Using iOS Client ID:', Platform.OS === 'ios');
+      console.log('iOS ClientID:', IOS_GCP_CLIENT_ID);
       console.log('================================');
 
       // Google Play services の利用可能性をチェック

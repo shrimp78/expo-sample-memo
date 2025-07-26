@@ -1,3 +1,4 @@
+import 'dotenv/config';
 export default {
   expo: {
     name: 'mt-app',
@@ -29,7 +30,16 @@ export default {
     web: {
       favicon: './assets/favicon.png'
     },
-    plugins: ['expo-router', 'expo-sqlite'],
+    plugins: [
+      'expo-router',
+      'expo-sqlite',
+      [
+        '@react-native-google-signin/google-signin',
+        {
+          iosUrlScheme: `com.googleusercontent.apps.${process.env.IOS_GCP_CLIENT_ID}`
+        }
+      ]
+    ],
     extra: {
       googleClientId: process.env.GOOGLE_OAUTH_CLIENT_ID,
       iosGoogleClientId: process.env.IOS_GCP_CLIENT_ID,
@@ -40,3 +50,4 @@ export default {
   },
   scheme: 'mt-app'
 };
+console.log('iOS GCP Client ID:', process.env.IOS_GCP_CLIENT_ID);
