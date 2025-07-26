@@ -66,14 +66,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const clientId = Platform.OS === 'ios' ? IOS_GCP_CLIENT_ID : GOOGLE_CLIENT_ID;
 
       // 1. OAuth認証フローの設定
-      // Google Cloud Consoleが受け入れるリダイレクトURIを使用
+      // プラットフォームに応じて適切なリダイレクトURIを使用
       const redirectUri = __DEV__
-        ? 'http://localhost:8081'
+        ? AuthSession.makeRedirectUri({
+            scheme: 'exp',
+            path: '--'
+          })
         : AuthSession.makeRedirectUri({
             scheme: 'mt-app'
           });
 
-      // デバッグ: リダイレクトURIをコンソールに出力
+      // デバッグ: OAuth設定をコンソールに出力
       console.log('=== Google OAuth Debug Info ===');
       console.log('Redirect URI:', redirectUri);
       console.log('Client ID:', clientId);
@@ -82,12 +85,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log('==============================');
 
       // PKCE (Proof Key for Code Exchange) 設定
-      const codeVerifier = Math.random().toString(36).substring(2, 15);
-      const codeChallenge = await Crypto.digestStringAsync(
+      // PKCE仕様に準拠したcode verifierを生成（43-128文字、英数字と-._~のみ）
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+      const codeVerifier = Array.from({ length: 128 }, () =>
+        chars.charAt(Math.floor(Math.random() * chars.length))
+      ).join('');
+
+      // code challengeを生成（BASE64でエンコードしてURL-safeに変換）
+      const challengeHash = await Crypto.digestStringAsync(
         Crypto.CryptoDigestAlgorithm.SHA256,
         codeVerifier,
         { encoding: Crypto.CryptoEncoding.BASE64 }
       );
+      const codeChallenge = challengeHash.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+
+      // デバッグ: PKCE情報を出力
+      console.log('=== PKCE Debug Info ===');
+      console.log('Code Verifier Length:', codeVerifier.length);
+      console.log('Code Challenge:', codeChallenge);
+      console.log('======================');
 
       const request = new AuthSession.AuthRequest({
         clientId: clientId,
@@ -111,7 +127,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             clientId: clientId,
             code: result.params.code,
             redirectUri,
-            extraParams: {}
+            extraParams: {
+              code_verifier: codeVerifier
+            }
           },
           {
             tokenEndpoint: 'https://oauth2.googleapis.com/token'
