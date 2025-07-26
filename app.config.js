@@ -32,6 +32,7 @@ export default {
     plugins: ['expo-router', 'expo-sqlite'],
     extra: {
       googleClientId: process.env.GOOGLE_OAUTH_CLIENT_ID,
+      iosGoogleClientId: process.env.IOS_GCP_CLIENT_ID,
       eas: {
         projectId: '8f1073c1-924d-47c7-81e3-58a83ab48cea'
       }

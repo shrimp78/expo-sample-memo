@@ -6,6 +6,7 @@ import { Platform } from 'react-native';
 
 // Google OAuth設定
 const GOOGLE_CLIENT_ID = Constants.expoConfig?.extra?.googleClientId;
+const IOS_GCP_CLIENT_ID = Constants.expoConfig?.extra?.iosGoogleClientId;
 
 // ユーザー情報の型定義
 // TODO : これって types の下に持っていった法が良いんじゃないのかな
@@ -61,6 +62,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       setIsLoading(true);
 
+      // プラットフォームに応じてクライアントIDを選択
+      const clientId = Platform.OS === 'ios' ? IOS_GCP_CLIENT_ID : GOOGLE_CLIENT_ID;
+
       // 1. OAuth認証フローの設定
       // Google Cloud Consoleが受け入れるリダイレクトURIを使用
       const redirectUri = __DEV__
@@ -72,8 +76,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // デバッグ: リダイレクトURIをコンソールに出力
       console.log('=== Google OAuth Debug Info ===');
       console.log('Redirect URI:', redirectUri);
-      console.log('Client ID:', GOOGLE_CLIENT_ID);
+      console.log('Client ID:', clientId);
       console.log('Platform:', Platform.OS);
+      console.log('Using iOS Client ID:', Platform.OS === 'ios');
       console.log('==============================');
 
       // PKCE (Proof Key for Code Exchange) 設定
@@ -85,7 +90,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       );
 
       const request = new AuthSession.AuthRequest({
-        clientId: GOOGLE_CLIENT_ID,
+        clientId: clientId,
         scopes: ['openid', 'profile', 'email'],
         redirectUri,
         responseType: AuthSession.ResponseType.Code,
@@ -103,7 +108,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // 3. 認証コードの取得とアクセストークンの交換
         const tokenResult = await AuthSession.exchangeCodeAsync(
           {
-            clientId: GOOGLE_CLIENT_ID,
+            clientId: clientId,
             code: result.params.code,
             redirectUri,
             extraParams: {}
