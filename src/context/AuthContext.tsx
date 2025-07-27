@@ -45,7 +45,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       try {
         GoogleSignin.configure({
           iosClientId: IOS_GCP_CLIENT_ID, // ClientID
-          offlineAccess: true, // オフラインアクセス（リフレッシュトークン取得）
           hostedDomain: '', // GSuite組織ドメイン（空の場合は全てのGoogleアカウント）
           forceCodeForRefreshToken: true, // iOS でリフレッシュトークンを強制取得
           accountName: '' // アカウント名（空の場合は全てのアカウント）
