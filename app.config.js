@@ -25,7 +25,7 @@ export default {
         foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#ffffff'
       },
-      package: 'com.shrimp78.mt-app'
+      package: 'com.shrimp78.mtapp'
     },
     web: {
       favicon: './assets/favicon.png'
