@@ -1,3 +1,14 @@
 {
-  "ignoreWords": ["Swipeable", "GluestackUIProvider", "gluestack", "AUTOINCREMENT", "localtime", "Entypo", "closecircleo", "rneui", "flatlist"]
+  "ignoreWords": [
+    "Swipeable",
+    "GluestackUIProvider",
+    "gluestack",
+    "AUTOINCREMENT",
+    "localtime",
+    "Entypo",
+    "closecircleo",
+    "rneui",
+    "flatlist",
+    "googleusercontent"
+  ]
 }
