@@ -18,7 +18,7 @@ export default {
       bundleIdentifier: 'com.shrimp78.mt-app',
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
-        ...(process.env.NODE_ENV === 'development' && {
+        ...(!process.env.EAS_BUILD && {
           NSAppTransportSecurity: {
             NSAllowsArbitraryLoads: true,
             NSAllowsLocalNetworking: true
