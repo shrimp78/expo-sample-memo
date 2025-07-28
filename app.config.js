@@ -17,7 +17,13 @@ export default {
       supportsTablet: true,
       bundleIdentifier: 'com.shrimp78.mt-app',
       infoPlist: {
-        ITSAppUsesNonExemptEncryption: false
+        ITSAppUsesNonExemptEncryption: false,
+        ...(process.env.NODE_ENV === 'development' && {
+          NSAppTransportSecurity: {
+            NSAllowsArbitraryLoads: true,
+            NSAllowsLocalNetworking: true
+          }
+        })
       }
     },
     android: {
