@@ -15,7 +15,7 @@ export default {
     },
     ios: {
       supportsTablet: true,
-      bundleIdentifier: 'com.shrimp78.mt-app',
+      bundleIdentifier: 'com.shrimp78.mtapp',
       infoPlist: {
         ITSAppUsesNonExemptEncryption: false,
         ...(!process.env.EAS_BUILD && {
