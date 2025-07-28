@@ -1,11 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import auth from '@react-native-firebase/auth';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import Constants from 'expo-constants';
-import { Platform } from 'react-native';
-
-// Google OAuth設定
-const GOOGLE_CLIENT_ID = Constants.expoConfig?.extra?.googleClientId;
-const IOS_GCP_CLIENT_ID = Constants.expoConfig?.extra?.iosGoogleClientId;
 
 // ユーザー情報の型定義
 // TODO : これって types の下に持っていった法が良いんじゃないのかな
@@ -39,91 +35,60 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // ログイン状態の判定
   const isLoggedIn = user !== null;
 
-  // GoogleSigninの設定
+  // Firebase認証状態の監視
   useEffect(() => {
-    const setupGoogleSignin = async () => {
-      try {
-        GoogleSignin.configure({
-          iosClientId: IOS_GCP_CLIENT_ID, // ClientID
-          hostedDomain: '', // GSuite組織ドメイン（空の場合は全てのGoogleアカウント）
-          forceCodeForRefreshToken: true, // iOS でリフレッシュトークンを強制取得
-          accountName: '' // アカウント名（空の場合は全てのアカウント）
-        });
+    setIsLoading(true);
 
-        console.log('GoogleSignin configured successfully');
-      } catch (error) {
-        console.error('Error configuring GoogleSignin:', error);
-      }
-    };
-
-    setupGoogleSignin();
-  }, []);
-
-  // アプリ起動時の認証状態確認
-  useEffect(() => {
-    checkAuthState();
-  }, []);
-
-  const checkAuthState = async () => {
-    try {
-      setIsLoading(true);
-
-      // 現在のユーザー情報を直接取得して、サインイン状態を確認
-      const userInfo = await GoogleSignin.getCurrentUser();
-
-      if (userInfo) {
-        // 既にサインインしている場合、ユーザー情報を設定
+    const unsubscribe = auth().onAuthStateChanged(firebaseUser => {
+      if (firebaseUser) {
         const user: User = {
-          id: userInfo.user.id,
-          email: userInfo.user.email,
-          name: userInfo.user.name || userInfo.user.email,
-          picture: userInfo.user.photo || undefined
+          id: firebaseUser.uid,
+          email: firebaseUser.email || '',
+          name: firebaseUser.displayName || firebaseUser.email || '',
+          picture: firebaseUser.photoURL || undefined
         };
-
         setUser(user);
-        console.log('User already signed in:', user.email);
+        console.log('User signed in:', user.email);
+      } else {
+        setUser(null);
+        console.log('User signed out');
       }
-    } catch (error) {
-      console.error('Error checking auth state:', error);
-      // エラーが発生した場合はログアウト状態として扱う
-      setUser(null);
-    } finally {
       setIsLoading(false);
-    }
-  };
+    });
+
+    // GoogleSigninの設定
+    GoogleSignin.configure({
+      webClientId: Constants.expoConfig?.extra?.firebaseWebClientId
+    });
+
+    return unsubscribe;
+  }, []);
 
   const login = React.useCallback(async () => {
     try {
       setIsLoading(true);
 
-      // デバッグ: GoogleSignin設定確認
-      console.log('=== Google Sign-In Debug Info ===');
-      console.log('Platform:', Platform.OS);
-      console.log('iOS ClientID:', IOS_GCP_CLIENT_ID);
-      console.log('================================');
+      console.log('=== Firebase Google Sign-In Debug Info ===');
+      console.log('Starting Google Sign-In flow...');
 
       // Google Play services の利用可能性をチェック
       await GoogleSignin.hasPlayServices();
 
-      // サインインフローを開始
+      // Googleサインインフローを開始
       const signInResult = await GoogleSignin.signIn();
+      const idToken = signInResult.data?.idToken;
 
-      // TypeScript型エラーを回避するために any 型を使用
-      const userInfo = signInResult as any;
+      if (!idToken) {
+        throw new Error('IDトークンの取得に失敗しました');
+      }
 
-      console.log('Sign-in successful:', userInfo.user ? userInfo.user.email : userInfo.email);
+      // Firebase認証用のGoogle認証情報を作成
+      const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
-      // ユーザー情報を設定
-      const user: User = {
-        id: userInfo.user ? userInfo.user.id : userInfo.id,
-        email: userInfo.user ? userInfo.user.email : userInfo.email,
-        name: userInfo.user
-          ? userInfo.user.name || userInfo.user.email
-          : userInfo.name || userInfo.email,
-        picture: userInfo.user ? userInfo.user.photo : userInfo.photo
-      };
+      // Firebase Authentication でサインイン
+      await auth().signInWithCredential(googleCredential);
 
-      setUser(user);
+      console.log('Firebase Google Sign-In successful');
     } catch (error: any) {
       console.error('Login error:', error);
 
@@ -146,11 +111,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       setIsLoading(true);
 
-      // Googleからサインアウト
-      await GoogleSignin.signOut();
+      // Firebaseからサインアウト
+      await auth().signOut();
 
-      // ユーザー状態をクリア
-      setUser(null);
+      // Googleからもサインアウト
+      await GoogleSignin.signOut();
 
       console.log('Logout successful');
     } catch (error) {
@@ -167,15 +132,18 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       setIsLoading(true);
 
-      // 現在のユーザー情報を再取得
-      const userInfo = await GoogleSignin.getCurrentUser();
+      // 現在のFirebaseユーザー情報を再取得
+      const currentUser = auth().currentUser;
 
-      if (userInfo) {
+      if (currentUser) {
+        // ユーザー情報を再読み込み
+        await currentUser.reload();
+
         const user: User = {
-          id: userInfo.user.id,
-          email: userInfo.user.email,
-          name: userInfo.user.name || userInfo.user.email,
-          picture: userInfo.user.photo || undefined
+          id: currentUser.uid,
+          email: currentUser.email || '',
+          name: currentUser.displayName || currentUser.email || '',
+          picture: currentUser.photoURL || undefined
         };
 
         setUser(user);

@@ -39,16 +39,12 @@ export default {
     plugins: [
       'expo-router',
       'expo-sqlite',
-      [
-        '@react-native-google-signin/google-signin',
-        {
-          iosUrlScheme: `com.googleusercontent.apps.${process.env.IOS_GCP_CLIENT_ID}`
-        }
-      ]
+      '@react-native-firebase/app',
+      '@react-native-firebase/auth',
+      '@react-native-google-signin/google-signin'
     ],
     extra: {
-      googleClientId: process.env.GOOGLE_OAUTH_CLIENT_ID,
-      iosGoogleClientId: process.env.IOS_GCP_CLIENT_ID,
+      firebaseWebClientId: process.env.FIREBASE_WEB_CLIENT_ID,
       eas: {
         projectId: '8f1073c1-924d-47c7-81e3-58a83ab48cea'
       }
@@ -56,4 +52,3 @@ export default {
   },
   scheme: 'mt-app'
 };
-console.log('iOS GCP Client ID:', process.env.IOS_GCP_CLIENT_ID);
