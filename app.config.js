@@ -16,15 +16,7 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: 'com.shrimp78.mtapp',
-      infoPlist: {
-        ITSAppUsesNonExemptEncryption: false,
-        ...(!process.env.EAS_BUILD && {
-          NSAppTransportSecurity: {
-            NSAllowsArbitraryLoads: true,
-            NSAllowsLocalNetworking: true
-          }
-        })
-      }
+      googleServicesFile: './GoogleService-Info.plist'
     },
     android: {
       adaptiveIcon: {
