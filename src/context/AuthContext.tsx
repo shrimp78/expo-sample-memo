@@ -36,8 +36,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const isLoggedIn = user !== null;
 
   // Firebase認証状態の監視
+  // ※ onAuthStateChangedがリアルタイムリスナーとしてログイン状態の変更を検知し続ける
+  // ※ 外部でのPW変更やアカウント削除、認証設定変更などあらゆる変更に対応（Stateで管理は無理）
   useEffect(() => {
-    setIsLoading(true);
+    setIsLoading(true); // ここにもsetすることで、既にログイン済み＆2回目以降のアプリ起動時などにも対応できる
 
     const unsubscribe = auth().onAuthStateChanged(firebaseUser => {
       if (firebaseUser) {
@@ -48,7 +50,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           picture: firebaseUser.photoURL || undefined
         };
         setUser(user);
-        console.log('User signed in:', user.email);
+        console.log('User signed in:', JSON.stringify(user, null, 2));
       } else {
         setUser(null);
         console.log('User signed out');
@@ -72,17 +74,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log('Starting Google Sign-In flow...');
 
       // Google Play services の利用可能性をチェック
+      // ※iOSでは不要だが、Androidでは必須の処理
+      // ※古いAndroid端末やカスタムROMではErrorが上がるのでcatchに入る
       await GoogleSignin.hasPlayServices();
 
       // Googleサインインフローを開始
-      const signInResult = await GoogleSignin.signIn();
-      const idToken = signInResult.data?.idToken;
+      const signInResult = await GoogleSignin.signIn(); // ここでログイン用モーダルが立ち上がる
+      const idToken = signInResult.data?.idToken; // ログインに成功したらトークンが入る
 
       if (!idToken) {
         throw new Error('IDトークンの取得に失敗しました');
       }
 
       // Firebase認証用のGoogle認証情報を作成
+      // ※Google Sign-InはGoogle固有のフォーマットなので、Firebaseの管理システムで扱えるように変換してもらう
+      // ※他のAppleログインなどでも同様の処理が必要
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
       // Firebase Authentication でサインイン
