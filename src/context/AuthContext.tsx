@@ -2,15 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import auth from '@react-native-firebase/auth';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import Constants from 'expo-constants';
-
-// ユーザー情報の型定義
-// TODO : これって types の下に持っていった法が良いんじゃないのかな
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  picture?: string;
-}
+import { User } from '../components/types/User';
 
 // 認証コンテキストの型定義
 interface AuthContextType {
