@@ -33,6 +33,7 @@ export default {
       'expo-sqlite',
       '@react-native-firebase/app',
       '@react-native-firebase/auth',
+      '@react-native-firebase/firestore',
       '@react-native-google-signin/google-signin'
     ],
     extra: {
