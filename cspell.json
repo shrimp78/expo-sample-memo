@@ -9,6 +9,7 @@
     "closecircleo",
     "rneui",
     "flatlist",
-    "googleusercontent"
+    "googleusercontent",
+    "firestore"
   ]
 }
