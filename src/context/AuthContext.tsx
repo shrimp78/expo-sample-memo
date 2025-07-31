@@ -3,6 +3,11 @@ import auth from '@react-native-firebase/auth';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import Constants from 'expo-constants';
 import { User } from '../components/types/User';
+import {
+  getUserFromFirestore,
+  createUserInFirestore,
+  updateUserInFirestore
+} from '../services/userService';
 
 // 認証コンテキストの型定義
 interface AuthContextType {
@@ -12,6 +17,7 @@ interface AuthContextType {
   login: () => Promise<void>;
   logout: () => Promise<void>;
   refreshUserInfo: () => Promise<void>;
+  updateUserProfile: (updates: Partial<Omit<User, 'id'>>) => Promise<void>; // なにこれ
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -33,16 +39,68 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     setIsLoading(true); // ここにもsetすることで、既にログイン済み＆2回目以降のアプリ起動時などにも対応できる
 
-    const unsubscribe = auth().onAuthStateChanged(firebaseUser => {
+    const unsubscribe = auth().onAuthStateChanged(async firebaseUser => {
       if (firebaseUser) {
-        const user: User = {
-          id: firebaseUser.uid,
-          email: firebaseUser.email || '',
-          name: firebaseUser.displayName || firebaseUser.email || '',
-          picture: firebaseUser.photoURL || undefined
-        };
-        setUser(user);
-        console.log('User signed in:', JSON.stringify(user, null, 2));
+        try {
+          // Firestoreからユーザー情報を取得
+          let user = await getUserFromFirestore(firebaseUser.uid);
+
+          if (!user) {
+            // ユーザーが存在しない場合は新規作成
+            console.log('新規ユーザーを作成します:', firebaseUser.email);
+
+            const newUser: User = {
+              id: firebaseUser.uid,
+              email: firebaseUser.email || '',
+              name: firebaseUser.displayName || firebaseUser.email || '',
+              picture: firebaseUser.photoURL || undefined
+            };
+
+            await createUserInFirestore(newUser);
+            user = newUser;
+            console.log('新規ユーザーが作成されました:', user.email);
+          } else {
+            console.log('既存ユーザーが読み込まれました:', user.email);
+
+            // Firebase認証情報が更新されている場合はFirestoreも更新
+            const updates: Partial<Omit<User, 'id'>> = {};
+            let hasUpdates = false;
+
+            if (firebaseUser.email && firebaseUser.email !== user.email) {
+              updates.email = firebaseUser.email;
+              hasUpdates = true;
+            }
+
+            if (firebaseUser.displayName && firebaseUser.displayName !== user.name) {
+              updates.name = firebaseUser.displayName;
+              hasUpdates = true;
+            }
+
+            if (firebaseUser.photoURL && firebaseUser.photoURL !== user.picture) {
+              updates.picture = firebaseUser.photoURL;
+              hasUpdates = true;
+            }
+
+            if (hasUpdates) {
+              await updateUserInFirestore(firebaseUser.uid, updates);
+              user = { ...user, ...updates };
+              console.log('ユーザー情報が更新されました:', user.email);
+            }
+          }
+
+          setUser(user);
+          console.log('ユーザーログイン完了:', JSON.stringify(user, null, 2));
+        } catch (error) {
+          console.error('Firestoreユーザー処理エラー:', error);
+          // エラーが発生した場合はFirebase認証情報のみでユーザーを作成
+          const fallbackUser: User = {
+            id: firebaseUser.uid,
+            email: firebaseUser.email || '',
+            name: firebaseUser.displayName || firebaseUser.email || '',
+            picture: firebaseUser.photoURL || undefined
+          };
+          setUser(fallbackUser);
+        }
       } else {
         setUser(null);
         console.log('User signed out');
@@ -126,35 +184,56 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const refreshUserInfo = React.useCallback(async () => {
     try {
-      if (!isLoggedIn) return;
+      if (!isLoggedIn || !user) return;
 
       setIsLoading(true);
 
-      // 現在のFirebaseユーザー情報を再取得
-      const currentUser = auth().currentUser;
+      // Firestoreから最新のユーザー情報を取得
+      const refreshedUser = await getUserFromFirestore(user.id);
 
-      if (currentUser) {
-        // ユーザー情報を再読み込み
-        await currentUser.reload();
-
-        const user: User = {
-          id: currentUser.uid,
-          email: currentUser.email || '',
-          name: currentUser.displayName || currentUser.email || '',
-          picture: currentUser.photoURL || undefined
-        };
-
-        setUser(user);
-        console.log('User info refreshed:', user.email);
+      if (refreshedUser) {
+        setUser(refreshedUser);
+        console.log('ユーザー情報を更新しました:', refreshedUser.email);
+      } else {
+        console.warn('Firestoreにユーザー情報が見つかりません');
+        // ユーザーが削除されている場合はログアウト
+        setUser(null);
       }
     } catch (error) {
-      console.error('Error refreshing user info:', error);
+      console.error('ユーザー情報更新エラー:', error);
       // エラーが発生した場合はログアウト状態にする
       setUser(null);
     } finally {
       setIsLoading(false);
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, user]);
+
+  const updateUserProfile = React.useCallback(
+    async (updates: Partial<Omit<User, 'id'>>) => {
+      try {
+        if (!isLoggedIn || !user) {
+          throw new Error('ユーザーがログインしていません');
+        }
+
+        setIsLoading(true);
+
+        // Firestoreのユーザー情報を更新
+        await updateUserInFirestore(user.id, updates);
+
+        // ローカルStateも更新
+        const updatedUser = { ...user, ...updates };
+        setUser(updatedUser);
+
+        console.log('ユーザープロフィールが更新されました:', updatedUser.email);
+      } catch (error) {
+        console.error('ユーザープロフィール更新エラー:', error);
+        throw error;
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [isLoggedIn, user]
+  );
 
   const value: AuthContextType = {
     user,
@@ -162,7 +241,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isLoading,
     login,
     logout,
-    refreshUserInfo
+    refreshUserInfo,
+    updateUserProfile
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
