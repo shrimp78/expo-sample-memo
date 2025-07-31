@@ -1,4 +1,4 @@
-import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
 import { User } from '../components/types/User';
 
 // Firestoreのコレクション名
@@ -11,7 +11,7 @@ export const getUserFromFirestore = async (uid: string): Promise<User | null> =>
   try {
     const userDoc = await firestore().collection(USERS_COLLECTION).doc(uid).get();
 
-    if (userDoc.exists) {
+    if (userDoc.exists()) {
       const userData = userDoc.data();
       return {
         id: uid,
@@ -94,7 +94,7 @@ export const checkUserExists = async (uid: string): Promise<boolean> => {
   try {
     const userDoc = await firestore().collection(USERS_COLLECTION).doc(uid).get();
 
-    return userDoc.exists;
+    return userDoc.exists();
   } catch (error) {
     console.error('Error checking user existence:', error);
     throw error;
