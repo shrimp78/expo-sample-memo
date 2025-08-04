@@ -7,7 +7,7 @@ export default {
     orientation: 'portrait',
     icon: './assets/icon.png',
     userInterfaceStyle: 'light',
-    newArchEnabled: true,
+    newArchEnabled: false,
     splash: {
       image: './assets/splash-icon.png',
       resizeMode: 'contain',
@@ -28,12 +28,7 @@ export default {
     web: {
       favicon: './assets/favicon.png'
     },
-    plugins: [
-      'expo-router',
-      'expo-sqlite',
-      '@react-native-firebase/app',
-      '@react-native-google-signin/google-signin'
-    ],
+    plugins: ['expo-router', 'expo-sqlite', '@react-native-google-signin/google-signin'],
     extra: {
       firebaseWebClientId: process.env.FIREBASE_WEB_CLIENT_ID,
       eas: {
