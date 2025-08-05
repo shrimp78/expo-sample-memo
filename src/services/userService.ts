@@ -1,4 +1,5 @@
-import firestore from '@react-native-firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import { firestore } from '../../firebaseConfig';
 import { User } from '../components/types/User';
 
 // Firestoreのコレクション名
@@ -9,7 +10,8 @@ const USERS_COLLECTION = 'users';
  */
 export const getUserFromFirestore = async (uid: string): Promise<User | null> => {
   try {
-    const userDoc = await firestore().collection(USERS_COLLECTION).doc(uid).get();
+    const userDocRef = doc(firestore, USERS_COLLECTION, uid);
+    const userDoc = await getDoc(userDocRef);
 
     if (userDoc.exists()) {
       const userData = userDoc.data();
@@ -32,16 +34,14 @@ export const getUserFromFirestore = async (uid: string): Promise<User | null> =>
  */
 export const createUserInFirestore = async (user: User): Promise<void> => {
   try {
-    await firestore()
-      .collection(USERS_COLLECTION)
-      .doc(user.id)
-      .set({
-        email: user.email,
-        name: user.name,
-        picture: user.picture || null,
-        createdAt: firestore.FieldValue.serverTimestamp(),
-        updatedAt: firestore.FieldValue.serverTimestamp()
-      });
+    const userDocRef = doc(firestore, USERS_COLLECTION, user.id);
+    await setDoc(userDocRef, {
+      email: user.email,
+      name: user.name,
+      picture: user.picture || null,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
 
     console.log('User created in Firestore:', user.email);
   } catch (error) {
@@ -58,13 +58,11 @@ export const updateUserInFirestore = async (
   updates: Partial<Omit<User, 'id'>>
 ): Promise<void> => {
   try {
-    await firestore()
-      .collection(USERS_COLLECTION)
-      .doc(uid)
-      .update({
-        ...updates,
-        updatedAt: firestore.FieldValue.serverTimestamp()
-      });
+    const userDocRef = doc(firestore, USERS_COLLECTION, uid);
+    await updateDoc(userDocRef, {
+      ...updates,
+      updatedAt: serverTimestamp()
+    });
 
     console.log('User updated in Firestore:', uid);
   } catch (error) {
@@ -78,7 +76,8 @@ export const updateUserInFirestore = async (
  */
 export const deleteUserFromFirestore = async (uid: string): Promise<void> => {
   try {
-    await firestore().collection(USERS_COLLECTION).doc(uid).delete();
+    const userDocRef = doc(firestore, USERS_COLLECTION, uid);
+    await deleteDoc(userDocRef);
 
     console.log('User deleted from Firestore:', uid);
   } catch (error) {
@@ -92,7 +91,8 @@ export const deleteUserFromFirestore = async (uid: string): Promise<void> => {
  */
 export const checkUserExists = async (uid: string): Promise<boolean> => {
   try {
-    const userDoc = await firestore().collection(USERS_COLLECTION).doc(uid).get();
+    const userDocRef = doc(firestore, USERS_COLLECTION, uid);
+    const userDoc = await getDoc(userDocRef);
 
     return userDoc.exists();
   } catch (error) {
