@@ -28,7 +28,7 @@ export default {
     web: {
       favicon: './assets/favicon.png'
     },
-    plugins: ['expo-router', 'expo-sqlite', '@react-native-google-signin/google-signin'],
+    plugins: ['expo-router', 'expo-sqlite'],
     extra: {
       firebaseWebClientId: process.env.FIREBASE_WEB_CLIENT_ID,
       eas: {
