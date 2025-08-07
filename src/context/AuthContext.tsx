@@ -1,7 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
   GoogleAuthProvider,
@@ -15,14 +13,15 @@ import {
   createUserInFirestore,
   updateUserInFirestore
 } from '../services/userService';
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import Constants from 'expo-constants';
 
 // 認証コンテキストの型定義
 interface AuthContextType {
   user: User | null;
   isLoggedIn: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string) => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
   refreshUserInfo: () => Promise<void>;
   updateUserProfile: (updates: Partial<Omit<User, 'id'>>) => Promise<void>;
@@ -40,6 +39,31 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // ログイン状態の判定
   const isLoggedIn = user !== null;
+
+  // Google Sign-Inの設定
+  React.useEffect(() => {
+    const configureGoogleSignIn = () => {
+      try {
+        const webClientId = Constants.expoConfig?.extra?.firebaseWebClientId;
+
+        if (!webClientId) {
+          console.error('Firebase Web Client IDが設定されていません');
+          return;
+        }
+
+        GoogleSignin.configure({
+          webClientId: webClientId,
+          offlineAccess: true
+        });
+
+        console.log('Google Sign-In configured successfully');
+      } catch (error) {
+        console.error('Google Sign-In configuration error:', error);
+      }
+    };
+
+    configureGoogleSignIn();
+  }, []);
 
   // Firebase認証状態の監視
   // ※ onAuthStateChangedがリアルタイムリスナーとしてログイン状態の変更を検知し続ける
@@ -119,39 +143,46 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return unsubscribe;
   }, []);
 
-  const login = React.useCallback(async (email: string, password: string) => {
+  const loginWithGoogle = React.useCallback(async () => {
     try {
       setIsLoading(true);
 
-      console.log('=== Firebase Email/Password Sign-In Debug Info ===');
-      console.log('Starting Email/Password Sign-In flow...');
+      console.log('=== Google Sign-In Debug Info ===');
+      console.log('Starting Google Sign-In flow...');
 
-      // Firebase Authentication でメール/パスワードでサインイン
-      await signInWithEmailAndPassword(auth, email, password);
+      // Google Play Servicesが利用可能かチェック
+      await GoogleSignin.hasPlayServices();
 
-      console.log('Firebase Email/Password Sign-In successful');
+      // Google Sign-Inを実行
+      const response = await GoogleSignin.signIn();
+
+      console.log('Google Sign-In response:', response);
+
+      // idTokenを取得
+      const { data } = response;
+      if (!data?.idToken) {
+        throw new Error('IDトークンが取得できませんでした');
+      }
+
+      // Google認証プロバイダーを作成
+      const googleCredential = GoogleAuthProvider.credential(data.idToken);
+
+      // Firebase Authenticationでサインイン
+      await signInWithCredential(auth, googleCredential);
+
+      console.log('Firebase Google Sign-In successful');
     } catch (error: any) {
-      console.error('Login error:', error);
-      throw new Error(`ログインエラー: ${error.message}`);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+      console.error('Google login error:', error);
 
-  const register = React.useCallback(async (email: string, password: string) => {
-    try {
-      setIsLoading(true);
-
-      console.log('=== Firebase Email/Password Registration Debug Info ===');
-      console.log('Starting Email/Password Registration flow...');
-
-      // Firebase Authentication でメール/パスワードでユーザー作成
-      await createUserWithEmailAndPassword(auth, email, password);
-
-      console.log('Firebase Email/Password Registration successful');
-    } catch (error: any) {
-      console.error('Registration error:', error);
-      throw new Error(`登録エラー: ${error.message}`);
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        throw new Error('Google認証がキャンセルされました');
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        throw new Error('Google認証が既に進行中です');
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        throw new Error('Google Play Servicesが利用できません');
+      } else {
+        throw new Error(`Googleログインエラー: ${error.message}`);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -160,6 +191,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const logout = React.useCallback(async () => {
     try {
       setIsLoading(true);
+
+      // Googleからサインアウト
+      try {
+        await GoogleSignin.signOut();
+      } catch (googleSignOutError) {
+        console.warn('Google sign out error (non-critical):', googleSignOutError);
+      }
 
       // Firebaseからサインアウト
       await signOut(auth);
@@ -230,8 +268,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     user,
     isLoggedIn,
     isLoading,
-    login,
-    register,
+    loginWithGoogle,
     logout,
     refreshUserInfo,
     updateUserProfile

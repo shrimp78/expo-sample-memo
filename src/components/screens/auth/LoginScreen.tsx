@@ -3,11 +3,11 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { useAuth } from '../../../context/AuthContext';
 
 const LoginScreen: React.FC = () => {
-  const { login, isLoading } = useAuth();
+  const { loginWithGoogle, isLoading } = useAuth();
 
   const handleGoogleLogin = async () => {
     try {
-      await login();
+      await loginWithGoogle();
     } catch (error) {
       console.error('ログインエラー:', error);
       // TODO: エラーハンドリング（アラート表示など）
