@@ -28,7 +28,7 @@ export default {
     web: {
       favicon: './assets/favicon.png'
     },
-    plugins: ['expo-router', 'expo-sqlite'],
+    plugins: ['expo-router', 'expo-sqlite', '@react-native-google-signin/google-signin'],
     extra: {
       firebaseWebClientId: process.env.FIREBASE_WEB_CLIENT_ID,
       eas: {
@@ -36,5 +36,5 @@ export default {
       }
     }
   },
-  scheme: 'mt-app'
+  scheme: 'com.shrimp78.mtapp'
 };
