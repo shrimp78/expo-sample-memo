@@ -5,6 +5,7 @@ interface HomeMenuModalProps {
   visible: boolean;
   onClose: () => void;
   menuPosition: { x: number; y: number };
+  onAccountSettingsPress?: () => void;
   onDeleteAllItemPress?: () => void;
   onGroupEditPress?: () => void;
   onFeedbackPress?: () => void;
@@ -15,6 +16,7 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
   visible,
   onClose,
   menuPosition,
+  onAccountSettingsPress,
   onDeleteAllItemPress,
   onFeedbackPress,
   onLogoutPress
@@ -48,6 +50,9 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
           ]}
           onLayout={handleLayout}
         >
+          <TouchableOpacity style={styles.menuItem} onPress={onAccountSettingsPress}>
+            <Text style={styles.menuText}>アカウント設定</Text>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={onDeleteAllItemPress}>
             <Text style={styles.menuText}>全てのアイテムを削除する</Text>
           </TouchableOpacity>

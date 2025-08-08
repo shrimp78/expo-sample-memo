@@ -103,6 +103,11 @@ export default function HomeIndexScreen() {
     toggleMenu();
   };
 
+  const handleAccountSettingsPress = () => {
+    console.log('アカウント設定が押されました');
+    toggleMenu();
+  };
+
   const handleDeleteAllItemPress = () => {
     console.log('全てのアイテムを削除するが押されました');
     toggleMenu();
@@ -353,6 +358,7 @@ export default function HomeIndexScreen() {
         visible={menuVisible}
         onClose={toggleMenu}
         menuPosition={menuPosition}
+        onAccountSettingsPress={handleAccountSettingsPress}
         onDeleteAllItemPress={handleDeleteAllItemPress}
         onLogoutPress={handleLogoutPress}
       />
