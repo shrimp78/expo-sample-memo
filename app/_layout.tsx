@@ -29,6 +29,9 @@ export default function Layout() {
               {/* グループ */}
               <Stack.Screen name="groups/index" options={{ headerTitle: '' }} />
               <Stack.Screen name="groups/[id]" options={{ headerTitle: '' }} />
+
+              {/* アカウント */}
+              <Stack.Screen name="account/index" options={{ headerTitle: '' }} />
             </Stack>
           </GroupProvider>
         </AuthProvider>

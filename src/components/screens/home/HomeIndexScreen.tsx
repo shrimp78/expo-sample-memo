@@ -105,6 +105,7 @@ export default function HomeIndexScreen() {
 
   const handleAccountSettingsPress = () => {
     console.log('アカウント設定が押されました');
+    router.push({ pathname: `/account` });
     toggleMenu();
   };
 
