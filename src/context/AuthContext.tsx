@@ -154,6 +154,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await GoogleSignin.hasPlayServices();
 
       // Google Sign-Inを実行
+      // ここでログイン用のモーダルが出現する
       const response = await GoogleSignin.signIn();
 
       console.log('Google Sign-In response:', response);
@@ -173,6 +174,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log('Firebase Google Sign-In successful');
     } catch (error: any) {
       console.error('Google login error:', error);
+      // 成功時は onAuthStateChanged が isLoading を false にする。
+      // エラー時のみここで isLoading を false に戻す。
+      setIsLoading(false);
 
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         throw new Error('Google認証がキャンセルされました');
@@ -183,8 +187,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       } else {
         throw new Error(`Googleログインエラー: ${error.message}`);
       }
-    } finally {
-      setIsLoading(false);
     }
   }, []);
 
