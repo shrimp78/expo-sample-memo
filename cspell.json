@@ -10,6 +10,7 @@
     "rneui",
     "flatlist",
     "googleusercontent",
-    "firestore"
+    "firestore",
+    "Pressable"
   ]
 }
