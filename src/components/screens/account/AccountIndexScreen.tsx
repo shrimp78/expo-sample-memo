@@ -38,45 +38,60 @@ export default function AccountIndexScreen() {
   );
 }
 
+// 黄金比に基づいたデザイン定数
+const PHI = 1.618; // 黄金比
+const BASE_UNIT = 16; // 基本単位（16px）
+
+// 黄金比を使った計算値
+const AVATAR_SIZE = BASE_UNIT * PHI * PHI * PHI; // ≈ 67.5 → 68
+const NAME_FONT_SIZE = BASE_UNIT * PHI; // ≈ 25.9 → 26
+const EMAIL_FONT_SIZE = BASE_UNIT; // 16
+const LARGE_SPACING = BASE_UNIT * PHI * PHI; // ≈ 41.9 → 42
+const MEDIUM_SPACING = BASE_UNIT * PHI; // ≈ 25.9 → 26
+const SMALL_SPACING = BASE_UNIT; // 16
+const CONTAINER_PADDING = BASE_UNIT * PHI; // ≈ 25.9 → 26
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF'
   },
   scrollContent: {
-    paddingVertical: 24
+    paddingVertical: CONTAINER_PADDING
   },
   header: {
     alignItems: 'center',
-    paddingTop: 50,
-    paddingHorizontal: 16
+    paddingTop: LARGE_SPACING * PHI, // ≈ 67.9 → 68
+    paddingHorizontal: CONTAINER_PADDING
   },
   avatarImage: {
-    width: 96,
-    height: 96,
-    borderRadius: 48
+    width: AVATAR_SIZE * PHI, // ≈ 110
+    height: AVATAR_SIZE * PHI,
+    borderRadius: (AVATAR_SIZE * PHI) / 2
   },
   avatarPlaceholder: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
+    width: AVATAR_SIZE * PHI,
+    height: AVATAR_SIZE * PHI,
+    borderRadius: (AVATAR_SIZE * PHI) / 2,
     backgroundColor: '#E5E7EB'
   },
   name: {
-    marginTop: 24,
-    fontSize: 30,
+    marginTop: LARGE_SPACING,
+    fontSize: NAME_FONT_SIZE,
     fontWeight: '600',
-    color: '#111827'
+    color: '#111827',
+    textAlign: 'center'
   },
   email: {
-    marginTop: 12,
-    fontSize: 20,
-    color: '#6B7280'
+    marginTop: SMALL_SPACING,
+    fontSize: EMAIL_FONT_SIZE,
+    color: '#6B7280',
+    textAlign: 'center'
   },
   actionsGroup: {
-    marginTop: 34,
-    paddingHorizontal: 16,
+    marginTop: LARGE_SPACING * PHI, // ≈ 67.9 → 68
+    paddingHorizontal: CONTAINER_PADDING,
     alignItems: 'center',
-    gap: 16
+    gap: MEDIUM_SPACING
   }
 });
