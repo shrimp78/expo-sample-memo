@@ -1,8 +1,8 @@
 import 'dotenv/config';
 export default {
   expo: {
-    name: 'mt-app',
-    slug: 'mt-app',
+    name: 'ebi-expo-sample',
+    slug: 'ebi-expo-sample',
     version: '1.0.0',
     orientation: 'portrait',
     icon: './assets/icon.png',
@@ -15,7 +15,7 @@ export default {
     },
     ios: {
       supportsTablet: true,
-      bundleIdentifier: 'com.shrimp78.mtapp',
+      bundleIdentifier: 'com.shrimp78.ebi-expo-sample',
       googleServicesFile: './GoogleService-Info.plist'
     },
     android: {
@@ -23,7 +23,7 @@ export default {
         foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#ffffff'
       },
-      package: 'com.shrimp78.mtapp'
+      package: 'com.shrimp78.ebiexposample'
     },
     web: {
       favicon: './assets/favicon.png'
@@ -36,5 +36,5 @@ export default {
       }
     }
   },
-  scheme: 'com.shrimp78.mtapp'
+  scheme: 'com.shrimp78.ebi-expo-sample'
 };
