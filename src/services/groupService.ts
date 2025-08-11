@@ -1,7 +1,7 @@
-import { execute, fetch } from '../database/dbService';
-import { GroupQueries } from '../database/queries/groupQueries';
-import { type Group } from '../components/types/Group';
-import { type GroupSchema } from '../database/schemas/groupSchema';
+import { execute, fetch } from '@src/database/dbService';
+import { GroupQueries } from '@src/database/queries/groupQueries';
+import { type Group } from '@models/Group';
+import { type GroupSchema } from '@src/database/schemas/groupSchema';
 import { deleteItemsByGroupId } from './itemService';
 
 /**

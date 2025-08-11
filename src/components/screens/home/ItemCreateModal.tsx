@@ -7,10 +7,10 @@ import {
   KeyboardAvoidingView,
   StyleSheet
 } from 'react-native';
-import GroupSelectModal from '../../common/GroupSelectModal';
+import GroupSelectModal from '@components/common/GroupSelectModal';
 import { AntDesign } from '@expo/vector-icons';
-import ItemInputForm from '../../common/ItemInputForm';
-import { type Group } from '../../types/Group';
+import ItemInputForm from '@components/common/ItemInputForm';
+import { type Group } from '@models/Group';
 
 type ItemCreateProps = {
   visible: boolean;

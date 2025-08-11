@@ -1,6 +1,6 @@
 import { doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
-import { firestore } from '../../firebaseConfig';
-import { User } from '../components/types/User';
+import { firestore } from '@root/firebaseConfig';
+import { User } from '@models/User';
 
 // Firestoreのコレクション名
 const USERS_COLLECTION = 'users';

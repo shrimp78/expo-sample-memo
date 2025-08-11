@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { type Group } from '@models/Group';
-import * as GroupService from '../services/groupService';
+import * as GroupService from '@services/groupService';
 
 interface GroupContextType {
   groups: Group[];

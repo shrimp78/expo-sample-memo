@@ -1,7 +1,7 @@
 import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { HStack } from '@gluestack-ui/themed';
 import { FontAwesome } from '@expo/vector-icons';
-import { colorOptions } from '../../../../constants/colors';
+import { colorOptions } from '@constants/colors';
 
 type GroupColorSelectorProps = {
   groupColor: string;

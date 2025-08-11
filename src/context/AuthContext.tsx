@@ -9,13 +9,13 @@ import {
   User as FirebaseUser
 } from 'firebase/auth';
 import { auth } from '../../firebaseConfig';
-import { User } from '../components/types/User';
+import { User } from '@components/types/User';
 import {
   getUserFromFirestore,
   createUserInFirestore,
   updateUserInFirestore,
   deleteUserFromFirestore
-} from '../services/userService';
+} from '@services/userService';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import Constants from 'expo-constants';
 
