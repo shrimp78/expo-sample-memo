@@ -304,7 +304,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [user]); // なんで？！ なんでuserなん？
+  }, [user]);
 
   const value: AuthContextType = {
     user,
