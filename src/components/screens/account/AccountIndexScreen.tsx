@@ -1,8 +1,17 @@
-import { StyleSheet, View, Text, Image, SafeAreaView, ScrollView, Button } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  SafeAreaView,
+  ScrollView,
+  Button,
+  Alert
+} from 'react-native';
 import { useAuth } from '@context/AuthContext';
 
 export default function AccountIndexScreen() {
-  const { user, logout } = useAuth();
+  const { user, logout, deleteAccount } = useAuth();
 
   if (!user) {
     return (
@@ -12,8 +21,29 @@ export default function AccountIndexScreen() {
     );
   }
 
-  const deleteAccount = () => {
-    console.log('アカウント削除');
+  const handleDeleteAccount = () => {
+    try {
+      Alert.alert(
+        'アカウント削除',
+        'アカウントを削除すると、全てのデータが失われます。この操作は取り消せません。本当に削除しますか？',
+        [
+          {
+            text: 'キャンセル',
+            style: 'cancel'
+          },
+          {
+            text: '削除する',
+            style: 'destructive',
+            onPress: async () => {
+              await deleteAccount();
+            }
+          }
+        ]
+      );
+    } catch (error) {
+      console.error('アカウント削除エラー', error);
+      Alert.alert('アカウント削除エラー', 'アカウント削除に失敗しました。再度お試しください。');
+    }
   };
 
   return (
@@ -31,7 +61,7 @@ export default function AccountIndexScreen() {
 
         <View style={styles.actionsGroup}>
           <Button title="ログアウト" onPress={logout} color="#007AFF" />
-          <Button title="アカウント削除" onPress={deleteAccount} color="#FF3B30" />
+          <Button title="アカウント削除" onPress={handleDeleteAccount} color="#FF3B30" />
         </View>
       </ScrollView>
     </SafeAreaView>

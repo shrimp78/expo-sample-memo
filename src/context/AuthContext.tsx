@@ -4,6 +4,8 @@ import {
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithCredential,
+  deleteUser,
+  reauthenticateWithCredential,
   User as FirebaseUser
 } from 'firebase/auth';
 import { auth } from '../../firebaseConfig';
@@ -11,7 +13,8 @@ import { User } from '../components/types/User';
 import {
   getUserFromFirestore,
   createUserInFirestore,
-  updateUserInFirestore
+  updateUserInFirestore,
+  deleteUserFromFirestore
 } from '../services/userService';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import Constants from 'expo-constants';
@@ -23,6 +26,7 @@ interface AuthContextType {
   isLoading: boolean;
   loginWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
   refreshUserInfo: () => Promise<void>;
   updateUserProfile: (updates: Partial<Omit<User, 'id'>>) => Promise<void>;
 }
@@ -266,12 +270,49 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     [isLoggedIn, user]
   );
 
+  // アカウント削除
+  const deleteAccount = React.useCallback(async () => {
+    try {
+      if (!user || !auth.currentUser) {
+        throw new Error('ユーザーがログインしていません');
+      }
+      setIsLoading(true);
+
+      // 1. 再認証の実施（Googleログインユーザの場合）
+      const response = await GoogleSignin.signIn();
+      const { data } = response;
+      if (!data?.idToken) {
+        throw new Error('再認証に失敗しました');
+      }
+      const googleCredential = GoogleAuthProvider.credential(data.idToken);
+      await reauthenticateWithCredential(auth.currentUser, googleCredential);
+      console.log('再認証成功');
+
+      // 2. アカウント削除
+      await deleteUserFromFirestore(user.id);
+      await deleteUser(auth.currentUser);
+
+      // 2.5 TODO:将来的にUserに紐づくGroupやItemも全て削除する
+
+      // 3. ログアウト
+      await GoogleSignin.signOut();
+
+      console.log('アカウント削除成功');
+    } catch (error) {
+      console.error('アカウント削除エラー:', error);
+      throw error; // これなんで？
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user]); // なんで？！ なんでuserなん？
+
   const value: AuthContextType = {
     user,
     isLoggedIn,
     isLoading,
     loginWithGoogle,
     logout,
+    deleteAccount,
     refreshUserInfo,
     updateUserProfile
   };
