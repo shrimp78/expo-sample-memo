@@ -42,7 +42,7 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
       <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={onClose}>
         <Animatable.View
           animation={visible ? 'fadeIn' : 'fadeOut'}
-          duration={visible ? 200 : 30}
+          duration={visible ? 200 : 50}
           style={[
             styles.menuContainer,
             {
