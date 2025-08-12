@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { useAuth } from '@context/AuthContext';
 import AccountIndexScreen from '@screens/account/AccountIndexScreen';
 
-export default function GroupsRoute() {
+export default function AccountRoute() {
   const { isLoggedIn } = useAuth();
 
   useEffect(() => {
