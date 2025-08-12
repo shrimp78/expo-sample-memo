@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { useAuth } from '@context/AuthContext';
 
-const LoginScreen: React.FC = () => {
+export default function LoginScreen() {
   const { loginWithGoogle, isLoading } = useAuth();
 
   const handleGoogleLogin = async () => {
@@ -49,7 +49,7 @@ const LoginScreen: React.FC = () => {
       </View>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -141,5 +141,3 @@ const styles = StyleSheet.create({
     lineHeight: 18
   }
 });
-
-export default LoginScreen;
