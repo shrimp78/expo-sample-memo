@@ -277,14 +277,6 @@ export default function HomeIndexScreen() {
     }))
     .filter(section => section.data.length > 0); // アイテムが1つ以上あるセクションのみを表示
 
-  // 認証状態チェック
-  useEffect(() => {
-    if (!isLoading && !isLoggedIn) {
-      // 未ログインの場合はルート画面にリダイレクト
-      router.replace('/');
-    }
-  }, [isLoggedIn, isLoading]);
-
   // 認証状態のロード中
   if (isLoading) {
     return (
