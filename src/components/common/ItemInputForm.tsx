@@ -76,6 +76,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
         borderWidth={0}
         flex={1}
         minWidth={'$full'}
+        minHeight={300}
         marginTop={'$2'}
         paddingHorizontal={'$2'}
       >
@@ -86,6 +87,8 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           onChangeText={onChangeContent}
           inputAccessoryViewID={inputAccessoryViewID2}
           fontSize={'$md'}
+          multiline={true}
+          textAlignVertical="top"
         />
       </Textarea>
 

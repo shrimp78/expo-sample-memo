@@ -78,7 +78,7 @@ export default function ItemEditScreen() {
 
   return (
     <View style={styles.container}>
-      <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}>
+      <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100} style={{ flex: 1 }}>
         <ItemInputForm
           title={title}
           content={content}
