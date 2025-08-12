@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, TouchableOpacity, View, Text, StyleSheet, Dimensions } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 
 interface HomeMenuModalProps {
   visible: boolean;
@@ -37,9 +38,11 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
   };
 
   return (
-    <Modal visible={visible} transparent={true} animationType="fade" onRequestClose={onClose}>
+    <Modal visible={visible} transparent={true} animationType="none" onRequestClose={onClose}>
       <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={onClose}>
-        <View
+        <Animatable.View
+          animation={visible ? 'fadeIn' : 'fadeOut'}
+          duration={visible ? 200 : 30}
           style={[
             styles.menuContainer,
             {
@@ -62,7 +65,7 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
           <TouchableOpacity style={styles.menuItem} onPress={onLogoutPress}>
             <Text style={[styles.menuText, styles.logoutText]}>ログアウト</Text>
           </TouchableOpacity>
-        </View>
+        </Animatable.View>
       </TouchableOpacity>
     </Modal>
   );
