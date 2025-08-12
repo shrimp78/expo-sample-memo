@@ -18,7 +18,7 @@ export default function LoginScreen() {
     <View style={styles.container}>
       {/* アプリロゴ・タイトル */}
       <View style={styles.headerSection}>
-        <Text style={styles.appTitle}>Sample App</Text>
+        <Text style={styles.appTitle}>EXPO SAMPLE</Text>
       </View>
 
       {/* ログインセクション */}
