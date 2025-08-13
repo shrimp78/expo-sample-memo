@@ -13,7 +13,10 @@ export default function LoginScreen() {
       await loginWithGoogle();
     } catch (error) {
       console.error('ログインエラー:', error);
-      Alert.alert('ログインエラー', error instanceof Error ? error.message : 'ログインに失敗しました');
+      Alert.alert(
+        'ログインエラー',
+        error instanceof Error ? error.message : 'ログインに失敗しました'
+      );
     }
   };
 
@@ -30,7 +33,10 @@ export default function LoginScreen() {
       setPassword('');
     } catch (error) {
       console.error('メールログインエラー:', error);
-      Alert.alert('ログインエラー', error instanceof Error ? error.message : 'ログインに失敗しました');
+      Alert.alert(
+        'ログインエラー',
+        error instanceof Error ? error.message : 'ログインに失敗しました'
+      );
     }
   };
 
@@ -49,8 +55,6 @@ export default function LoginScreen() {
 
       {/* ログインセクション */}
       <View style={styles.loginSection}>
-        <Text style={styles.descriptionText}>ログインしてください</Text>
-
         {/* Googleログインボタン */}
         <TouchableOpacity
           style={[styles.googleLoginButton, isLoading && styles.buttonDisabled]}
@@ -122,13 +126,6 @@ export default function LoginScreen() {
           </View>
         </View>
       </Modal>
-
-      {/* フッター */}
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>
-          ログインすることで、利用規約とプライバシーポリシーに同意したものとみなします
-        </Text>
-      </View>
     </View>
   );
 }
@@ -136,9 +133,7 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F9F9F9',
-    paddingHorizontal: 24,
-    justifyContent: 'space-between'
+    backgroundColor: '#F9F9F9'
   },
   headerSection: {
     flex: 1,
@@ -147,27 +142,14 @@ const styles = StyleSheet.create({
     marginTop: 60
   },
   appTitle: {
-    fontSize: 48,
+    fontSize: 38,
     fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#666',
-    marginBottom: 40
+    color: '#333'
   },
   loginSection: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
-  },
-  descriptionText: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: 40,
-    lineHeight: 24
   },
   googleLoginButton: {
     backgroundColor: '#ffffff',
@@ -211,16 +193,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: '#333'
-  },
-  footer: {
-    paddingBottom: 40,
-    alignItems: 'center'
-  },
-  footerText: {
-    fontSize: 12,
-    color: '#999',
-    textAlign: 'center',
-    lineHeight: 18
   },
   emailLoginButton: {
     backgroundColor: '#007AFF',
