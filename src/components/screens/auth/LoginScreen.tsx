@@ -1,12 +1,8 @@
-import React, { useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, Alert, Modal } from 'react-native';
 import { useAuth } from '@context/AuthContext';
 
 export default function LoginScreen() {
-  const { loginWithGoogle, loginWithEmail, isLoading } = useAuth();
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { loginWithGoogle, isLoading } = useAuth();
 
   const handleGoogleLogin = async () => {
     try {
@@ -18,32 +14,6 @@ export default function LoginScreen() {
         error instanceof Error ? error.message : 'ログインに失敗しました'
       );
     }
-  };
-
-  const handleEmailLogin = async () => {
-    if (!email.trim() || !password.trim()) {
-      Alert.alert('エラー', 'メールアドレスとパスワードを入力してください');
-      return;
-    }
-
-    try {
-      await loginWithEmail(email.trim(), password);
-      setIsModalVisible(false);
-      setEmail('');
-      setPassword('');
-    } catch (error) {
-      console.error('メールログインエラー:', error);
-      Alert.alert(
-        'ログインエラー',
-        error instanceof Error ? error.message : 'ログインに失敗しました'
-      );
-    }
-  };
-
-  const handleModalClose = () => {
-    setIsModalVisible(false);
-    setEmail('');
-    setPassword('');
   };
 
   return (
@@ -71,65 +41,7 @@ export default function LoginScreen() {
             </Text>
           </View>
         </TouchableOpacity>
-
-        {/* メールログインボタン */}
-        <TouchableOpacity
-          style={[styles.loginButton, styles.emailLoginButton, isLoading && styles.buttonDisabled]}
-          onPress={() => setIsModalVisible(true)}
-          disabled={isLoading}
-        >
-          <Text style={[styles.loginButtonText, styles.emailButtonText]}>
-            メールアドレスでログイン
-          </Text>
-        </TouchableOpacity>
       </View>
-
-      {/* メールログインModal */}
-      <Modal
-        visible={isModalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={handleModalClose}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>メールログイン</Text>
-              <TouchableOpacity onPress={handleModalClose} style={styles.closeButton}>
-                <Text style={styles.closeButtonText}>✕</Text>
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.modalForm}>
-              <TextInput
-                style={styles.textInput}
-                placeholder="メールアドレス"
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
-              <TextInput
-                style={styles.textInput}
-                placeholder="パスワード"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
-              <TouchableOpacity
-                style={[styles.modalLoginButton, isLoading && styles.buttonDisabled]}
-                onPress={handleEmailLogin}
-                disabled={isLoading}
-              >
-                <Text style={styles.buttonText}>{isLoading ? 'ログイン中...' : 'ログイン'}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 }
@@ -179,10 +91,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ddd'
   },
-  emailLoginButton: {
-    backgroundColor: '#007AFF',
-    marginTop: 16
-  },
   buttonDisabled: {
     opacity: 0.6
   },
@@ -212,71 +120,5 @@ const styles = StyleSheet.create({
   },
   googleButtonText: {
     color: '#333'
-  },
-  emailButtonText: {
-    color: '#ffffff'
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333'
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  modalContent: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 24,
-    width: '85%',
-    maxWidth: 400,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 24
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333'
-  },
-  closeButton: {
-    padding: 8
-  },
-  closeButtonText: {
-    fontSize: 18,
-    color: '#999'
-  },
-  modalForm: {
-    gap: 16
-  },
-  textInput: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    backgroundColor: '#f9f9f9'
-  },
-  modalLoginButton: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 8
   }
 });

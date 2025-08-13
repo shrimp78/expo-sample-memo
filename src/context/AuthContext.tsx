@@ -4,7 +4,6 @@ import {
   onAuthStateChanged,
   GoogleAuthProvider,
   signInWithCredential,
-  signInWithEmailAndPassword,
   deleteUser,
   reauthenticateWithCredential,
   User as FirebaseUser
@@ -26,7 +25,6 @@ interface AuthContextType {
   isLoggedIn: boolean;
   isLoading: boolean;
   loginWithGoogle: () => Promise<void>;
-  loginWithEmail: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   deleteAccount: () => Promise<void>;
   refreshUserInfo: () => Promise<void>;
@@ -196,37 +194,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, []);
 
-  const loginWithEmail = React.useCallback(async (email: string, password: string) => {
-    try {
-      setIsLoading(true);
-
-      console.log('=== Email Sign-In Debug Info ===');
-      console.log('Starting Email Sign-In flow...');
-
-      // Firebase Authenticationでメールとパスワードでサインイン
-      await signInWithEmailAndPassword(auth, email, password);
-
-      console.log('Firebase Email Sign-In successful');
-    } catch (error: any) {
-      console.error('Email login error:', error);
-      // 成功時は onAuthStateChanged が isLoading を false にする。
-      // エラー時のみここで isLoading を false に戻す。
-      setIsLoading(false);
-
-      if (error.code === 'auth/user-not-found') {
-        throw new Error('このメールアドレスは登録されていません');
-      } else if (error.code === 'auth/wrong-password') {
-        throw new Error('パスワードが間違っています');
-      } else if (error.code === 'auth/invalid-email') {
-        throw new Error('メールアドレスの形式が正しくありません');
-      } else if (error.code === 'auth/user-disabled') {
-        throw new Error('このアカウントは無効化されています');
-      } else {
-        throw new Error(`メールログインエラー: ${error.message}`);
-      }
-    }
-  }, []);
-
   const logout = React.useCallback(async () => {
     try {
       setIsLoading(true);
@@ -344,7 +311,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isLoggedIn,
     isLoading,
     loginWithGoogle,
-    loginWithEmail,
     logout,
     deleteAccount,
     refreshUserInfo,
