@@ -27,7 +27,13 @@ export default function Layout() {
               />
 
               {/* ホーム */}
-              <Stack.Screen name="home/index" options={{ headerTitle: '' }} />
+              <Stack.Screen
+                name="home/index"
+                options={{
+                  headerTitle: '',
+                  headerBackVisible: false
+                }}
+              />
 
               {/* アイテム */}
               <Stack.Screen name="items/[id]" options={{ headerTitle: '' }} />
