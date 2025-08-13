@@ -20,6 +20,12 @@ export default function Layout() {
             >
               <Stack.Screen name="index" options={{ headerShown: false }} />
 
+              {/* 認証 */}
+              <Stack.Screen
+                name="auth/signup"
+                options={{ headerTitle: '', headerBackTitle: '戻る' }}
+              />
+
               {/* ホーム */}
               <Stack.Screen name="home/index" options={{ headerTitle: '' }} />
 

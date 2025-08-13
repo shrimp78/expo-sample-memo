@@ -25,6 +25,7 @@ interface AuthContextType {
   isLoggedIn: boolean;
   isLoading: boolean;
   loginWithGoogle: () => Promise<void>;
+  signUpWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
   deleteAccount: () => Promise<void>;
   refreshUserInfo: () => Promise<void>;
@@ -194,6 +195,78 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, []);
 
+  const signUpWithGoogle = React.useCallback(async () => {
+    try {
+      setIsLoading(true);
+
+      console.log('=== Google Sign-Up Debug Info ===');
+      console.log('Starting Google Sign-Up flow...');
+
+      // Google Play Servicesが利用可能かチェック
+      await GoogleSignin.hasPlayServices();
+
+      // Google Sign-Inを実行
+      const response = await GoogleSignin.signIn();
+      console.log('Google Sign-Up response:', response);
+
+      // idTokenを取得
+      const { data } = response;
+      if (!data?.idToken) {
+        throw new Error('IDトークンが取得できませんでした');
+      }
+
+      // Firebase認証情報を作成（まだサインインはしない）
+      const googleCredential = GoogleAuthProvider.credential(data.idToken);
+
+      // 一時的にFirebaseでサインインしてユーザー情報を取得
+      const userCredential = await signInWithCredential(auth, googleCredential);
+      const firebaseUser = userCredential.user;
+
+      // 既存ユーザーかどうかをチェック
+      const existingUser = await getUserFromFirestore(firebaseUser.uid);
+
+      if (existingUser) {
+        // 既存ユーザーの場合はサインアウトしてエラーを投げる
+        await signOut(auth);
+        await GoogleSignin.signOut();
+        throw new Error('既にこのユーザーが存在します');
+      }
+
+      // 新規ユーザーの場合は作成
+      console.log('新規ユーザーを作成します:', firebaseUser.email);
+
+      const newUser: User = {
+        id: firebaseUser.uid,
+        email: firebaseUser.email || '',
+        name: firebaseUser.displayName || firebaseUser.email || '',
+        picture: firebaseUser.photoURL || undefined
+      };
+
+      await createUserInFirestore(newUser);
+      console.log('新規ユーザーが作成されました:', newUser.email);
+
+      // onAuthStateChangedが新規ユーザーの処理を行うため、ここでは何もしない
+      console.log('Firebase Google Sign-Up successful');
+    } catch (error: any) {
+      console.error('Google signup error:', error);
+      // 成功時は onAuthStateChanged が isLoading を false にする。
+      // エラー時のみここで isLoading を false に戻す。
+      setIsLoading(false);
+
+      if (error.message === '既にこのユーザーが存在します') {
+        throw error; // そのまま再スロー
+      } else if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+        throw new Error('Google認証がキャンセルされました');
+      } else if (error.code === statusCodes.IN_PROGRESS) {
+        throw new Error('Google認証が既に進行中です');
+      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        throw new Error('Google Play Servicesが利用できません');
+      } else {
+        throw new Error(`Google新規登録エラー: ${error.message}`);
+      }
+    }
+  }, []);
+
   const logout = React.useCallback(async () => {
     try {
       setIsLoading(true);
@@ -311,6 +384,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     isLoggedIn,
     isLoading,
     loginWithGoogle,
+    signUpWithGoogle,
     logout,
     deleteAccount,
     refreshUserInfo,

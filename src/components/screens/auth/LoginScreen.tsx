@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, Alert, Modal } from 'react-native';
 import { useAuth } from '@context/AuthContext';
+import { router } from 'expo-router';
 
 export default function LoginScreen() {
   const { loginWithGoogle, isLoading } = useAuth();
@@ -14,6 +15,10 @@ export default function LoginScreen() {
         error instanceof Error ? error.message : 'ログインに失敗しました'
       );
     }
+  };
+
+  const handleSignUp = () => {
+    router.push('/auth/signup');
   };
 
   return (
@@ -40,6 +45,15 @@ export default function LoginScreen() {
               {isLoading ? 'ログイン中...' : 'Googleログイン'}
             </Text>
           </View>
+        </TouchableOpacity>
+
+        {/* 新規作成リンク */}
+        <TouchableOpacity
+          style={styles.signUpTextContainer}
+          onPress={handleSignUp}
+          disabled={isLoading}
+        >
+          <Text style={styles.signUpText}>新規作成</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -120,5 +134,14 @@ const styles = StyleSheet.create({
   },
   googleButtonText: {
     color: '#333'
+  },
+  signUpTextContainer: {
+    marginTop: 32,
+    paddingVertical: 8
+  },
+  signUpText: {
+    fontSize: 16,
+    color: '#666',
+    textDecorationLine: 'underline'
   }
 });
