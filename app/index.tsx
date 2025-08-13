@@ -26,8 +26,12 @@ export default function InitialScreen() {
    */
   const initApp = async () => {
     try {
+      // テーブル作成と初期データ挿入を順次実行
       await ItemService.createTable();
+      console.log('Item table created');
+
       await GroupService.createTable();
+      console.log('Group table created');
 
       await initDatabase();
 

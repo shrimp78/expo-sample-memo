@@ -34,20 +34,35 @@ const execute = async (...sqlArgs: SqlArgs[]): Promise<void> => {
   const path = getDbFilePath();
   console.log(`execute start : path >> ${path}`);
 
-  await db.withTransactionAsync(async () => {
-    for (const arg of sqlArgs) {
-      const { sql, params } = arg;
-      console.log(`execute sql >> ${sql}`);
-      console.log(`execute params >> ${params}`);
+  // 複数のクエリがある場合のみトランザクションを使用
+  if (sqlArgs.length > 1) {
+    await db.withTransactionAsync(async () => {
+      for (const arg of sqlArgs) {
+        const { sql, params } = arg;
+        console.log(`execute sql >> ${sql}`);
+        console.log(`execute params >> ${params}`);
 
-      try {
-        await db.runAsync(sql, ...(params || []));
-      } catch (error) {
-        console.error(`execute error >> ${error}`);
-        throw error;
+        try {
+          await db.runAsync(sql, ...(params || []));
+        } catch (error) {
+          console.error(`execute error >> ${error}`);
+          throw error;
+        }
       }
+    });
+  } else {
+    // 単一のクエリの場合は直接実行
+    const { sql, params } = sqlArgs[0];
+    console.log(`execute sql >> ${sql}`);
+    console.log(`execute params >> ${params}`);
+
+    try {
+      await db.runAsync(sql, ...(params || []));
+    } catch (error) {
+      console.error(`execute error >> ${error}`);
+      throw error;
     }
-  });
+  }
 };
 
 /**
