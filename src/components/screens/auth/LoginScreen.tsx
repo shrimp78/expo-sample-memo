@@ -57,7 +57,7 @@ export default function LoginScreen() {
       <View style={styles.loginSection}>
         {/* Googleログインボタン */}
         <TouchableOpacity
-          style={[styles.googleLoginButton, isLoading && styles.buttonDisabled]}
+          style={[styles.loginButton, styles.googleLoginButton, isLoading && styles.buttonDisabled]}
           onPress={handleGoogleLogin}
           disabled={isLoading}
         >
@@ -66,17 +66,21 @@ export default function LoginScreen() {
             <View style={styles.googleIcon}>
               <Text style={styles.googleIconText}>G</Text>
             </View>
-            <Text style={styles.buttonText}>{isLoading ? 'ログイン中...' : 'Googleログイン'}</Text>
+            <Text style={[styles.loginButtonText, styles.googleButtonText]}>
+              {isLoading ? 'ログイン中...' : 'Googleログイン'}
+            </Text>
           </View>
         </TouchableOpacity>
 
         {/* メールログインボタン */}
         <TouchableOpacity
-          style={[styles.emailLoginButton, isLoading && styles.buttonDisabled]}
+          style={[styles.loginButton, styles.emailLoginButton, isLoading && styles.buttonDisabled]}
           onPress={() => setIsModalVisible(true)}
           disabled={isLoading}
         >
-          <Text style={styles.buttonText}>メールアドレスでログイン</Text>
+          <Text style={[styles.loginButtonText, styles.emailButtonText]}>
+            メールアドレスでログイン
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -149,15 +153,16 @@ const styles = StyleSheet.create({
   loginSection: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    paddingHorizontal: 24
   },
-  googleLoginButton: {
-    backgroundColor: '#ffffff',
+  // 共通のログインボタンスタイル
+  loginButton: {
+    width: '100%',
+    maxWidth: 280,
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#ddd',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -165,7 +170,18 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 3
+    elevation: 3,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  googleLoginButton: {
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#ddd'
+  },
+  emailLoginButton: {
+    backgroundColor: '#007AFF',
+    marginTop: 16
   },
   buttonDisabled: {
     opacity: 0.6
@@ -189,25 +205,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold'
   },
+  // 統一されたログインボタンテキストスタイル
+  loginButtonText: {
+    fontSize: 16,
+    fontWeight: '600'
+  },
+  googleButtonText: {
+    color: '#333'
+  },
+  emailButtonText: {
+    color: '#ffffff'
+  },
   buttonText: {
     fontSize: 16,
     fontWeight: '600',
     color: '#333'
-  },
-  emailLoginButton: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    marginTop: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3
   },
   modalOverlay: {
     flex: 1,
