@@ -18,13 +18,10 @@ export default function Layout() {
                 headerStyle: { backgroundColor: '#F9F9F9' }
               }}
             >
-              <Stack.Screen name="index" options={{ headerShown: false }} />
+              <Stack.Screen name="index" options={{ headerTitle: '' }} />
 
               {/* 認証 */}
-              <Stack.Screen
-                name="auth/signup"
-                options={{ headerTitle: '', headerBackTitle: '戻る' }}
-              />
+              <Stack.Screen name="auth/signup" options={{ headerTitle: '' }} />
 
               {/* ホーム */}
               <Stack.Screen
