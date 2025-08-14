@@ -3,6 +3,7 @@ import {
   signOut,
   onAuthStateChanged,
   GoogleAuthProvider,
+  OAuthProvider,
   signInWithCredential,
   deleteUser,
   reauthenticateWithCredential,
@@ -17,15 +18,20 @@ import {
   deleteUserFromFirestore
 } from '@services/userService';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import Constants from 'expo-constants';
+import { Platform } from 'react-native';
 
 // 認証コンテキストの型定義
 interface AuthContextType {
   user: User | null;
   isLoggedIn: boolean;
   isLoading: boolean;
+  isAppleSignInAvailable: boolean;
   loginWithGoogle: () => Promise<void>;
+  loginWithApple: () => Promise<void>;
   signUpWithGoogle: () => Promise<void>;
+  signUpWithApple: () => Promise<void>;
   logout: () => Promise<void>;
   deleteAccount: () => Promise<void>;
   refreshUserInfo: () => Promise<void>;
@@ -41,11 +47,12 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isAppleSignInAvailable, setIsAppleSignInAvailable] = useState<boolean>(false);
 
   // ログイン状態の判定
   const isLoggedIn = user !== null;
 
-  // Google Sign-Inの設定
+  // Google Sign-InとApple Sign-Inの設定
   React.useEffect(() => {
     const configureGoogleSignIn = () => {
       try {
@@ -67,7 +74,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     };
 
+    const checkAppleSignInAvailability = async () => {
+      try {
+        if (Platform.OS === 'ios') {
+          const isAvailable = await AppleAuthentication.isAvailableAsync();
+          setIsAppleSignInAvailable(isAvailable);
+          console.log('Apple Sign-In availability:', isAvailable);
+        }
+      } catch (error) {
+        console.error('Apple Sign-In availability check error:', error);
+        setIsAppleSignInAvailable(false);
+      }
+    };
+
     configureGoogleSignIn();
+    checkAppleSignInAvailability();
   }, []);
 
   // Firebase認証状態の監視
@@ -195,6 +216,57 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, []);
 
+  const loginWithApple = React.useCallback(async () => {
+    try {
+      setIsLoading(true);
+
+      console.log('=== Apple Sign-In Debug Info ===');
+      console.log('Starting Apple Sign-In flow...');
+
+      if (!isAppleSignInAvailable) {
+        throw new Error('Apple Sign-Inが利用できません');
+      }
+
+      // Apple Sign-Inを実行
+      const appleCredential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL
+        ]
+      });
+
+      console.log('Apple Sign-In response:', appleCredential);
+
+      const { identityToken, authorizationCode } = appleCredential;
+      if (!identityToken) {
+        throw new Error('Apple認証トークンが取得できませんでした');
+      }
+
+      // Firebase認証プロバイダーを作成
+      const provider = new OAuthProvider('apple.com');
+      const credential = provider.credential({
+        idToken: identityToken,
+        rawNonce: undefined // 今回はnancel使わない簡単な実装
+      });
+
+      // Firebase Authenticationでサインイン
+      await signInWithCredential(auth, credential);
+
+      console.log('Firebase Apple Sign-In successful');
+    } catch (error: any) {
+      console.error('Apple login error:', error);
+      // 成功時は onAuthStateChanged が isLoading を false にする。
+      // エラー時のみここで isLoading を false に戻す。
+      setIsLoading(false);
+
+      if (error.code === 'ERR_REQUEST_CANCELED') {
+        throw new Error('Apple認証がキャンセルされました');
+      } else {
+        throw new Error(`Appleログインエラー: ${error.message}`);
+      }
+    }
+  }, [isAppleSignInAvailable]);
+
   const signUpWithGoogle = React.useCallback(async () => {
     try {
       setIsLoading(true);
@@ -266,6 +338,88 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     }
   }, []);
+
+  const signUpWithApple = React.useCallback(async () => {
+    try {
+      setIsLoading(true);
+
+      console.log('=== Apple Sign-Up Debug Info ===');
+      console.log('Starting Apple Sign-Up flow...');
+
+      if (!isAppleSignInAvailable) {
+        throw new Error('Apple Sign-Inが利用できません');
+      }
+
+      // Apple Sign-Inを実行
+      const appleCredential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL
+        ]
+      });
+
+      console.log('Apple Sign-Up response:', appleCredential);
+
+      const { identityToken, fullName, email } = appleCredential;
+      if (!identityToken) {
+        throw new Error('Apple認証トークンが取得できませんでした');
+      }
+
+      // Firebase認証プロバイダーを作成
+      const provider = new OAuthProvider('apple.com');
+      const credential = provider.credential({
+        idToken: identityToken,
+        rawNonce: undefined // 今回はnonceを使わない簡単な実装
+      });
+
+      // 一時的にFirebaseでサインインしてユーザー情報を取得
+      const userCredential = await signInWithCredential(auth, credential);
+      const firebaseUser = userCredential.user;
+
+      // 既存ユーザーかどうかをチェック
+      const existingUser = await getUserFromFirestore(firebaseUser.uid);
+
+      if (existingUser) {
+        // 既存ユーザーの場合はサインアウトしてエラーを投げる
+        await signOut(auth);
+        throw new Error('既にこのユーザーが存在します');
+      }
+
+      // 新規ユーザーの場合は作成
+      console.log('新規ユーザーを作成します:', firebaseUser.email || email);
+
+      // Apple認証では表示名やメールアドレスが初回のみ提供されることがある
+      const displayName = fullName
+        ? `${fullName.givenName || ''} ${fullName.familyName || ''}`.trim()
+        : firebaseUser.displayName;
+
+      const newUser: User = {
+        id: firebaseUser.uid,
+        email: firebaseUser.email || email || '',
+        name: displayName || firebaseUser.email || email || 'Apple User',
+        picture: firebaseUser.photoURL || undefined
+      };
+
+      await createUserInFirestore(newUser);
+      console.log('新規ユーザーが作成されました:', newUser.email);
+
+      // onAuthStateChangedが新規ユーザーの処理を行うため、ここでは何もしない
+      console.log('Firebase Apple Sign-Up successful');
+    } catch (error: any) {
+      console.error('Apple signup error:', error);
+      // 成功時は onAuthStateChanged が isLoading を false にする。
+      // エラー時のみここで isLoading を false に戻す。
+      setIsLoading(false);
+
+      if (error.message === '既にこのユーザーが存在します') {
+        throw error; // そのまま再スロー
+      } else if (error.code === 'ERR_REQUEST_CANCELED') {
+        throw new Error('Apple認証がキャンセルされました');
+      } else {
+        throw new Error(`Apple新規登録エラー: ${error.message}`);
+      }
+    }
+  }, [isAppleSignInAvailable]);
 
   const logout = React.useCallback(async () => {
     try {
@@ -383,8 +537,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     user,
     isLoggedIn,
     isLoading,
+    isAppleSignInAvailable,
     loginWithGoogle,
+    loginWithApple,
     signUpWithGoogle,
+    signUpWithApple,
     logout,
     deleteAccount,
     refreshUserInfo,

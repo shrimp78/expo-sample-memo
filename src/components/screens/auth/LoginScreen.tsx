@@ -3,13 +3,25 @@ import { useAuth } from '@context/AuthContext';
 import { router } from 'expo-router';
 
 export default function LoginScreen() {
-  const { loginWithGoogle, isLoading } = useAuth();
+  const { loginWithGoogle, loginWithApple, isLoading, isAppleSignInAvailable } = useAuth();
 
   const handleGoogleLogin = async () => {
     try {
       await loginWithGoogle();
     } catch (error) {
       console.error('ログインエラー:', error);
+      Alert.alert(
+        'ログインエラー',
+        error instanceof Error ? error.message : 'ログインに失敗しました'
+      );
+    }
+  };
+
+  const handleAppleLogin = async () => {
+    try {
+      await loginWithApple();
+    } catch (error) {
+      console.error('Appleログインエラー:', error);
       Alert.alert(
         'ログインエラー',
         error instanceof Error ? error.message : 'ログインに失敗しました'
@@ -46,6 +58,29 @@ export default function LoginScreen() {
             </Text>
           </View>
         </TouchableOpacity>
+
+        {/* Appleログインボタン（iOSのみ表示） */}
+        {isAppleSignInAvailable && (
+          <TouchableOpacity
+            style={[
+              styles.loginButton,
+              styles.appleLoginButton,
+              isLoading && styles.buttonDisabled
+            ]}
+            onPress={handleAppleLogin}
+            disabled={isLoading}
+          >
+            <View style={styles.buttonContent}>
+              {/* Apple アイコン */}
+              <View style={styles.appleIcon}>
+                <Text style={styles.appleIconText}></Text>
+              </View>
+              <Text style={[styles.loginButtonText, styles.appleButtonText]}>
+                {isLoading ? 'ログイン中...' : 'Appleログイン'}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        )}
 
         {/* 新規作成リンク */}
         <TouchableOpacity
@@ -103,7 +138,14 @@ const styles = StyleSheet.create({
   googleLoginButton: {
     backgroundColor: '#ffffff',
     borderWidth: 1,
-    borderColor: '#ddd'
+    borderColor: '#ddd',
+    marginBottom: 12
+  },
+  appleLoginButton: {
+    backgroundColor: '#000000',
+    borderWidth: 1,
+    borderColor: '#000000',
+    marginBottom: 12
   },
   buttonDisabled: {
     opacity: 0.6
@@ -134,6 +176,23 @@ const styles = StyleSheet.create({
   },
   googleButtonText: {
     color: '#333'
+  },
+  appleIcon: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#ffffff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12
+  },
+  appleIconText: {
+    color: '#000000',
+    fontSize: 14,
+    fontWeight: 'bold'
+  },
+  appleButtonText: {
+    color: '#ffffff'
   },
   signUpTextContainer: {
     marginTop: 32,
