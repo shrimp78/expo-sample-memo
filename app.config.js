@@ -16,7 +16,8 @@ export default {
     ios: {
       supportsTablet: true,
       bundleIdentifier: 'com.shrimp78.expo-sample',
-      googleServicesFile: './GoogleService-Info.plist'
+      googleServicesFile: './GoogleService-Info.plist',
+      usesAppleSignIn: true
     },
     android: {
       adaptiveIcon: {
@@ -28,7 +29,12 @@ export default {
     web: {
       favicon: './assets/favicon.png'
     },
-    plugins: ['expo-router', 'expo-sqlite', '@react-native-google-signin/google-signin'],
+    plugins: [
+      'expo-router',
+      'expo-sqlite',
+      '@react-native-google-signin/google-signin',
+      'expo-apple-authentication'
+    ],
     extra: {
       firebaseWebClientId: process.env.FIREBASE_WEB_CLIENT_ID,
       eas: {
