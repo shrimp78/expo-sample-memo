@@ -11,6 +11,7 @@
     "flatlist",
     "googleusercontent",
     "firestore",
-    "Pressable"
+    "Pressable",
+    "spdapp"
   ]
 }
