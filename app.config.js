@@ -1,8 +1,8 @@
 import 'dotenv/config';
 export default {
   expo: {
-    name: 'expo-sample',
-    slug: 'expo-sample',
+    name: 'spd-app',
+    slug: 'spd-app',
     version: '1.0.0',
     orientation: 'portrait',
     icon: './assets/icon.png',
@@ -15,7 +15,7 @@ export default {
     },
     ios: {
       supportsTablet: true,
-      bundleIdentifier: 'com.shrimp78.expo-sample',
+      bundleIdentifier: 'com.shrimp78.spd-app',
       googleServicesFile: './GoogleService-Info.plist',
       usesAppleSignIn: true
     },
@@ -24,7 +24,7 @@ export default {
         foregroundImage: './assets/adaptive-icon.png',
         backgroundColor: '#ffffff'
       },
-      package: 'com.shrimp78.expo.sample'
+      package: 'com.shrimp78.spdapp'
     },
     web: {
       favicon: './assets/favicon.png'
@@ -42,5 +42,5 @@ export default {
       }
     }
   },
-  scheme: 'com.shrimp78.expo-sample'
+  scheme: 'com.shrimp78.spd-app'
 };
