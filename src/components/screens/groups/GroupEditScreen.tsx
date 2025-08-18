@@ -5,7 +5,7 @@ import { getGroupById, updateGroup } from '@services/groupService';
 import { KeyboardAvoidingView, Input, InputField } from '@gluestack-ui/themed';
 import { type Group } from '@models/Group';
 import KeyboardCloseButton from '@components/common/KeyboardCloseButton';
-import GroupColorSelector from '@screens/groups/GroupColorSelector';
+import GroupColorSelector from './GroupColorSelector';
 
 const inputAccessoryViewID = 'INPUT_ACCESSORY_VIEW_ID_GROUP';
 
