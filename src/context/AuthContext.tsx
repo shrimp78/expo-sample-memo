@@ -9,6 +9,7 @@ import {
   reauthenticateWithCredential,
   User as FirebaseUser
 } from 'firebase/auth';
+import { Alert } from 'react-native';
 import { auth } from '../../firebaseConfig';
 import { User } from '@components/types/User';
 import {
@@ -104,19 +105,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           let user = await getUserFromFirestore(firebaseUser.uid);
 
           if (!user) {
-            // ユーザーが存在しない場合は新規作成
-            console.log('新規ユーザーを作成します:', firebaseUser.email);
+            // ユーザーが存在しない場合はログインを拒否
+            console.log('ユーザーが見つかりません:', firebaseUser.email);
 
-            const newUser: User = {
-              id: firebaseUser.uid,
-              email: firebaseUser.email || '',
-              name: firebaseUser.displayName || firebaseUser.email || '',
-              picture: firebaseUser.photoURL || undefined
-            };
+            // Firebase認証からサインアウト
+            await signOut(auth);
 
-            await createUserInFirestore(newUser);
-            user = newUser;
-            console.log('新規ユーザーが作成されました:', user.email);
+            // ダイアログを表示
+            Alert.alert(
+              'ユーザーが見つかりません',
+              '初めてログインする場合は新規作成ボタンを押してください',
+              [
+                {
+                  text: '確認',
+                  onPress: () => {
+                    // ログイン画面に戻る（userがnullになることで自動的に戻る）
+                    console.log('ログイン画面に戻ります');
+                  }
+                }
+              ]
+            );
+
+            setUser(null);
+            setIsLoading(false);
+            return;
           } else {
             console.log('既存ユーザーが読み込まれました:', user.email);
 
@@ -150,14 +162,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           console.log('ユーザーログイン完了:', JSON.stringify(user, null, 2));
         } catch (error) {
           console.error('Firestoreユーザー処理エラー:', error);
-          // エラーが発生した場合はFirebase認証情報のみでユーザーを作成
-          const fallbackUser: User = {
-            id: firebaseUser.uid,
-            email: firebaseUser.email || '',
-            name: firebaseUser.displayName || firebaseUser.email || '',
-            picture: firebaseUser.photoURL || undefined
-          };
-          setUser(fallbackUser);
+
+          // Firebase認証からサインアウト
+          await signOut(auth);
+
+          // エラーダイアログを表示
+          Alert.alert(
+            'エラーが発生しました',
+            'ユーザー情報の取得に失敗しました。もう一度お試しください。',
+            [
+              {
+                text: '確認',
+                onPress: () => {
+                  console.log('エラーによりログイン画面に戻ります');
+                }
+              }
+            ]
+          );
+
+          setUser(null);
+          setIsLoading(false);
         }
       } else {
         setUser(null);
