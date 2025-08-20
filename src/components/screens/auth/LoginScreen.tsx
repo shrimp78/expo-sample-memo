@@ -1,6 +1,8 @@
 import { StyleSheet, Text, View, TouchableOpacity, TextInput, Alert, Modal } from 'react-native';
 import { useAuth } from '@context/AuthContext';
 import { router } from 'expo-router';
+import * as AppleAuthentication from 'expo-apple-authentication';
+import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
 
 export default function LoginScreen() {
   const { loginWithGoogle, loginWithApple, isLoading, isAppleSignInAvailable } = useAuth();
@@ -43,43 +45,22 @@ export default function LoginScreen() {
       {/* ログインセクション */}
       <View style={styles.loginSection}>
         {/* Googleログインボタン */}
-        <TouchableOpacity
-          style={[styles.loginButton, styles.googleLoginButton, isLoading && styles.buttonDisabled]}
-          onPress={handleGoogleLogin}
-          disabled={isLoading}
-        >
-          <View style={styles.buttonContent}>
-            {/* Google アイコン（仮のアイコン） */}
-            <View style={styles.googleIcon}>
-              <Text style={styles.googleIconText}>G</Text>
-            </View>
-            <Text style={[styles.loginButtonText, styles.googleButtonText]}>
-              {isLoading ? 'ログイン中...' : 'Googleログイン'}
-            </Text>
-          </View>
-        </TouchableOpacity>
+        <GoogleSigninButton
+          style={[styles.googleButton, isLoading && styles.buttonDisabled]}
+          size={GoogleSigninButton.Size.Standard}
+          color={GoogleSigninButton.Color.Light}
+          onPress={isLoading ? () => {} : handleGoogleLogin}
+        />
 
         {/* Appleログインボタン（iOSのみ表示） */}
         {isAppleSignInAvailable && (
-          <TouchableOpacity
-            style={[
-              styles.loginButton,
-              styles.appleLoginButton,
-              isLoading && styles.buttonDisabled
-            ]}
-            onPress={handleAppleLogin}
-            disabled={isLoading}
-          >
-            <View style={styles.buttonContent}>
-              {/* Apple アイコン */}
-              <View style={styles.appleIcon}>
-                <Text style={styles.appleIconText}></Text>
-              </View>
-              <Text style={[styles.loginButtonText, styles.appleButtonText]}>
-                {isLoading ? 'ログイン中...' : 'Appleログイン'}
-              </Text>
-            </View>
-          </TouchableOpacity>
+          <AppleAuthentication.AppleAuthenticationButton
+            buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+            buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+            cornerRadius={12}
+            style={[styles.appleButton, isLoading && styles.buttonDisabled]}
+            onPress={isLoading ? () => {} : handleAppleLogin}
+          />
         )}
 
         {/* 新規作成リンク */}
@@ -135,65 +116,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  googleLoginButton: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    marginBottom: 12
+  googleButton: {
+    width: '100%',
+    maxWidth: 320,
+    height: 60,
+    marginBottom: 12,
+    alignSelf: 'center'
   },
-  appleLoginButton: {
-    backgroundColor: '#000000',
-    borderWidth: 1,
-    borderColor: '#000000',
-    marginBottom: 12
+  appleButton: {
+    width: '100%',
+    maxWidth: 320,
+    height: 60,
+    marginBottom: 12,
+    alignSelf: 'center'
   },
   buttonDisabled: {
     opacity: 0.6
   },
-  buttonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  googleIcon: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: '#4285f4',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12
-  },
-  googleIconText: {
-    color: '#ffffff',
-    fontSize: 14,
-    fontWeight: 'bold'
-  },
-  // 統一されたログインボタンテキストスタイル
-  loginButtonText: {
-    fontSize: 16,
-    fontWeight: '600'
-  },
-  googleButtonText: {
-    color: '#333'
-  },
-  appleIcon: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: '#ffffff',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12
-  },
-  appleIconText: {
-    color: '#000000',
-    fontSize: 14,
-    fontWeight: 'bold'
-  },
-  appleButtonText: {
-    color: '#ffffff'
-  },
+
   signUpTextContainer: {
     marginTop: 32,
     paddingVertical: 8
