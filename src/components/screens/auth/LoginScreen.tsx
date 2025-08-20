@@ -1,8 +1,6 @@
-import { StyleSheet, Text, View, TouchableOpacity, TextInput, Alert, Modal } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 import { useAuth } from '@context/AuthContext';
 import { router } from 'expo-router';
-import * as AppleAuthentication from 'expo-apple-authentication';
-import { GoogleSigninButton } from '@react-native-google-signin/google-signin';
 
 export default function LoginScreen() {
   const { loginWithGoogle, loginWithApple, isLoading, isAppleSignInAvailable } = useAuth();
@@ -45,22 +43,37 @@ export default function LoginScreen() {
       {/* ログインセクション */}
       <View style={styles.loginSection}>
         {/* Googleログインボタン */}
-        <GoogleSigninButton
-          style={[styles.googleButton, isLoading && styles.buttonDisabled]}
-          size={GoogleSigninButton.Size.Standard}
-          color={GoogleSigninButton.Color.Light}
-          onPress={isLoading ? () => {} : handleGoogleLogin}
-        />
+        <TouchableOpacity
+          style={[styles.loginButton, styles.googleButton, isLoading && styles.buttonDisabled]}
+          onPress={handleGoogleLogin}
+          disabled={isLoading}
+        >
+          <View style={styles.buttonContent}>
+            <View style={styles.googleIcon}>
+              <Text style={styles.googleIconText}>G</Text>
+            </View>
+            <Text style={[styles.buttonText, { color: '#1f1f1f' }]}>
+              {isLoading ? 'ログイン中...' : 'Googleでログイン'}
+            </Text>
+          </View>
+        </TouchableOpacity>
 
         {/* Appleログインボタン（iOSのみ表示） */}
         {isAppleSignInAvailable && (
-          <AppleAuthentication.AppleAuthenticationButton
-            buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
-            buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
-            cornerRadius={12}
-            style={[styles.appleButton, isLoading && styles.buttonDisabled]}
-            onPress={isLoading ? () => {} : handleAppleLogin}
-          />
+          <TouchableOpacity
+            style={[styles.loginButton, styles.appleButton, isLoading && styles.buttonDisabled]}
+            onPress={handleAppleLogin}
+            disabled={isLoading}
+          >
+            <View style={styles.buttonContent}>
+              <View style={styles.appleIcon}>
+                <Text style={styles.appleIconText}></Text>
+              </View>
+              <Text style={[styles.buttonText, { color: '#ffffff' }]}>
+                {isLoading ? 'ログイン中...' : 'Appleでサインイン'}
+              </Text>
+            </View>
+          </TouchableOpacity>
         )}
 
         {/* 新規作成リンク */}
@@ -101,7 +114,8 @@ const styles = StyleSheet.create({
   // 共通のログインボタンスタイル
   loginButton: {
     width: '100%',
-    maxWidth: 280,
+    maxWidth: 320,
+    height: 56,
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 12,
@@ -114,21 +128,53 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    marginBottom: 12,
+    alignSelf: 'center'
   },
   googleButton: {
-    width: '100%',
-    maxWidth: 320,
-    height: 60,
-    marginBottom: 12,
-    alignSelf: 'center'
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#dadce0'
   },
   appleButton: {
-    width: '100%',
-    maxWidth: 320,
-    height: 60,
-    marginBottom: 12,
-    alignSelf: 'center'
+    backgroundColor: '#000000'
+  },
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 12
+  },
+  googleIcon: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#4285f4',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  googleIconText: {
+    color: '#ffffff',
+    fontSize: 12,
+    fontWeight: 'bold'
+  },
+  appleIcon: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#ffffff',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  appleIconText: {
+    color: '#000000',
+    fontSize: 12,
+    fontWeight: 'bold'
   },
   buttonDisabled: {
     opacity: 0.6
