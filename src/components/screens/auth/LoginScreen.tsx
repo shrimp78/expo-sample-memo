@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Alert, Image } from 'react-native';
 import { useAuth } from '@context/AuthContext';
 import { router } from 'expo-router';
 
@@ -44,15 +44,17 @@ export default function LoginScreen() {
       <View style={styles.loginSection}>
         {/* Googleログインボタン */}
         <TouchableOpacity
-          style={[styles.loginButton, styles.googleButton, isLoading && styles.buttonDisabled]}
+          style={[styles.loginButton, isLoading && styles.buttonDisabled]}
           onPress={handleGoogleLogin}
           disabled={isLoading}
         >
           <View style={styles.buttonContent}>
-            <View style={styles.googleIcon}>
-              <Text style={styles.googleIconText}>G</Text>
-            </View>
-            <Text style={[styles.buttonText, { color: '#1f1f1f' }]}>
+            <Image
+              source={require('../../../../assets/images/buttons/google-logo.png')}
+              style={styles.logoIcon}
+              resizeMode="contain"
+            />
+            <Text style={styles.buttonText}>
               {isLoading ? 'ログイン中...' : 'Googleでログイン'}
             </Text>
           </View>
@@ -61,15 +63,17 @@ export default function LoginScreen() {
         {/* Appleログインボタン（iOSのみ表示） */}
         {isAppleSignInAvailable && (
           <TouchableOpacity
-            style={[styles.loginButton, styles.appleButton, isLoading && styles.buttonDisabled]}
+            style={[styles.loginButton, isLoading && styles.buttonDisabled]}
             onPress={handleAppleLogin}
             disabled={isLoading}
           >
             <View style={styles.buttonContent}>
-              <View style={styles.appleIcon}>
-                <Text style={styles.appleIconText}></Text>
-              </View>
-              <Text style={[styles.buttonText, { color: '#ffffff' }]}>
+              <Image
+                source={require('../../../../assets/images/buttons/apple-logo.png')}
+                style={styles.logoIcon}
+                resizeMode="contain"
+              />
+              <Text style={styles.buttonText}>
                 {isLoading ? 'ログイン中...' : 'Appleでサインイン'}
               </Text>
             </View>
@@ -119,6 +123,9 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     paddingHorizontal: 24,
     borderRadius: 12,
+    backgroundColor: '#ffffff',
+    borderWidth: 1,
+    borderColor: '#dadce0',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -129,16 +136,8 @@ const styles = StyleSheet.create({
     elevation: 3,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 12,
+    marginBottom: 24,
     alignSelf: 'center'
-  },
-  googleButton: {
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#dadce0'
-  },
-  appleButton: {
-    backgroundColor: '#000000'
   },
   buttonContent: {
     flexDirection: 'row',
@@ -148,33 +147,11 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 16,
     fontWeight: '600',
-    marginLeft: 12
+    marginLeft: 20
   },
-  googleIcon: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: '#4285f4',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  googleIconText: {
-    color: '#ffffff',
-    fontSize: 12,
-    fontWeight: 'bold'
-  },
-  appleIcon: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-    backgroundColor: '#ffffff',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  appleIconText: {
-    color: '#000000',
-    fontSize: 12,
-    fontWeight: 'bold'
+  logoIcon: {
+    width: 26,
+    height: 26
   },
   buttonDisabled: {
     opacity: 0.6
