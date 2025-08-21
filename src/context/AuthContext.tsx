@@ -22,6 +22,7 @@ import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-si
 import * as AppleAuthentication from 'expo-apple-authentication';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
+import { saveLastAuthProvider } from '@services/secureStore';
 
 // 認証コンテキストの型定義
 interface AuthContextType {
@@ -220,6 +221,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // Firebase Authenticationでサインイン
       await signInWithCredential(auth, googleCredential);
+      // 成功したため、最後に使用したプロバイダを保存
+      await saveLastAuthProvider('google');
 
       console.log('Firebase Google Sign-In successful');
     } catch (error: any) {
@@ -275,6 +278,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // Firebase Authenticationでサインイン
       await signInWithCredential(auth, credential);
+      // 成功したため、最後に使用したプロバイダを保存
+      await saveLastAuthProvider('apple');
 
       console.log('Firebase Apple Sign-In successful');
     } catch (error: any) {
@@ -316,6 +321,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // 一時的にFirebaseでサインインしてユーザー情報を取得
       const userCredential = await signInWithCredential(auth, googleCredential);
+      // 成功したため、最後に使用したプロバイダを保存
+      await saveLastAuthProvider('google');
       const firebaseUser = userCredential.user;
 
       // 既存ユーザーかどうかをチェック
@@ -398,6 +405,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // 一時的にFirebaseでサインインしてユーザー情報を取得
       const userCredential = await signInWithCredential(auth, credential);
+      // 成功したため、最後に使用したプロバイダを保存
+      await saveLastAuthProvider('apple');
       const firebaseUser = userCredential.user;
 
       // 既存ユーザーかどうかをチェック
