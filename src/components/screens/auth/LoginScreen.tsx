@@ -1,9 +1,19 @@
 import { StyleSheet, Text, View, TouchableOpacity, Alert, Image } from 'react-native';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@context/AuthContext';
 import { router } from 'expo-router';
+import { getLastAuthProvider } from '@services/secureStore';
 
 export default function LoginScreen() {
   const { loginWithGoogle, loginWithApple, isLoading, isAppleSignInAvailable } = useAuth();
+  const [lastProvider, setLastProvider] = useState<'google' | 'apple' | null>(null);
+
+  useEffect(() => {
+    (async () => {
+      const provider = await getLastAuthProvider();
+      setLastProvider(provider);
+    })();
+  }, []);
 
   const handleGoogleLogin = async () => {
     try {
@@ -42,6 +52,13 @@ export default function LoginScreen() {
 
       {/* ログインセクション */}
       <View style={styles.loginSection}>
+        {/* 前回のログインプロバイダーがあれば表示 */}
+        {lastProvider && (
+          <View>
+            <Text>前回は{lastProvider}でログインしていました</Text>
+          </View>
+        )}
+
         {/* Googleログインボタン */}
         <TouchableOpacity
           style={[styles.loginButton, isLoading && styles.buttonDisabled]}
