@@ -52,7 +52,7 @@ export default function LoginScreen() {
 
       {/* ログインセクション */}
       <View style={styles.loginSection}>
-        {/* 前回のログインプロバイダーがあれば表示 */}
+        {/* 前回のログインプロバイダーがあれば表示  TODO: ログイン後、ユーザが見つからない場合もあるがその時も表示されてしまう。　ユーザーが見つからない場合はSecureStorageに保存しないようにしたほうが良いかも*/}
         {lastProvider && (
           <View>
             <Text>前回は{lastProvider}でログインしていました</Text>
