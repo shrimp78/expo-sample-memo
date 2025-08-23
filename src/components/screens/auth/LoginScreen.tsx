@@ -54,8 +54,8 @@ export default function LoginScreen() {
       <View style={styles.loginSection}>
         {/* 前回のログインプロバイダーがあれば表示  TODO: ログイン後、ユーザが見つからない場合もあるがその時も表示されてしまう。　ユーザーが見つからない場合はSecureStorageに保存しないようにしたほうが良いかも*/}
         {lastProvider && (
-          <View>
-            <Text>前回は{lastProvider}でログインしていました</Text>
+          <View style={styles.lastProviderContainer}>
+            <Text style={styles.lastProviderText}>前回は{lastProvider}でログインしていました</Text>
           </View>
         )}
 
@@ -172,6 +172,21 @@ const styles = StyleSheet.create({
   },
   buttonDisabled: {
     opacity: 0.6
+  },
+
+  lastProviderContainer: {
+    width: '100%',
+    maxWidth: 320,
+    alignSelf: 'center',
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    backgroundColor: '#F3F4F6',
+    marginBottom: 20
+  },
+  lastProviderText: {
+    fontSize: 14,
+    color: '#555',
+    textAlign: 'center'
   },
 
   signUpTextContainer: {
