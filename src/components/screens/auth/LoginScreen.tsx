@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
   },
 
   signUpTextContainer: {
-    marginTop: 32,
+    marginTop: 22,
     paddingVertical: 8
   },
   signUpText: {
