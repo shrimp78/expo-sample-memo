@@ -61,7 +61,7 @@ export default function LoginScreen() {
 
         {/* Googleログインボタン */}
         <TouchableOpacity
-          style={[styles.loginButton, isLoading && styles.buttonDisabled]}
+          style={styles.loginButton}
           onPress={handleGoogleLogin}
           disabled={isLoading}
         >
@@ -80,7 +80,7 @@ export default function LoginScreen() {
         {/* Appleログインボタン（iOSのみ表示） */}
         {isAppleSignInAvailable && (
           <TouchableOpacity
-            style={[styles.loginButton, isLoading && styles.buttonDisabled]}
+            style={styles.loginButton}
             onPress={handleAppleLogin}
             disabled={isLoading}
           >
@@ -170,10 +170,6 @@ const styles = StyleSheet.create({
     width: 26,
     height: 26
   },
-  buttonDisabled: {
-    opacity: 0.6
-  },
-
   lastProviderContainer: {
     width: '100%',
     maxWidth: 320,
