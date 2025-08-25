@@ -11,7 +11,8 @@
       "@services/*": ["src/services/*"],
       "@context/*": ["src/context/*"],
       "@models/*": ["src/components/types/*"],
-      "@constants/*": ["constants/*"]
+      "@constants/*": ["constants/*"],
+      "@assets/*": ["assets/*"]
     }
   },
   "files.exclude": {

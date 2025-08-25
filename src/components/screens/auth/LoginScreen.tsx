@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@context/AuthContext';
 import { router } from 'expo-router';
 import { getLastAuthProvider } from '@services/secureStore';
+import { GoogleLoginButton, AppleLoginButton } from './LoginButton';
 
 export default function LoginScreen() {
   const { loginWithGoogle, loginWithApple, isLoading, isAppleSignInAvailable } = useAuth();
@@ -60,41 +61,11 @@ export default function LoginScreen() {
         )}
 
         {/* Googleログインボタン */}
-        <TouchableOpacity
-          style={styles.loginButton}
-          onPress={handleGoogleLogin}
-          disabled={isLoading}
-        >
-          <View style={styles.buttonContent}>
-            <Image
-              source={require('../../../../assets/images/buttons/google-logo.png')}
-              style={styles.logoIcon}
-              resizeMode="contain"
-            />
-            <Text style={styles.buttonText}>
-              {isLoading ? 'ログイン中...' : 'Googleでログイン'}
-            </Text>
-          </View>
-        </TouchableOpacity>
+        <GoogleLoginButton onPress={handleGoogleLogin} isLoading={isLoading} />
 
         {/* Appleログインボタン（iOSのみ表示） */}
         {isAppleSignInAvailable && (
-          <TouchableOpacity
-            style={styles.loginButton}
-            onPress={handleAppleLogin}
-            disabled={isLoading}
-          >
-            <View style={styles.buttonContent}>
-              <Image
-                source={require('../../../../assets/images/buttons/apple-logo.png')}
-                style={styles.logoIcon}
-                resizeMode="contain"
-              />
-              <Text style={styles.buttonText}>
-                {isLoading ? 'ログイン中...' : 'Appleでサインイン'}
-              </Text>
-            </View>
-          </TouchableOpacity>
+          <AppleLoginButton onPress={handleAppleLogin} isLoading={isLoading} />
         )}
 
         {/* 新規作成リンク */}
@@ -131,44 +102,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 24
-  },
-  // 共通のログインボタンスタイル
-  loginButton: {
-    width: '100%',
-    maxWidth: 320,
-    height: 56,
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#dadce0',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 24,
-    alignSelf: 'center'
-  },
-  buttonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginLeft: 20
-  },
-  logoIcon: {
-    width: 26,
-    height: 26
   },
   lastProviderContainer: {
     width: '100%',
