@@ -55,7 +55,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const isLoggedIn = user !== null;
 
   // Google Sign-InとApple Sign-Inの設定
-  React.useEffect(() => {
+  useEffect(() => {
     const configureGoogleSignIn = () => {
       try {
         const webClientId = Constants.expoConfig?.extra?.firebaseWebClientId;
