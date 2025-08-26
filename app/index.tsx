@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { useEffect } from 'react';
 import * as ItemService from '../src/services/itemService';
 import * as Crypto from 'expo-crypto';
@@ -70,7 +70,7 @@ export default function InitialScreen() {
   if (isLoading) {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>アプリ起動中...</Text>
+        <ActivityIndicator size="large" color="#999" />
       </View>
     );
   }
@@ -83,7 +83,7 @@ export default function InitialScreen() {
   // ログイン済みで初期化中
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>データを準備中...</Text>
+      <ActivityIndicator size="large" color="#999" />
     </View>
   );
 }
@@ -95,8 +95,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold'
+  loadingText: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#666',
+    marginTop: 16
   }
 });
