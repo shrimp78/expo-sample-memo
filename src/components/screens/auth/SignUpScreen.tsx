@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
 import { useAuth } from '@context/AuthContext';
+import { GoogleLoginButton, AppleLoginButton } from '@components/screens/auth/LoginButton';
 
 export default function SignUpScreen() {
   const { signUpWithGoogle, signUpWithApple, isLoading, isAppleSignInAvailable } = useAuth();
@@ -62,47 +63,11 @@ export default function SignUpScreen() {
       {/* 新規作成セクション */}
       <View style={styles.signUpSection}>
         {/* Googleで始めるボタン */}
-        <TouchableOpacity
-          style={[
-            styles.signUpButton,
-            styles.googleSignUpButton,
-            isLoading && styles.buttonDisabled
-          ]}
-          onPress={handleGoogleSignUp}
-          disabled={isLoading}
-        >
-          <View style={styles.buttonContent}>
-            {/* Google アイコン */}
-            <View style={styles.googleIcon}>
-              <Text style={styles.googleIconText}>G</Text>
-            </View>
-            <Text style={[styles.signUpButtonText, styles.googleButtonText]}>
-              {isLoading ? '登録中...' : 'Googleで始める'}
-            </Text>
-          </View>
-        </TouchableOpacity>
+        <GoogleLoginButton onPress={handleGoogleSignUp} isLoading={isLoading} />
 
         {/* Appleで始めるボタン（iOSのみ表示） */}
         {isAppleSignInAvailable && (
-          <TouchableOpacity
-            style={[
-              styles.signUpButton,
-              styles.appleSignUpButton,
-              isLoading && styles.buttonDisabled
-            ]}
-            onPress={handleAppleSignUp}
-            disabled={isLoading}
-          >
-            <View style={styles.buttonContent}>
-              {/* Apple アイコン */}
-              <View style={styles.appleIcon}>
-                <Text style={styles.appleIconText}></Text>
-              </View>
-              <Text style={[styles.signUpButtonText, styles.appleButtonText]}>
-                {isLoading ? '登録中...' : 'Appleで始める'}
-              </Text>
-            </View>
-          </TouchableOpacity>
+          <AppleLoginButton onPress={handleAppleSignUp} isLoading={isLoading} />
         )}
       </View>
     </View>
