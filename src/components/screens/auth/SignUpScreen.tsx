@@ -63,11 +63,19 @@ export default function SignUpScreen() {
       {/* 新規作成セクション */}
       <View style={styles.signUpSection}>
         {/* Googleで始めるボタン */}
-        <GoogleLoginButton onPress={handleGoogleSignUp} isLoading={isLoading} />
+        <GoogleLoginButton
+          onPress={handleGoogleSignUp}
+          isLoading={isLoading}
+          buttonText="Googleではじめる"
+        />
 
         {/* Appleで始めるボタン（iOSのみ表示） */}
         {isAppleSignInAvailable && (
-          <AppleLoginButton onPress={handleAppleSignUp} isLoading={isLoading} />
+          <AppleLoginButton
+            onPress={handleAppleSignUp}
+            isLoading={isLoading}
+            buttonText="Appleではじめる"
+          />
         )}
       </View>
     </View>

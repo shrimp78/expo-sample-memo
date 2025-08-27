@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@context/AuthContext';
 import { router } from 'expo-router';
 import { getLastAuthProvider } from '@services/secureStore';
-import { GoogleLoginButton, AppleLoginButton } from './LoginButton';
+import { GoogleLoginButton, AppleLoginButton } from '@components/screens/auth/LoginButton';
 
 export default function LoginScreen() {
   const { loginWithGoogle, loginWithApple, isLoading, isAppleSignInAvailable } = useAuth();
@@ -61,11 +61,19 @@ export default function LoginScreen() {
         )}
 
         {/* Googleログインボタン */}
-        <GoogleLoginButton onPress={handleGoogleLogin} isLoading={isLoading} />
+        <GoogleLoginButton
+          onPress={handleGoogleLogin}
+          isLoading={isLoading}
+          buttonText="Googleでログイン"
+        />
 
         {/* Appleログインボタン（iOSのみ表示） */}
         {isAppleSignInAvailable && (
-          <AppleLoginButton onPress={handleAppleLogin} isLoading={isLoading} />
+          <AppleLoginButton
+            onPress={handleAppleLogin}
+            isLoading={isLoading}
+            buttonText="Appleでサインイン"
+          />
         )}
 
         {/* 新規作成リンク */}
