@@ -1,10 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, View, Alert } from 'react-native';
 import { useAuth } from '@context/AuthContext';
 import { GoogleLoginButton, AppleLoginButton } from '@components/screens/auth/LoginButton';
 
 export default function SignUpScreen() {
-  const { signUpWithGoogle, signUpWithApple, isLoading, isAppleSignInAvailable } = useAuth();
+  const { signUpWithGoogle, signUpWithApple, isAppleSignInAvailable } = useAuth();
 
   const handleGoogleSignUp = async () => {
     try {
@@ -63,19 +63,11 @@ export default function SignUpScreen() {
       {/* 新規作成セクション */}
       <View style={styles.signUpSection}>
         {/* Googleで始めるボタン */}
-        <GoogleLoginButton
-          onPress={handleGoogleSignUp}
-          isLoading={isLoading}
-          buttonText="Googleではじめる"
-        />
+        <GoogleLoginButton onPress={handleGoogleSignUp} buttonText="Googleではじめる" />
 
         {/* Appleで始めるボタン（iOSのみ表示） */}
         {isAppleSignInAvailable && (
-          <AppleLoginButton
-            onPress={handleAppleSignUp}
-            isLoading={isLoading}
-            buttonText="Appleではじめる"
-          />
+          <AppleLoginButton onPress={handleAppleSignUp} buttonText="Appleではじめる" />
         )}
       </View>
     </View>

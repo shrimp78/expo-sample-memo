@@ -3,36 +3,35 @@ import { StyleSheet, TouchableOpacity, View, Image, Text } from 'react-native';
 interface LoginButtonProps {
   buttonText: string;
   onPress: () => void;
-  isLoading: boolean;
 }
 
 export const GoogleLoginButton = function (props: LoginButtonProps) {
-  const { onPress, isLoading, buttonText } = props;
+  const { onPress, buttonText } = props;
   return (
-    <TouchableOpacity style={styles.loginButton} onPress={onPress} disabled={isLoading}>
+    <TouchableOpacity style={styles.loginButton} onPress={onPress}>
       <View style={styles.buttonContent}>
         <Image
           source={require('@assets/images/buttons/google-logo.png')}
           style={styles.logoIcon}
           resizeMode="contain"
         />
-        <Text style={styles.buttonText}>{isLoading ? 'ログイン中...' : buttonText}</Text>
+        <Text style={styles.buttonText}>{buttonText}</Text>
       </View>
     </TouchableOpacity>
   );
 };
 
 export const AppleLoginButton = function (props: LoginButtonProps) {
-  const { onPress, isLoading, buttonText } = props;
+  const { onPress, buttonText } = props;
   return (
-    <TouchableOpacity style={styles.loginButton} onPress={onPress} disabled={isLoading}>
+    <TouchableOpacity style={styles.loginButton} onPress={onPress}>
       <View style={styles.buttonContent}>
         <Image
           source={require('@assets/images/buttons/apple-logo.png')}
           style={styles.logoIcon}
           resizeMode="contain"
         />
-        <Text style={styles.buttonText}>{isLoading ? 'ログイン中...' : buttonText}</Text>
+        <Text style={styles.buttonText}>{buttonText}</Text>
       </View>
     </TouchableOpacity>
   );

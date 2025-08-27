@@ -61,19 +61,11 @@ export default function LoginScreen() {
         )}
 
         {/* Googleログインボタン */}
-        <GoogleLoginButton
-          onPress={handleGoogleLogin}
-          isLoading={isLoading}
-          buttonText="Googleでログイン"
-        />
+        <GoogleLoginButton onPress={handleGoogleLogin} buttonText="Googleでログイン" />
 
         {/* Appleログインボタン（iOSのみ表示） */}
         {isAppleSignInAvailable && (
-          <AppleLoginButton
-            onPress={handleAppleLogin}
-            isLoading={isLoading}
-            buttonText="Appleでサインイン"
-          />
+          <AppleLoginButton onPress={handleAppleLogin} buttonText="Appleでサインイン" />
         )}
 
         {/* 新規作成リンク */}
