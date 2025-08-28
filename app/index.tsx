@@ -4,13 +4,14 @@ import { useEffect } from 'react';
 import * as ItemService from '../src/services/itemService';
 import * as Crypto from 'expo-crypto';
 import * as GroupService from '../src/services/groupService';
+import * as FirestoreService from '../src/services/firestoreService';
 
 import { initialItemData, initialGroupData } from '../constants/initialData';
 import { useAuth } from '../src/context/AuthContext';
 import LoginScreen from '../src/components/screens/auth/LoginScreen';
 
 export default function InitialScreen() {
-  const { isLoggedIn, isLoading } = useAuth();
+  const { isLoggedIn, isLoading, user } = useAuth();
 
   useEffect(() => {
     // ログイン状態が確定したら処理を開始
@@ -44,25 +45,63 @@ export default function InitialScreen() {
 
   /**
    * データベース初期化処理
+   * SQLiteとFirestore両方に初期データを保存
    */
   const initDatabase = async () => {
-    // Itemのレコードが0件なら初期データをINSERT
-    const itemNum = await ItemService.countItems();
-    if (itemNum === 0) {
-      console.log('Item Count が0件なので初期アイテムデータをINSERTします');
-      for (const item of initialItemData) {
-        const id = Crypto.randomUUID();
-        await ItemService.createItem(id, item.title, item.content, item.group_id);
-      }
+    if (!user) {
+      console.log('ユーザーが認証されていません');
+      return;
     }
 
-    // Groupのレコードが0件なら初期データをINSERT
-    const groupNum = await GroupService.countGroups();
-    if (groupNum === 0) {
-      console.log('Group Count が0件なので初期グループデータをINSERTします');
-      for (const group of initialGroupData) {
-        await GroupService.insertGroup(group.id, group.name, group.color, group.position);
+    try {
+      // SQLiteの初期化（既存の処理）
+      const itemNum = await ItemService.countItems();
+      const groupNum = await GroupService.countGroups();
+
+      // Firestoreの初期化（新規追加）
+      const firestoreItemNum = await FirestoreService.countUserItemsInFirestore(user.id);
+      const firestoreGroupNum = await FirestoreService.countUserGroupsInFirestore(user.id);
+
+      // Groupの初期化（SQLiteとFirestore両方）
+      if (groupNum === 0 || firestoreGroupNum === 0) {
+        console.log('初期グループデータを作成します');
+        for (const group of initialGroupData) {
+          // SQLite（既存）
+          if (groupNum === 0) {
+            await GroupService.insertGroup(group.id, group.name, group.color, group.position);
+          }
+          // Firestore（新規）
+          if (firestoreGroupNum === 0) {
+            await FirestoreService.saveGroupToFirestore(user.id, group);
+          }
+        }
       }
+
+      // Itemの初期化（SQLiteとFirestore両方）
+      if (itemNum === 0 || firestoreItemNum === 0) {
+        console.log('初期アイテムデータを作成します');
+        for (const item of initialItemData) {
+          const id = Crypto.randomUUID();
+          // SQLite（既存）
+          if (itemNum === 0) {
+            await ItemService.createItem(id, item.title, item.content, item.group_id);
+          }
+          // Firestore（新規）
+          if (firestoreItemNum === 0) {
+            await FirestoreService.saveItemToFirestore(user.id, {
+              id,
+              title: item.title,
+              content: item.content,
+              group_id: item.group_id
+            });
+          }
+        }
+      }
+
+      console.log('データベース初期化が完了しました');
+    } catch (error) {
+      console.error('データベース初期化中にエラーが発生しました:', error);
+      throw error;
     }
   };
 
