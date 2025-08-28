@@ -1,0 +1,128 @@
+import {
+  collection,
+  doc,
+  setDoc,
+  getDocs,
+  query,
+  orderBy,
+  where,
+  Timestamp
+} from 'firebase/firestore';
+import { db } from '../../firebaseConfig';
+import type { Group } from '@models/Group';
+import type { Item } from '@models/Item';
+
+/**
+ * Firestore上のユーザー別データ管理サービス
+ */
+
+/**
+ * Groupをユーザーのサブコレクションに保存
+ */
+export const saveGroupToFirestore = async (
+  userId: string,
+  group: Omit<Group, 'id'> & { id: string }
+): Promise<void> => {
+  try {
+    const groupRef = doc(db, 'users', userId, 'groups', group.id);
+    await setDoc(groupRef, {
+      ...group,
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now()
+    });
+    console.log(`Group ${group.name} saved to Firestore for user ${userId}`);
+  } catch (error) {
+    console.error('Error saving group to Firestore:', error);
+    throw error;
+  }
+};
+
+/**
+ * Itemをユーザーのサブコレクションに保存
+ */
+export const saveItemToFirestore = async (
+  userId: string,
+  item: Omit<Item, 'id'> & { id: string }
+): Promise<void> => {
+  try {
+    const itemRef = doc(db, 'users', userId, 'items', item.id);
+    await setDoc(itemRef, {
+      ...item,
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now()
+    });
+    console.log(`Item ${item.title} saved to Firestore for user ${userId}`);
+  } catch (error) {
+    console.error('Error saving item to Firestore:', error);
+    throw error;
+  }
+};
+
+/**
+ * ユーザーのグループ数をカウント
+ */
+export const countUserGroupsInFirestore = async (userId: string): Promise<number> => {
+  try {
+    const groupsRef = collection(db, 'users', userId, 'groups');
+    const snapshot = await getDocs(groupsRef);
+    return snapshot.size;
+  } catch (error) {
+    console.error('Error counting groups in Firestore:', error);
+    return 0;
+  }
+};
+
+/**
+ * ユーザーのアイテム数をカウント
+ */
+export const countUserItemsInFirestore = async (userId: string): Promise<number> => {
+  try {
+    const itemsRef = collection(db, 'users', userId, 'items');
+    const snapshot = await getDocs(itemsRef);
+    return snapshot.size;
+  } catch (error) {
+    console.error('Error counting items in Firestore:', error);
+    return 0;
+  }
+};
+
+/**
+ * ユーザーの全グループを取得
+ */
+export const getAllUserGroupsFromFirestore = async (userId: string): Promise<Group[]> => {
+  try {
+    const groupsRef = collection(db, 'users', userId, 'groups');
+    const q = query(groupsRef, orderBy('position', 'asc'));
+    const snapshot = await getDocs(q);
+
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      name: doc.data().name,
+      color: doc.data().color,
+      position: doc.data().position
+    }));
+  } catch (error) {
+    console.error('Error getting groups from Firestore:', error);
+    return [];
+  }
+};
+
+/**
+ * ユーザーの全アイテムを取得
+ */
+export const getAllUserItemsFromFirestore = async (userId: string): Promise<Item[]> => {
+  try {
+    const itemsRef = collection(db, 'users', userId, 'items');
+    const snapshot = await getDocs(itemsRef);
+
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      title: doc.data().title,
+      content: doc.data().content,
+      group_id: doc.data().group_id
+    }));
+  } catch (error) {
+    console.error('Error getting items from Firestore:', error);
+    return [];
+  }
+};
