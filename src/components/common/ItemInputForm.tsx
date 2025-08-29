@@ -3,7 +3,7 @@ import { Input, InputField, Textarea, TextareaInput, Text, HStack } from '@glues
 import { InputAccessoryView, View, Platform, TouchableOpacity } from 'react-native';
 import KeyboardCloseButton from '../common/KeyboardCloseButton';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Group } from '../types/Group';
+import { Group } from '@models/Group';
 
 type ItemInputFormProps = {
   title: string;
