@@ -27,16 +27,7 @@ export default function InitialScreen() {
    */
   const initApp = async () => {
     try {
-      // テーブル作成と初期データ挿入を順次実行
-      await ItemService.createTable();
-      console.log('Item table created');
-
-      await GroupService.createTable();
-      console.log('Group table created');
-
       await initDatabase();
-
-      // 初期化が完了したら、ホーム画面に遷移
       router.replace('/home');
     } catch (e) {
       console.log('初期化エラー', e);
@@ -54,47 +45,30 @@ export default function InitialScreen() {
     }
 
     try {
-      // SQLiteの初期化（既存の処理）
-      const itemNum = await ItemService.countItems();
-      const groupNum = await GroupService.countGroups();
-
       // Firestoreの初期化（新規追加）
       const firestoreItemNum = await FirestoreService.countUserItemsInFirestore(user.id);
       const firestoreGroupNum = await FirestoreService.countUserGroupsInFirestore(user.id);
 
       // Groupの初期化（SQLiteとFirestore両方）
-      if (groupNum === 0 || firestoreGroupNum === 0) {
+      if (firestoreGroupNum === 0) {
         console.log('初期グループデータを作成します');
         for (const group of initialGroupData) {
-          // SQLite（既存）
-          if (groupNum === 0) {
-            await GroupService.insertGroup(group.id, group.name, group.color, group.position);
-          }
-          // Firestore（新規）
-          if (firestoreGroupNum === 0) {
-            await FirestoreService.saveGroupToFirestore(user.id, group);
-          }
+          await FirestoreService.saveGroupToFirestore(user.id, group);
         }
       }
 
       // Itemの初期化（SQLiteとFirestore両方）
-      if (itemNum === 0 || firestoreItemNum === 0) {
+      if (firestoreItemNum === 0) {
         console.log('初期アイテムデータを作成します');
         for (const item of initialItemData) {
           const id = Crypto.randomUUID();
-          // SQLite（既存）
-          if (itemNum === 0) {
-            await ItemService.createItem(id, item.title, item.content, item.group_id);
-          }
           // Firestore（新規）
-          if (firestoreItemNum === 0) {
-            await FirestoreService.saveItemToFirestore(user.id, {
-              id,
-              title: item.title,
-              content: item.content,
-              group_id: item.group_id
-            });
-          }
+          await FirestoreService.saveItemToFirestore(user.id, {
+            id,
+            title: item.title,
+            content: item.content,
+            group_id: item.group_id
+          });
         }
       }
 
