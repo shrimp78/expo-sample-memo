@@ -33,6 +33,7 @@ import GroupCreateModal from '@screens/groups/GroupCreateModal';
 export default function HomeIndexScreen() {
   const { isLoggedIn, isLoading, logout } = useAuth();
   const { groups, loadGroups } = useGroups();
+  const { firestoreGroups, loadGroupsFromFirestore } = useGroups();
   const [items, setItems] = useState<Item[]>([]);
   const [groupName, setGroupName] = useState<string>('');
   const [groupColor, setGroupColor] = useState<string>('#2196f3');
@@ -168,6 +169,7 @@ export default function HomeIndexScreen() {
     const items = await ItemService.getAllItems();
     setItems(items);
     await loadGroups();
+    await loadGroupsFromFirestore();
   };
 
   // アイテムの新規作成

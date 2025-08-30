@@ -1,11 +1,15 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { type Group } from '@models/Group';
 import * as GroupService from '@services/groupService';
+import { getAllUserGroupsFromFirestore } from '@services/firestoreService';
+import { useAuth } from './AuthContext';
 
 interface GroupContextType {
   groups: Group[];
+  firestoreGroups: Group[];
   setGroups: (groups: Group[]) => void;
   loadGroups: () => Promise<void>;
+  loadGroupsFromFirestore: () => Promise<void>;
   updateGroupsOrder: (newGroups: Group[]) => void;
 }
 
@@ -17,7 +21,10 @@ interface GroupProviderProps {
 
 export const GroupProvider: React.FC<GroupProviderProps> = ({ children }) => {
   const [groups, setGroups] = useState<Group[]>([]);
+  const [firestoreGroups, setFirestoreGroups] = useState<Group[]>([]);
+  const { user } = useAuth();
 
+  // SQLiteからデータを取得するやつ
   const loadGroups = React.useCallback(async () => {
     try {
       const allGroups = await GroupService.getAllGroups();
@@ -28,14 +35,32 @@ export const GroupProvider: React.FC<GroupProviderProps> = ({ children }) => {
     }
   }, []);
 
+  // Firestoreからデータを取得するやつ
+  const loadGroupsFromFirestore = React.useCallback(async () => {
+    try {
+      if (!user) {
+        console.warn('User not available for Firestore operations');
+        return;
+      }
+      const allGroups = await getAllUserGroupsFromFirestore(user.id);
+      console.log('\n\n\nFirestoreからデータを取得しました');
+      console.log(allGroups);
+      setFirestoreGroups(allGroups);
+    } catch (error) {
+      console.error('Error loading groups from Firestore:', error);
+    }
+  }, [user]);
+
   const updateGroupsOrder = React.useCallback((newGroups: Group[]) => {
     setGroups(newGroups);
   }, []);
 
   const value: GroupContextType = {
     groups,
+    firestoreGroups,
     setGroups,
     loadGroups,
+    loadGroupsFromFirestore,
     updateGroupsOrder
   };
 
