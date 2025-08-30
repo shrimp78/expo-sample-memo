@@ -15,6 +15,7 @@ import { useGroups } from '@context/GroupContext';
 
 export default function GroupIndexScreen() {
   const { groups, loadGroups, updateGroupsOrder } = useGroups();
+  const { firestoreGroups, loadGroupsFromFirestore } = useGroups();
   const [isReorderMode, setIsReorderMode] = useState(false);
   const [groupCreateModalVisible, setGroupCreateModalVisible] = useState(false);
   const [groupName, setGroupName] = useState('');
@@ -24,6 +25,7 @@ export default function GroupIndexScreen() {
   useFocusEffect(
     useCallback(() => {
       loadGroups();
+      loadGroupsFromFirestore();
     }, [])
   );
 

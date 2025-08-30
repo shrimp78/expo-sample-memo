@@ -271,7 +271,7 @@ export default function HomeIndexScreen() {
   };
 
   // グループセクション用のデータ整形
-  const sections = groups
+  const sections = firestoreGroups
     .map(group => ({
       title: group.name,
       color: group.color,
