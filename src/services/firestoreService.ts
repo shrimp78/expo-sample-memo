@@ -2,10 +2,10 @@ import {
   collection,
   doc,
   setDoc,
+  updateDoc,
   getDocs,
   query,
   orderBy,
-  where,
   Timestamp
 } from 'firebase/firestore';
 import { db } from '../../firebaseConfig';
@@ -144,5 +144,27 @@ export const calculateNewPosition = (toIndex: number, groupList: Group[]): numbe
     const prevPosition = groupList[toIndex - 1].position;
     const nextPosition = groupList[toIndex + 1].position;
     return (prevPosition + nextPosition) / 2;
+  }
+};
+
+/**
+ * グループのPosition値を更新
+ * @param id グループID
+ * @param position 新しいPosition値
+ */
+export const updateFireStoreGroupPosition = async (
+  userId: string,
+  groupId: string,
+  position: number
+) => {
+  try {
+    const groupRef = doc(db, 'users', userId, 'groups', groupId);
+    await updateDoc(groupRef, {
+      position
+    });
+    console.log(`Group ${groupId} position updated to ${position} in Firestore for user ${userId}`);
+  } catch (error) {
+    console.error('Error updating group position in Firestore:', error);
+    throw error;
   }
 };

@@ -12,7 +12,8 @@ import RenderGroupItem from '@screens/groups/RenderGroupItem';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colorOptions } from '@constants/colors';
 import { useGroups } from '@context/GroupContext';
-import { calculateNewPosition } from '@services/firestoreService';
+import { calculateNewPosition, updateFireStoreGroupPosition } from '@services/firestoreService';
+import { useAuth } from '@context/AuthContext';
 
 export default function GroupIndexScreen() {
   //  const { groups, loadGroups } = useGroups();
@@ -21,11 +22,12 @@ export default function GroupIndexScreen() {
   const [groupCreateModalVisible, setGroupCreateModalVisible] = useState(false);
   const [groupName, setGroupName] = useState('');
   const [groupColor, setGroupColor] = useState(colorOptions[0]);
+  const { user } = useAuth();
 
   //  画面がフォーカスされたときにグループを再取得;
   useFocusEffect(
     useCallback(() => {
-      //      loadGroups();
+      //      loadGroups();　あとで消す
       loadGroupsFromFirestore();
     }, [])
   );
@@ -33,17 +35,19 @@ export default function GroupIndexScreen() {
   // ドラッグ操作時の処理
   const handleDragEnd = async ({ data, from, to }: { data: Group[]; from: number; to: number }) => {
     if (from === to) return;
+    if (!user) return;
 
     try {
       // dataをそのまま使用（DraggableFlatListが既に順序を変更済み）
 
       // 移動したグループの新しいposition値を計算してデータベースに保存
       const movedGroup = data[to];
-      //      const newPosition = GroupService.calculateNewPosition(to, data);
+      //      const newPosition = GroupService.calculateNewPosition(to, data);　あとで消す
       const newPosition = calculateNewPosition(to, data);
 
       // データベースのposition値を更新
-      await GroupService.updateGroupPosition(movedGroup.id, newPosition);
+      //      await GroupService.updateGroupPosition(movedGroup.id, newPosition); あとで消す
+      await updateFireStoreGroupPosition(user?.id, movedGroup.id, newPosition);
 
       // position値をローカルstateにも反映
       const updatedData = [...data];
