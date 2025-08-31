@@ -126,3 +126,23 @@ export const getAllUserItemsFromFirestore = async (userId: string): Promise<Item
     return [];
   }
 };
+
+/**
+ * 移動後のPosition値を計算（Trello方式）
+ * @param toIndex 移動先のインデックス
+ * @param groupList グループリスト
+ */
+export const calculateNewPosition = (toIndex: number, groupList: Group[]): number => {
+  if (toIndex === 0) {
+    // 最初に移動する場合
+    return groupList[0].position / 2;
+  } else if (toIndex === groupList.length - 1) {
+    // 最後に移動する場合
+    return groupList[groupList.length - 1].position + 65536;
+  } else {
+    // 中間に移動する場合
+    const prevPosition = groupList[toIndex - 1].position;
+    const nextPosition = groupList[toIndex + 1].position;
+    return (prevPosition + nextPosition) / 2;
+  }
+};

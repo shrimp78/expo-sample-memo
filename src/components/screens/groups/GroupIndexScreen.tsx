@@ -12,9 +12,10 @@ import RenderGroupItem from '@screens/groups/RenderGroupItem';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colorOptions } from '@constants/colors';
 import { useGroups } from '@context/GroupContext';
+import { calculateNewPosition } from '@services/firestoreService';
 
 export default function GroupIndexScreen() {
-  const { groups, loadGroups, updateGroupsOrder } = useGroups();
+  //  const { groups, loadGroups } = useGroups();
   const { firestoreGroups, loadGroupsFromFirestore } = useGroups();
   const [isReorderMode, setIsReorderMode] = useState(false);
   const [groupCreateModalVisible, setGroupCreateModalVisible] = useState(false);
@@ -24,7 +25,7 @@ export default function GroupIndexScreen() {
   //  画面がフォーカスされたときにグループを再取得;
   useFocusEffect(
     useCallback(() => {
-      loadGroups();
+      //      loadGroups();
       loadGroupsFromFirestore();
     }, [])
   );
@@ -35,11 +36,11 @@ export default function GroupIndexScreen() {
 
     try {
       // dataをそのまま使用（DraggableFlatListが既に順序を変更済み）
-      updateGroupsOrder(data);
 
       // 移動したグループの新しいposition値を計算してデータベースに保存
       const movedGroup = data[to];
-      const newPosition = GroupService.calculateNewPosition(to, data);
+      //      const newPosition = GroupService.calculateNewPosition(to, data);
+      const newPosition = calculateNewPosition(to, data);
 
       // データベースのposition値を更新
       await GroupService.updateGroupPosition(movedGroup.id, newPosition);
@@ -47,11 +48,11 @@ export default function GroupIndexScreen() {
       // position値をローカルstateにも反映
       const updatedData = [...data];
       updatedData[to] = { ...movedGroup, position: newPosition };
-      updateGroupsOrder(updatedData);
     } catch (error) {
       console.error('Error updating group position:', error);
       // エラーの場合は元の状態に戻す
-      loadGroups();
+      //      loadGroups();
+      loadGroupsFromFirestore();
     }
   };
 
@@ -160,7 +161,7 @@ export default function GroupIndexScreen() {
       </View>
 
       <DraggableFlatList
-        data={groups}
+        data={firestoreGroups}
         onDragEnd={handleDragEnd}
         keyExtractor={item => item.id}
         renderItem={({ item, drag }) => (
