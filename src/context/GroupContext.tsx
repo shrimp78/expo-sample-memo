@@ -10,8 +10,6 @@ interface GroupContextType {
   setGroups: (groups: Group[]) => void;
   loadGroups: () => Promise<void>;
   loadGroupsFromFirestore: () => Promise<void>;
-  updateGroupsOrder: (newGroups: Group[]) => void;
-  updateFireStoreGroupsOrder: (newGroups: Group[]) => void;
 }
 
 const GroupContext = createContext<GroupContextType | undefined>(undefined);
@@ -52,22 +50,12 @@ export const GroupProvider: React.FC<GroupProviderProps> = ({ children }) => {
     }
   }, [user]);
 
-  const updateGroupsOrder = React.useCallback((newGroups: Group[]) => {
-    setGroups(newGroups);
-  }, []);
-
-  const updateFireStoreGroupsOrder = React.useCallback((newGroups: Group[]) => {
-    setFirestoreGroups(newGroups);
-  }, []);
-
   const value: GroupContextType = {
     groups,
     firestoreGroups,
     setGroups,
     loadGroups,
-    loadGroupsFromFirestore,
-    updateGroupsOrder,
-    updateFireStoreGroupsOrder
+    loadGroupsFromFirestore
   };
 
   return <GroupContext.Provider value={value}>{children}</GroupContext.Provider>;
