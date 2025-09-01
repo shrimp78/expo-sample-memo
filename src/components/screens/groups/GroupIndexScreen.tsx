@@ -12,7 +12,13 @@ import RenderGroupItem from '@screens/groups/RenderGroupItem';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colorOptions } from '@constants/colors';
 import { useGroups } from '@context/GroupContext';
-import { calculateNewPosition, updateFireStoreGroupPosition } from '@services/firestoreService';
+import {
+  calculateNewPosition,
+  updateFireStoreGroupPosition,
+  createFireStoreGroup,
+  deleteFireStoreGroup,
+  countUserGroupsInFirestore
+} from '@services/firestoreService';
 import { useAuth } from '@context/AuthContext';
 
 export default function GroupIndexScreen() {
@@ -89,15 +95,21 @@ export default function GroupIndexScreen() {
 
     // 保存処理
     try {
-      const id = Crypto.randomUUID();
+      if (!user?.id) {
+        Alert.alert('エラー', 'ユーザー情報が取得できません');
+        return;
+      }
+
+      const groupId = Crypto.randomUUID();
 
       // 新しいグループは必ず一番最後の位置に保存する
       const maxPosition = await GroupService.getMaxPosition();
-      const newPosition = maxPosition + 65536;
+      const position = maxPosition + 65536;
 
-      await GroupService.insertGroup(id, groupName, groupColor, newPosition);
+      //      await GroupService.insertGroup(id, groupName, groupColor, newPosition);
+      await createFireStoreGroup(user.id, groupId, groupName, groupColor, position);
       toggleGroupCreateModal();
-      await loadGroups();
+      await loadGroupsFromFirestore();
     } catch (e) {
       Alert.alert('エラー', '保存に失敗しました');
       console.error(e);
@@ -109,11 +121,17 @@ export default function GroupIndexScreen() {
 
   // グループの削除処理
   const handleDeleteGroupPress = async (groupId: string) => {
+    if (!user?.id) {
+      Alert.alert('エラー', 'ユーザー情報が取得できません');
+      return;
+    }
+
     console.log('グループ削除ボタンが押されました');
 
     try {
       // グループに紐づくアイテム数を取得
-      const itemCount = await countItemsByGroupId(groupId);
+      //const itemCount = await countItemsByGroupId(groupId);
+      const itemCount = await countUserGroupsInFirestore(user.id);
 
       if (itemCount === 0) {
         // アイテムが0件の場合
@@ -145,8 +163,15 @@ export default function GroupIndexScreen() {
   };
 
   const deleteGroup = async (groupId: string) => {
-    await GroupService.deleteGroupById(groupId);
-    await loadGroups();
+    if (!user?.id) {
+      Alert.alert('エラー', 'ユーザー情報が取得できません');
+      return;
+    }
+
+    //    await GroupService.deleteGroupById(groupId); あとで消す
+    await deleteFireStoreGroup(user.id, groupId);
+    //await loadGroups();  あとで消す
+    await loadGroupsFromFirestore();
   };
 
   return (

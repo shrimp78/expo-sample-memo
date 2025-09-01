@@ -6,7 +6,8 @@ import {
   getDocs,
   query,
   orderBy,
-  Timestamp
+  Timestamp,
+  deleteDoc
 } from 'firebase/firestore';
 import { db } from '../../firebaseConfig';
 import type { Group } from '@models/Group';
@@ -148,8 +149,40 @@ export const calculateNewPosition = (toIndex: number, groupList: Group[]): numbe
 };
 
 /**
+ * グループの新規作成
+ * @param userId ユーザーID
+ * @param groupId グループID
+ * @param groupName グループ名
+ * @param groupColor グループ色
+ * @param position Position値
+ */
+export const createFireStoreGroup = async (
+  userId: string,
+  groupId: string,
+  groupName: string,
+  groupColor: string,
+  position: number
+) => {
+  try {
+    const groupRef = doc(db, 'users', userId, 'groups', groupId);
+    await setDoc(groupRef, {
+      name: groupName,
+      color: groupColor,
+      position: position,
+      createdAt: Timestamp.now(),
+      updatedAt: Timestamp.now()
+    });
+    console.log(`Group ${groupName} created in Firestore for user ${userId}`);
+  } catch (error) {
+    console.error('Error creating group in Firestore:', error);
+    throw error;
+  }
+};
+
+/**
  * グループのPosition値を更新
- * @param id グループID
+ * @param userId ユーザーID
+ * @param groupId グループID
  * @param position 新しいPosition値
  */
 export const updateFireStoreGroupPosition = async (
@@ -165,6 +198,23 @@ export const updateFireStoreGroupPosition = async (
     console.log(`Group ${groupId} position updated to ${position} in Firestore for user ${userId}`);
   } catch (error) {
     console.error('Error updating group position in Firestore:', error);
+    throw error;
+  }
+};
+
+/**
+ * グループを削除
+ * @param userId ユーザーID
+ * @param groupId グループID
+ */
+export const deleteFireStoreGroup = async (userId: string, groupId: string) => {
+  try {
+    // TODO : あとで、グループに紐づくアイテムの削除もここで実行する
+    const groupRef = doc(db, 'users', userId, 'groups', groupId);
+    await deleteDoc(groupRef);
+    console.log(`Group ${groupId} deleted from Firestore for user ${userId}`);
+  } catch (error) {
+    console.error('Error deleting group in Firestore:', error);
     throw error;
   }
 };
