@@ -5,8 +5,6 @@ import { type Group } from '@models/Group';
 import FloatingPlusButton from '@components/common/FloatingPlusButton';
 import GroupCreateModal from '@screens/groups/GroupCreateModal';
 import * as Crypto from 'expo-crypto';
-import * as GroupService from '@services/groupService';
-import { countItemsByGroupId } from '@services/itemService';
 import { useFocusEffect } from 'expo-router';
 import RenderGroupItem from '@screens/groups/RenderGroupItem';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -17,12 +15,12 @@ import {
   updateFireStoreGroupPosition,
   createFireStoreGroup,
   deleteFireStoreGroup,
-  countUserGroupsInFirestore
+  countUserGroupsInFirestore,
+  getMaxPosition
 } from '@services/firestoreService';
 import { useAuth } from '@context/AuthContext';
 
 export default function GroupIndexScreen() {
-  //  const { groups, loadGroups } = useGroups();
   const { firestoreGroups, loadGroupsFromFirestore } = useGroups();
   const [isReorderMode, setIsReorderMode] = useState(false);
   const [groupCreateModalVisible, setGroupCreateModalVisible] = useState(false);
@@ -33,7 +31,6 @@ export default function GroupIndexScreen() {
   //  画面がフォーカスされたときにグループを再取得;
   useFocusEffect(
     useCallback(() => {
-      //      loadGroups();　あとで消す
       loadGroupsFromFirestore();
     }, [])
   );
@@ -48,11 +45,9 @@ export default function GroupIndexScreen() {
 
       // 移動したグループの新しいposition値を計算してデータベースに保存
       const movedGroup = data[to];
-      //      const newPosition = GroupService.calculateNewPosition(to, data);　あとで消す
       const newPosition = calculateNewPosition(to, data);
 
       // データベースのposition値を更新
-      //      await GroupService.updateGroupPosition(movedGroup.id, newPosition); あとで消す
       await updateFireStoreGroupPosition(user?.id, movedGroup.id, newPosition);
 
       // position値をローカルstateにも反映
@@ -61,7 +56,6 @@ export default function GroupIndexScreen() {
     } catch (error) {
       console.error('Error updating group position:', error);
       // エラーの場合は元の状態に戻す
-      //      loadGroups();
       loadGroupsFromFirestore();
     }
   };
@@ -103,10 +97,9 @@ export default function GroupIndexScreen() {
       const groupId = Crypto.randomUUID();
 
       // 新しいグループは必ず一番最後の位置に保存する
-      const maxPosition = await GroupService.getMaxPosition();
+      const maxPosition = await getMaxPosition(user.id); // TODO: これってここで計算しなくてもいいのでは？Insert時によしなにできないのかな
       const position = maxPosition + 65536;
 
-      //      await GroupService.insertGroup(id, groupName, groupColor, newPosition);
       await createFireStoreGroup(user.id, groupId, groupName, groupColor, position);
       toggleGroupCreateModal();
       await loadGroupsFromFirestore();
@@ -130,7 +123,6 @@ export default function GroupIndexScreen() {
 
     try {
       // グループに紐づくアイテム数を取得
-      //const itemCount = await countItemsByGroupId(groupId);
       const itemCount = await countUserGroupsInFirestore(user.id);
 
       if (itemCount === 0) {
@@ -168,9 +160,7 @@ export default function GroupIndexScreen() {
       return;
     }
 
-    //    await GroupService.deleteGroupById(groupId); あとで消す
     await deleteFireStoreGroup(user.id, groupId);
-    //await loadGroups();  あとで消す
     await loadGroupsFromFirestore();
   };
 
