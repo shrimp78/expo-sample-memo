@@ -149,6 +149,29 @@ export const calculateNewPosition = (toIndex: number, groupList: Group[]): numbe
 };
 
 /**
+ * グループの最大position値を取得
+ * @param userId ユーザーID
+ */
+export const getMaxPosition = async (userId: string): Promise<number> => {
+  try {
+    const groupsRef = collection(db, 'users', userId, 'groups');
+    const q = query(groupsRef, orderBy('position', 'desc'));
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) {
+      return 0; // グループが存在しない場合は0を返す
+    }
+
+    // 最初のドキュメント（position値が最大）を取得
+    const maxDoc = snapshot.docs[0];
+    return maxDoc.data().position || 0;
+  } catch (error) {
+    console.error('Error getting max position from Firestore:', error);
+    return 0;
+  }
+};
+
+/**
  * グループの新規作成
  * @param userId ユーザーID
  * @param groupId グループID
