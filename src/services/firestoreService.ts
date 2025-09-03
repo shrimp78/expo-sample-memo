@@ -298,3 +298,40 @@ export const deleteFireStoreGroup = async (userId: string, groupId: string) => {
     throw error;
   }
 };
+
+/**
+ * グループの全てを削除
+ * @param userId ユーザーID
+ */
+export const deleteAllFireStoreGroup = async (userId: string) => {
+  try {
+    const groupsRef = collection(db, 'users', userId, 'groups');
+    const snapshot = await getDocs(groupsRef);
+
+    /* バッチ削除のための配列
+      参考）Firestore（Web/モバイルのクライアントSDK）には「コレクションを一括削除する単一API」はありません。 ドキュメント単位で削除する必要があります。
+      選択肢
+        小〜中規模ならバッチ削除（推奨）
+        writeBatch で500件ずつ削除します。Promise.all の並列削除は大量件数だとレート制限に当たりやすいので、バッチ＋分割が安全です。
+        大規模 or サブコレクションごと再帰的に削除したい場合
+        サーバー側（Admin SDK/Cloud Functions）で再帰削除処理を実装
+        または CLI を使用: firebase firestore:delete <path> --recursive --project <yourProjectId> --force
+        注意: サブコレクション
+          deleteDoc はサブコレクションを削除しません。groups/{groupId}/items などがある場合は、再帰削除が必要です（Admin SDK/CLI推奨）。
+
+    */
+    const deletePromises: Promise<void>[] = [];
+
+    snapshot.docs.forEach(doc => {
+      deletePromises.push(deleteDoc(doc.ref));
+    });
+
+    // 全ての削除処理を並行実行
+    await Promise.all(deletePromises);
+
+    console.log(`All groups deleted from Firestore for user ${userId}`);
+  } catch (error) {
+    console.error('Error deleting all groups from Firestore:', error);
+    throw error;
+  }
+};

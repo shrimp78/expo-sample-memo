@@ -1,9 +1,7 @@
 import { router } from 'expo-router';
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { useEffect } from 'react';
-import * as ItemService from '../src/services/itemService';
 import * as Crypto from 'expo-crypto';
-import * as GroupService from '../src/services/groupService';
 import * as FirestoreService from '../src/services/firestoreService';
 
 import { initialItemData, initialGroupData } from '../constants/initialData';

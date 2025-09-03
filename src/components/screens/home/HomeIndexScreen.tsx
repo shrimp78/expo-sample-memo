@@ -13,7 +13,8 @@ import {
 import { useCallback, useState, useEffect } from 'react';
 import { Entypo } from '@expo/vector-icons';
 import * as ItemService from '@services/itemService';
-import * as GroupService from '@services/groupService';
+import * as GroupService from '@services/groupService'; // Itemレコードと密接に絡んでるから消すのは最後の最後
+import { deleteAllFireStoreGroup } from '@services/firestoreService';
 import { type Item } from '@models/Item';
 import { type Group } from '@models/Group';
 import ItemList from '@screens/home/ItemList';
@@ -37,6 +38,7 @@ export default function HomeIndexScreen() {
   const [items, setItems] = useState<Item[]>([]);
   const [groupName, setGroupName] = useState<string>('');
   const [groupColor, setGroupColor] = useState<string>('#2196f3');
+  const { user } = useAuth();
 
   // 新規作成画面のModal用
   const [title, setTitle] = useState<string>('');
@@ -145,8 +147,10 @@ export default function HomeIndexScreen() {
   };
 
   const deleteAllItem = async () => {
+    if (!user) return; // TODO:あとで消す
     await ItemService.deleteAllItems();
     await GroupService.deleteAllGroups();
+    await deleteAllFireStoreGroup(user.id);
     const items = await ItemService.getAllItems();
     await loadGroups();
     setItems(items);
