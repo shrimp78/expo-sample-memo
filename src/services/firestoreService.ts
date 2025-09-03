@@ -139,6 +139,33 @@ export const getGroupByIdFromFirestore = async (
 };
 
 /**
+ * グループをIDベースで更新
+ * @param userId ユーザーID
+ * @param groupId グループID
+ * @param name グループ名
+ * @param color グループ色
+ */
+export const updateGroupByIdFromFirestore = async (
+  userId: string,
+  groupId: string,
+  name: string,
+  color: string
+): Promise<void> => {
+  try {
+    const groupRef = doc(db, 'users', userId, 'groups', groupId);
+    await updateDoc(groupRef, {
+      name,
+      color,
+      updatedAt: Timestamp.now()
+    });
+    console.log(`Group ${name} updated in Firestore for user ${userId}`);
+  } catch (error) {
+    console.error('Error updating group in Firestore:', error);
+    throw error;
+  }
+};
+
+/**
  * ユーザーの全アイテムを取得
  */
 export const getAllUserItemsFromFirestore = async (userId: string): Promise<Item[]> => {

@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Alert, Button, Platform, InputAccessoryView } from 'react-native';
 import { useLocalSearchParams, router, useNavigation } from 'expo-router';
-import { getGroupById, updateGroup } from '@services/groupService'; // 後で消す
-import { getGroupByIdFromFirestore } from '@services/firestoreService';
+import {
+  getGroupByIdFromFirestore,
+  updateGroupByIdFromFirestore
+} from '@services/firestoreService';
 import { KeyboardAvoidingView, Input, InputField } from '@gluestack-ui/themed';
 import { type Group } from '@models/Group';
 import KeyboardCloseButton from '@components/common/KeyboardCloseButton';
@@ -35,10 +37,7 @@ export default function GroupEditScreen() {
   const loadGroup = async () => {
     try {
       if (!id) return;
-      console.log('よみこまれてるよ1');
       if (!user) return;
-
-      console.log('よみこまれてるよ2');
 
       const groupData = await getGroupByIdFromFirestore(user.id, id);
       if (groupData) {
@@ -57,6 +56,7 @@ export default function GroupEditScreen() {
   };
 
   const handleSavePress = async () => {
+    if (!user) return;
     if (!groupName) {
       Alert.alert('確認', 'グループ名を入力してください');
       return;
@@ -67,12 +67,7 @@ export default function GroupEditScreen() {
     }
 
     try {
-      await updateGroup({
-        // TODO:firestoreにする
-        id: id,
-        name: groupName,
-        color: groupColor
-      });
+      await updateGroupByIdFromFirestore(user.id, id, groupName, groupColor);
       router.back();
     } catch (error) {
       console.error('Error updating group:', error);
