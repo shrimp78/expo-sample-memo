@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Alert, Button, Platform, InputAccessoryView } from 'react-native';
 import { useLocalSearchParams, router, useNavigation } from 'expo-router';
-import { getGroupById, updateGroup } from '@services/groupService';
+import { getGroupById, updateGroup } from '@services/groupService'; // 後で消す
+import { getGroupByIdFromFirestore } from '@services/firestoreService';
 import { KeyboardAvoidingView, Input, InputField } from '@gluestack-ui/themed';
 import { type Group } from '@models/Group';
 import KeyboardCloseButton from '@components/common/KeyboardCloseButton';
 import GroupColorSelector from './GroupColorSelector';
+import { useAuth } from '@context/AuthContext';
 
 const inputAccessoryViewID = 'INPUT_ACCESSORY_VIEW_ID_GROUP';
 
@@ -15,6 +17,7 @@ export default function GroupEditScreen() {
   const [groupName, setGroupName] = useState('');
   const [groupColor, setGroupColor] = useState('');
   const navigation = useNavigation();
+  const { user } = useAuth();
 
   useEffect(() => {
     loadGroup();
@@ -32,8 +35,12 @@ export default function GroupEditScreen() {
   const loadGroup = async () => {
     try {
       if (!id) return;
+      console.log('よみこまれてるよ1');
+      if (!user) return;
 
-      const groupData = await getGroupById(id);
+      console.log('よみこまれてるよ2');
+
+      const groupData = await getGroupByIdFromFirestore(user.id, id);
       if (groupData) {
         setGroup(groupData);
         setGroupName(groupData.name);
@@ -61,7 +68,8 @@ export default function GroupEditScreen() {
 
     try {
       await updateGroup({
-        id,
+        // TODO:firestoreにする
+        id: id,
         name: groupName,
         color: groupColor
       });

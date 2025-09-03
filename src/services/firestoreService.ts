@@ -3,6 +3,7 @@ import {
   doc,
   setDoc,
   updateDoc,
+  getDoc,
   getDocs,
   query,
   orderBy,
@@ -105,6 +106,35 @@ export const getAllUserGroupsFromFirestore = async (userId: string): Promise<Gro
   } catch (error) {
     console.error('Error getting groups from Firestore:', error);
     return [];
+  }
+};
+
+/**
+ * グループをIDベースで取得
+ * @param userId ユーザーID
+ * @param groupId グループID
+ */
+export const getGroupByIdFromFirestore = async (
+  userId: string,
+  groupId: string
+): Promise<Group | null> => {
+  try {
+    const groupsRef = doc(db, 'users', userId, 'groups', groupId);
+    const snapshot = await getDoc(groupsRef);
+    if (snapshot.exists()) {
+      return {
+        id: groupId,
+        name: snapshot.data().name,
+        color: snapshot.data().color,
+        position: snapshot.data().position
+      };
+    } else {
+      console.log('グループが見つかりません');
+    }
+    return null;
+  } catch (error) {
+    console.error('Error getting group by id from Firestore:', error);
+    return null;
   }
 };
 

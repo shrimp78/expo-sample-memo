@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { type Group } from '@models/Group';
-import * as GroupService from '@services/groupService';
 import { getAllUserGroupsFromFirestore } from '@services/firestoreService';
 import { useAuth } from './AuthContext';
 
@@ -25,8 +24,12 @@ export const GroupProvider: React.FC<GroupProviderProps> = ({ children }) => {
 
   // SQLiteからデータを取得するやつ
   const loadGroups = React.useCallback(async () => {
+    if (!user) {
+      console.warn('User not available for Firestore operations');
+      return;
+    }
     try {
-      const allGroups = await GroupService.getAllGroups();
+      const allGroups = await getAllUserGroupsFromFirestore(user.id);
       const sortedGroups = allGroups.sort((a, b) => a.position - b.position);
       setGroups(sortedGroups);
     } catch (error) {
