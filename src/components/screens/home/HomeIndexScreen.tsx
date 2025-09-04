@@ -150,7 +150,6 @@ export default function HomeIndexScreen() {
   const deleteAllItem = async () => {
     if (!user) return; // TODO:あとで消す
     await ItemService.deleteAllItems();
-    await GroupService.deleteAllGroups();
     await deleteAllFireStoreGroup(user.id);
     const items = await ItemService.getAllItems();
     await loadGroups();
