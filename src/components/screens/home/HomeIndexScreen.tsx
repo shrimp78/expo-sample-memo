@@ -34,7 +34,7 @@ import GroupCreateModal from '@screens/groups/GroupCreateModal';
 
 export default function HomeIndexScreen() {
   const { isLoggedIn, isLoading, logout } = useAuth();
-  const { groups, loadGroups } = useGroups();
+  const { groups, loadGroups } = useGroups(); // TODO: あとで消す
   const { firestoreGroups, loadGroupsFromFirestore } = useGroups();
   const [items, setItems] = useState<Item[]>([]);
   const [groupName, setGroupName] = useState<string>('');
@@ -53,8 +53,8 @@ export default function HomeIndexScreen() {
       setSelectedGroup(null);
     } else {
       // モーダルを開く際、groupsが1個しかない場合は自動選択
-      if (groups.length === 1) {
-        setSelectedGroup(groups[0]);
+      if (firestoreGroups.length === 1) {
+        setSelectedGroup(firestoreGroups[0]);
       }
     }
     setCreateModalVisible(!createModalVisible);
@@ -152,7 +152,9 @@ export default function HomeIndexScreen() {
     await ItemService.deleteAllItems();
     await deleteAllFireStoreGroup(user.id);
     const items = await ItemService.getAllItems();
-    await loadGroups();
+    await loadGroups(); // TODO: あとで消す
+    await loadGroupsFromFirestore();
+
     setItems(items);
   };
 
@@ -172,14 +174,14 @@ export default function HomeIndexScreen() {
   const loadData = async () => {
     const items = await ItemService.getAllItems();
     setItems(items);
-    await loadGroups();
+    await loadGroups(); // TODO: あとで消す
     await loadGroupsFromFirestore();
   };
 
   // アイテムの新規作成
   const handleAddItemPress = () => {
     console.log('アイテムの新規作成が押されました');
-    if (groups.length === 0) {
+    if (firestoreGroups.length === 0) {
       Alert.alert('確認', '現在グループがありません。先にグループを作成してください');
       setGroupCreateModalVisible(true);
     } else {
@@ -350,7 +352,7 @@ export default function HomeIndexScreen() {
         content={content}
         groupModalVisible={groupModalVisible}
         toggleGroupModal={toggleGroupModal}
-        groups={groups}
+        groups={firestoreGroups}
         selectedGroup={selectedGroup}
         setSelectedGroup={setSelectedGroup}
       />
