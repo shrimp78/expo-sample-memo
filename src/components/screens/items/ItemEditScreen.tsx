@@ -3,14 +3,16 @@ import { useLocalSearchParams, useNavigation, router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { KeyboardAvoidingView } from '@gluestack-ui/themed';
 import * as ItemService from '@services/itemService';
-import * as GroupService from '@services/groupService';
+import { getAllUserGroupsFromFirestore } from '@services/firestoreService';
 import { type Group } from '@models/Group';
 import ItemInputForm from '@components/common/ItemInputForm';
 import GroupSelectModal from '@components/common/GroupSelectModal';
+import { useAuth } from '@context/AuthContext';
 
 export default function ItemEditScreen() {
   const { id } = useLocalSearchParams();
   const navigation = useNavigation();
+  const { user } = useAuth();
   // タイトルと内容の状態
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -29,9 +31,10 @@ export default function ItemEditScreen() {
   // Itemの取得
   useEffect(() => {
     const fetchItem = async () => {
+      if (!user) return;
       try {
         const item = await ItemService.getItemById(id as string);
-        const groups = await GroupService.getAllGroups();
+        const groups = await getAllUserGroupsFromFirestore(user.id);
         setGroups(groups);
         if (item) {
           setTitle(item.title);
