@@ -14,6 +14,7 @@ import { useCallback, useState, useEffect } from 'react';
 import { Entypo } from '@expo/vector-icons';
 import * as ItemService from '@services/itemService';
 import * as GroupService from '@services/groupService'; // Itemレコードと密接に絡んでるから消すのは最後の最後
+import { createFireStoreGroup } from '@services/firestoreService';
 import { deleteAllFireStoreGroup } from '@services/firestoreService';
 import { type Item } from '@models/Item';
 import { type Group } from '@models/Group';
@@ -249,18 +250,20 @@ export default function HomeIndexScreen() {
 
   // グループの保存処理
   const handleSaveGroupPress = async () => {
-    const id = Crypto.randomUUID();
+    if (!user) return;
+    const groupId = Crypto.randomUUID();
     const position = 65536;
     console.log('グループの保存が押されました');
     try {
-      await GroupService.insertGroup(id, groupName, groupColor, position);
+      await GroupService.insertGroup(user.id, groupName, groupColor, position); // TODO: 後で消す
+      await createFireStoreGroup(user.id, groupId, groupName, groupColor, position);
       const items = await ItemService.getAllItems();
       setItems(items);
-      await loadGroups();
+      await loadGroupsFromFirestore();
 
       // 新しく作成されたグループを選択状態に設定
       const newGroup: Group = {
-        id,
+        id: groupId,
         name: groupName,
         color: groupColor,
         position
