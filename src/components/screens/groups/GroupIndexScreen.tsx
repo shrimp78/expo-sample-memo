@@ -18,7 +18,7 @@ import {
   countUserGroupsInFirestore,
   getMaxPosition
 } from '@services/firestoreService';
-import { useAuth } from '@context/AuthContext';
+import { useAuthenticatedUser } from '@context/AuthContext';
 
 export default function GroupIndexScreen() {
   const { firestoreGroups, loadGroupsFromFirestore } = useGroups();
@@ -26,7 +26,7 @@ export default function GroupIndexScreen() {
   const [groupCreateModalVisible, setGroupCreateModalVisible] = useState(false);
   const [groupName, setGroupName] = useState('');
   const [groupColor, setGroupColor] = useState(colorOptions[0]);
-  const { user } = useAuth();
+  const user = useAuthenticatedUser();
 
   //  画面がフォーカスされたときにグループを再取得;
   useFocusEffect(
@@ -38,8 +38,6 @@ export default function GroupIndexScreen() {
   // ドラッグ操作時の処理
   const handleDragEnd = async ({ data, from, to }: { data: Group[]; from: number; to: number }) => {
     if (from === to) return;
-    if (!user) return;
-
     try {
       // dataをそのまま使用（DraggableFlatListが既に順序を変更済み）
 
@@ -48,7 +46,7 @@ export default function GroupIndexScreen() {
       const newPosition = calculateNewPosition(to, data);
 
       // データベースのposition値を更新
-      await updateFireStoreGroupPosition(user?.id, movedGroup.id, newPosition);
+      await updateFireStoreGroupPosition(user.id, movedGroup.id, newPosition);
 
       // position値をローカルstateにも反映
       const updatedData = [...data];
@@ -89,11 +87,6 @@ export default function GroupIndexScreen() {
 
     // 保存処理
     try {
-      if (!user?.id) {
-        Alert.alert('エラー', 'ユーザー情報が取得できません');
-        return;
-      }
-
       const groupId = Crypto.randomUUID();
 
       // 新しいグループは必ず一番最後の位置に保存する
@@ -114,11 +107,6 @@ export default function GroupIndexScreen() {
 
   // グループの削除処理
   const handleDeleteGroupPress = async (groupId: string) => {
-    if (!user?.id) {
-      Alert.alert('エラー', 'ユーザー情報が取得できません');
-      return;
-    }
-
     console.log('グループ削除ボタンが押されました');
 
     try {
@@ -155,11 +143,6 @@ export default function GroupIndexScreen() {
   };
 
   const deleteGroup = async (groupId: string) => {
-    if (!user?.id) {
-      Alert.alert('エラー', 'ユーザー情報が取得できません');
-      return;
-    }
-
     await deleteFireStoreGroup(user.id, groupId);
     await loadGroupsFromFirestore();
   };

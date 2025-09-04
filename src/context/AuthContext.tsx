@@ -591,3 +591,14 @@ export const useAuth = (): AuthContextType => {
   }
   return context;
 };
+
+// 認証済みユーザーを必ず返すための補助フック
+export const useAuthenticatedUser = (): User => {
+  const { user, isLoggedIn } = useAuth();
+  if (!isLoggedIn || !user) {
+    // ルート側で isLoggedIn 以外は描画しない前提
+    // ここに到達するのは設計上の齟齬なので例外にする
+    throw new Error('認証済みユーザーが存在しません');
+  }
+  return user;
+};
