@@ -14,7 +14,12 @@ import { useCallback, useState, useEffect } from 'react';
 import { Entypo } from '@expo/vector-icons';
 import * as ItemService from '@services/itemService';
 import * as GroupService from '@services/groupService'; // Itemレコードと密接に絡んでるから消すのは最後の最後
-import { createFireStoreGroup } from '@services/firestoreService';
+import {
+  createFireStoreGroup,
+  getAllUserItemsFromFirestore,
+  saveItemToFirestore,
+  deleteItemFromFirestore
+} from '@services/firestoreService';
 import { deleteAllFireStoreGroup } from '@services/firestoreService';
 import { type Item } from '@models/Item';
 import { type Group } from '@models/Group';
@@ -176,7 +181,7 @@ export default function HomeIndexScreen() {
 
   // 初回データ読み込み
   const loadData = async () => {
-    const items = await ItemService.getAllItems();
+    const items = await getAllUserItemsFromFirestore(user.id);
     setItems(items);
     await loadGroups(); // TODO: あとで消す
     await loadGroupsFromFirestore();
@@ -220,9 +225,9 @@ export default function HomeIndexScreen() {
     try {
       const id = Crypto.randomUUID();
       const group_id = selectedGroup?.id ?? null;
-      await ItemService.createItem(id, title, content, group_id);
+      await saveItemToFirestore(user.id, { id, title, content, group_id });
       toggleCreateModal();
-      const items = await ItemService.getAllItems();
+      const items = await getAllUserItemsFromFirestore(user.id); // TBC : なんか冗長かも?
       setItems(items);
     } catch (e) {
       Alert.alert('エラー', '保存に失敗しました');
@@ -243,9 +248,9 @@ export default function HomeIndexScreen() {
   const handleDeletePress = async (itemId: string) => {
     console.log('アイテムの削除が押されました', itemId);
     try {
-      await ItemService.deleteItemById(itemId);
+      await deleteItemFromFirestore(user.id, itemId);
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-      const updatedItems = await ItemService.getAllItems();
+      const updatedItems = await getAllUserItemsFromFirestore(user.id); // TBC : なんか冗長かも?
       setItems(updatedItems);
     } catch (e) {
       Alert.alert('エラー', '削除に失敗しました');
@@ -261,7 +266,7 @@ export default function HomeIndexScreen() {
     try {
       await GroupService.insertGroup(user.id, groupName, groupColor, position); // TODO: 後で消す
       await createFireStoreGroup(user.id, groupId, groupName, groupColor, position);
-      const items = await ItemService.getAllItems();
+      const items = await getAllUserItemsFromFirestore(user.id); // TBC : なんか冗長かも?
       setItems(items);
       await loadGroupsFromFirestore();
 

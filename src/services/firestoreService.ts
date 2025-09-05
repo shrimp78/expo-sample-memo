@@ -61,6 +61,22 @@ export const saveItemToFirestore = async (
 };
 
 /**
+ * Itemを削除
+ * @param userId ユーザーID
+ * @param itemId アイテムID
+ */
+export const deleteItemFromFirestore = async (userId: string, itemId: string): Promise<void> => {
+  try {
+    const itemRef = doc(db, 'users', userId, 'items', itemId);
+    await deleteDoc(itemRef);
+    console.log(`Item ${itemId} deleted from Firestore for user ${userId}`);
+  } catch (error) {
+    console.error('Error deleting item from Firestore:', error);
+    throw error;
+  }
+};
+
+/**
  * ユーザーのグループ数をカウント
  */
 export const countUserGroupsInFirestore = async (userId: string): Promise<number> => {
