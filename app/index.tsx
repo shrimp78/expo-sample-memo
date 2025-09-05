@@ -5,12 +5,11 @@ import * as Crypto from 'expo-crypto';
 import * as FirestoreService from '../src/services/firestoreService';
 
 import { initialItemData, initialGroupData } from '../constants/initialData';
-import { useAuth, useAuthenticatedUser } from '../src/context/AuthContext';
+import { useAuth } from '../src/context/AuthContext';
 import LoginScreen from '../src/components/screens/auth/LoginScreen';
 
 export default function InitialScreen() {
-  const { isLoggedIn, isLoading } = useAuth();
-  const user = useAuthenticatedUser();
+  const { isLoggedIn, isLoading, user } = useAuth();
 
   useEffect(() => {
     // ログイン状態が確定したら処理を開始
@@ -39,15 +38,21 @@ export default function InitialScreen() {
    */
   const initDatabase = async () => {
     try {
-      // Firestoreの初期化（新規追加）
-      const firestoreItemNum = await FirestoreService.countUserItemsInFirestore(user.id);
-      const firestoreGroupNum = await FirestoreService.countUserGroupsInFirestore(user.id);
+      // NOTE: ここに到達するのは isLoggedIn が true の時のみ
+      const authUserId = user?.id;
+      // 念のための安全ガード
+      if (!authUserId) {
+        throw new Error('ユーザー情報が未取得です');
+      }
+
+      const firestoreItemNum = await FirestoreService.countUserItemsInFirestore(authUserId);
+      const firestoreGroupNum = await FirestoreService.countUserGroupsInFirestore(authUserId);
 
       // Groupの初期化（SQLiteとFirestore両方）
       if (firestoreGroupNum === 0) {
         console.log('初期グループデータを作成します');
         for (const group of initialGroupData) {
-          await FirestoreService.saveGroupToFirestore(user.id, group);
+          await FirestoreService.saveGroupToFirestore(authUserId, group);
         }
       }
 
@@ -57,7 +62,7 @@ export default function InitialScreen() {
         for (const item of initialItemData) {
           const id = Crypto.randomUUID();
           // Firestore（新規）
-          await FirestoreService.saveItemToFirestore(user.id, {
+          await FirestoreService.saveItemToFirestore(authUserId, {
             id,
             title: item.title,
             content: item.content,

@@ -140,7 +140,12 @@ export default function HomeIndexScreen() {
   const performLogout = async () => {
     try {
       await logout();
-      router.replace('/');
+      // 直後のレイアウト再マウント完了を待ってから遷移
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          router.replace('/');
+        }, 0);
+      });
     } catch (error) {
       Alert.alert('エラー', 'ログアウトに失敗しました');
       console.error(error);

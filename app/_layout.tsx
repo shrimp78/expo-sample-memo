@@ -1,17 +1,24 @@
 import 'react-native-gesture-handler';
+import React from 'react';
 import { config } from '@gluestack-ui/config';
 import { GluestackUIProvider } from '@gluestack-ui/themed';
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { GroupProvider } from '@context/GroupContext';
-import { AuthProvider } from '@context/AuthContext';
+import { AuthProvider, useAuth } from '@context/AuthContext';
+
+function GroupProviderGate({ children }: { children: React.ReactNode }) {
+  const { isLoggedIn } = useAuth();
+  if (!isLoggedIn) return <>{children}</>;
+  return <GroupProvider>{children}</GroupProvider>;
+}
 
 export default function Layout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <GluestackUIProvider config={config}>
         <AuthProvider>
-          <GroupProvider>
+          <GroupProviderGate>
             <Stack
               screenOptions={{
                 headerTintColor: '#000000',
@@ -42,7 +49,7 @@ export default function Layout() {
               {/* アカウント */}
               <Stack.Screen name="account/index" options={{ headerTitle: '' }} />
             </Stack>
-          </GroupProvider>
+          </GroupProviderGate>
         </AuthProvider>
       </GluestackUIProvider>
     </GestureHandlerRootView>
