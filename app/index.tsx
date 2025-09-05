@@ -5,11 +5,12 @@ import * as Crypto from 'expo-crypto';
 import * as FirestoreService from '../src/services/firestoreService';
 
 import { initialItemData, initialGroupData } from '../constants/initialData';
-import { useAuth } from '../src/context/AuthContext';
+import { useAuth, useAuthenticatedUser } from '../src/context/AuthContext';
 import LoginScreen from '../src/components/screens/auth/LoginScreen';
 
 export default function InitialScreen() {
-  const { isLoggedIn, isLoading, user } = useAuth();
+  const { isLoggedIn, isLoading } = useAuth();
+  const user = useAuthenticatedUser();
 
   useEffect(() => {
     // ログイン状態が確定したら処理を開始
@@ -37,11 +38,6 @@ export default function InitialScreen() {
    * SQLiteとFirestore両方に初期データを保存
    */
   const initDatabase = async () => {
-    if (!user) {
-      console.log('ユーザーが認証されていません');
-      return;
-    }
-
     try {
       // Firestoreの初期化（新規追加）
       const firestoreItemNum = await FirestoreService.countUserItemsInFirestore(user.id);

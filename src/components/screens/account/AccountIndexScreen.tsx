@@ -8,18 +8,11 @@ import {
   Button,
   Alert
 } from 'react-native';
-import { useAuth } from '@context/AuthContext';
+import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
 
 export default function AccountIndexScreen() {
-  const { user, logout, deleteAccount } = useAuth();
-
-  if (!user) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <Text>ユーザーが見つかりません</Text>
-      </SafeAreaView>
-    );
-  }
+  const { logout, deleteAccount } = useAuth();
+  const user = useAuthenticatedUser();
 
   const handleDeleteAccount = () => {
     try {

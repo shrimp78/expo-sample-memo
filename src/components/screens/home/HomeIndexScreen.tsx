@@ -20,7 +20,7 @@ import { type Item } from '@models/Item';
 import { type Group } from '@models/Group';
 import ItemList from '@screens/home/ItemList';
 import { useGroups } from '@context/GroupContext';
-import { useAuth } from '@context/AuthContext';
+import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
 
 // 新規作成モーダル用
 import * as Crypto from 'expo-crypto';
@@ -34,12 +34,12 @@ import GroupCreateModal from '@screens/groups/GroupCreateModal';
 
 export default function HomeIndexScreen() {
   const { isLoggedIn, isLoading, logout } = useAuth();
+  const user = useAuthenticatedUser();
   const { groups, loadGroups } = useGroups(); // TODO: あとで消す
   const { firestoreGroups, loadGroupsFromFirestore } = useGroups();
   const [items, setItems] = useState<Item[]>([]);
   const [groupName, setGroupName] = useState<string>('');
   const [groupColor, setGroupColor] = useState<string>('#2196f3');
-  const { user } = useAuth();
 
   // 新規作成画面のModal用
   const [title, setTitle] = useState<string>('');
@@ -148,7 +148,6 @@ export default function HomeIndexScreen() {
   };
 
   const deleteAllItem = async () => {
-    if (!user) return; // TODO:あとで消す
     await ItemService.deleteAllItems();
     await deleteAllFireStoreGroup(user.id);
     const items = await ItemService.getAllItems();
@@ -251,7 +250,6 @@ export default function HomeIndexScreen() {
 
   // グループの保存処理
   const handleSaveGroupPress = async () => {
-    if (!user) return;
     const groupId = Crypto.randomUUID();
     const position = 65536;
     console.log('グループの保存が押されました');

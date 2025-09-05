@@ -7,12 +7,12 @@ import { getAllUserGroupsFromFirestore } from '@services/firestoreService';
 import { type Group } from '@models/Group';
 import ItemInputForm from '@components/common/ItemInputForm';
 import GroupSelectModal from '@components/common/GroupSelectModal';
-import { useAuth } from '@context/AuthContext';
+import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
 
 export default function ItemEditScreen() {
   const { id } = useLocalSearchParams();
   const navigation = useNavigation();
-  const { user } = useAuth();
+  const user = useAuthenticatedUser();
   // タイトルと内容の状態
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -31,7 +31,6 @@ export default function ItemEditScreen() {
   // Itemの取得
   useEffect(() => {
     const fetchItem = async () => {
-      if (!user) return;
       try {
         const item = await ItemService.getItemById(id as string);
         const groups = await getAllUserGroupsFromFirestore(user.id);

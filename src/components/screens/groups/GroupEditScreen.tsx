@@ -9,7 +9,7 @@ import { KeyboardAvoidingView, Input, InputField } from '@gluestack-ui/themed';
 import { type Group } from '@models/Group';
 import KeyboardCloseButton from '@components/common/KeyboardCloseButton';
 import GroupColorSelector from './GroupColorSelector';
-import { useAuth } from '@context/AuthContext';
+import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
 
 const inputAccessoryViewID = 'INPUT_ACCESSORY_VIEW_ID_GROUP';
 
@@ -19,7 +19,7 @@ export default function GroupEditScreen() {
   const [groupName, setGroupName] = useState('');
   const [groupColor, setGroupColor] = useState('');
   const navigation = useNavigation();
-  const { user } = useAuth();
+  const user = useAuthenticatedUser();
 
   useEffect(() => {
     loadGroup();
@@ -37,7 +37,6 @@ export default function GroupEditScreen() {
   const loadGroup = async () => {
     try {
       if (!id) return;
-      if (!user) return;
 
       const groupData = await getGroupByIdFromFirestore(user.id, id);
       if (groupData) {
@@ -56,7 +55,6 @@ export default function GroupEditScreen() {
   };
 
   const handleSavePress = async () => {
-    if (!user) return;
     if (!groupName) {
       Alert.alert('確認', 'グループ名を入力してください');
       return;

@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { type Group } from '@models/Group';
 import { getAllUserGroupsFromFirestore } from '@services/firestoreService';
-import { useAuth } from './AuthContext';
+import { useAuthenticatedUser } from './AuthContext';
 
 interface GroupContextType {
   groups: Group[];
@@ -20,14 +20,10 @@ interface GroupProviderProps {
 export const GroupProvider: React.FC<GroupProviderProps> = ({ children }) => {
   const [groups, setGroups] = useState<Group[]>([]);
   const [firestoreGroups, setFirestoreGroups] = useState<Group[]>([]);
-  const { user } = useAuth();
+  const user = useAuthenticatedUser();
 
   // SQLiteからデータを取得するやつ
   const loadGroups = React.useCallback(async () => {
-    if (!user) {
-      console.warn('User not available for Firestore operations');
-      return;
-    }
     try {
       const allGroups = await getAllUserGroupsFromFirestore(user.id);
       const sortedGroups = allGroups.sort((a, b) => a.position - b.position);
@@ -40,10 +36,6 @@ export const GroupProvider: React.FC<GroupProviderProps> = ({ children }) => {
   // Firestoreからデータを取得するやつ
   const loadGroupsFromFirestore = React.useCallback(async () => {
     try {
-      if (!user) {
-        console.warn('User not available for Firestore operations');
-        return;
-      }
       const allGroups = await getAllUserGroupsFromFirestore(user.id);
       console.log('\n\n\nFirestoreからデータを取得しました');
       console.log(allGroups);
