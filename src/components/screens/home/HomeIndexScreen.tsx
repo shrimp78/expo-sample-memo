@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import { useCallback, useState, useEffect } from 'react';
 import { Entypo } from '@expo/vector-icons';
-import * as ItemService from '@services/itemService';
 import * as GroupService from '@services/groupService'; // Itemレコードと密接に絡んでるから消すのは最後の最後
 import {
   createFireStoreGroup,
@@ -264,7 +263,6 @@ export default function HomeIndexScreen() {
     const position = 65536;
     console.log('グループの保存が押されました');
     try {
-      await GroupService.insertGroup(user.id, groupName, groupColor, position); // TODO: 後で消す
       await createFireStoreGroup(user.id, groupId, groupName, groupColor, position);
       const items = await getAllUserItemsFromFirestore(user.id); // TBC : なんか冗長かも?
       setItems(items);
