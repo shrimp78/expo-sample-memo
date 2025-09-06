@@ -18,7 +18,8 @@ import {
   createFireStoreGroup,
   getAllUserItemsFromFirestore,
   saveItemToFirestore,
-  deleteItemFromFirestore
+  deleteItemFromFirestore,
+  deleteAllItemFromFirestore
 } from '@services/firestoreService';
 import { deleteAllFireStoreGroup } from '@services/firestoreService';
 import { type Item } from '@models/Item';
@@ -158,10 +159,9 @@ export default function HomeIndexScreen() {
   };
 
   const deleteAllItem = async () => {
-    await ItemService.deleteAllItems();
+    await deleteAllItemFromFirestore(user.id);
     await deleteAllFireStoreGroup(user.id);
-    const items = await ItemService.getAllItems();
-    await loadGroups(); // TODO: あとで消す
+    const items = await getAllUserItemsFromFirestore(user.id);
     await loadGroupsFromFirestore();
 
     setItems(items);

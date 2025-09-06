@@ -77,6 +77,27 @@ export const deleteItemFromFirestore = async (userId: string, itemId: string): P
 };
 
 /**
+ * Itemを削除
+ * @param userId ユーザーID
+ */
+export const deleteAllItemFromFirestore = async (userId: string): Promise<void> => {
+  try {
+    const itemsRef = collection(db, 'users', userId, 'items');
+    const snapshot = await getDocs(itemsRef);
+    const deletePromises: Promise<void>[] = [];
+
+    snapshot.docs.forEach(doc => {
+      deletePromises.push(deleteDoc(doc.ref));
+    });
+
+    await Promise.all(deletePromises);
+  } catch (error) {
+    console.error('Error deleting item from Firestore:', error);
+    throw error;
+  }
+};
+
+/**
  * ユーザーのグループ数をカウント
  */
 export const countUserGroupsInFirestore = async (userId: string): Promise<number> => {
