@@ -10,9 +10,8 @@ import {
   GestureResponderEvent,
   Dimensions
 } from 'react-native';
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState } from 'react';
 import { Entypo } from '@expo/vector-icons';
-import * as GroupService from '@services/groupService'; // Itemレコードと密接に絡んでるから消すのは最後の最後
 import {
   createFireStoreGroup,
   getAllUserItemsFromFirestore,
