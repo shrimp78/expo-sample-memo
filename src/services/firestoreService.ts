@@ -147,6 +147,35 @@ export const getAllUserGroupsFromFirestore = async (userId: string): Promise<Gro
 };
 
 /**
+ * アイテムをIDベースで取得
+ * @param userId ユーザーID
+ * @param itemId グループID
+ */
+export const getItemByIdFromFirestore = async (
+  userId: string,
+  itemId: string
+): Promise<Item | null> => {
+  try {
+    const itemRef = doc(db, 'users', userId, 'items', itemId);
+    const snapshot = await getDoc(itemRef);
+    if (snapshot.exists()) {
+      return {
+        id: itemId,
+        title: snapshot.data().title,
+        content: snapshot.data().content,
+        group_id: snapshot.data().group_id
+      };
+    } else {
+      console.log('アイテムが見つかりません');
+    }
+    return null;
+  } catch (error) {
+    console.error('Error getting item by id from Firestore:', error);
+    return null;
+  }
+};
+
+/**
  * グループをIDベースで取得
  * @param userId ユーザーID
  * @param groupId グループID
@@ -172,6 +201,36 @@ export const getGroupByIdFromFirestore = async (
   } catch (error) {
     console.error('Error getting group by id from Firestore:', error);
     return null;
+  }
+};
+
+/**
+ * アイテムをIDベースで更新
+ * @param userId ユーザーID
+ * @param itemId グループID
+ * @param name グループ名
+ * @param content コンテンツ
+ * @param group_id グループID
+ */
+export const updateItemByIdFromFirestore = async (
+  userId: string,
+  itemId: string,
+  title: string,
+  content: string,
+  group_id: string
+): Promise<void> => {
+  try {
+    const itemRef = doc(db, 'users', userId, 'items', itemId);
+    await updateDoc(itemRef, {
+      title,
+      content,
+      group_id,
+      updatedAt: Timestamp.now()
+    });
+    console.log(`Item ${title} updated in Firestore for user ${userId}`);
+  } catch (error) {
+    console.error('Error updating item in Firestore:', error);
+    throw error;
   }
 };
 

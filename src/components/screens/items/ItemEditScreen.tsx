@@ -2,15 +2,18 @@ import { StyleSheet, Button, Alert, View } from 'react-native';
 import { useLocalSearchParams, useNavigation, router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { KeyboardAvoidingView } from '@gluestack-ui/themed';
-import * as ItemService from '@services/itemService';
-import { getAllUserGroupsFromFirestore } from '@services/firestoreService';
+import {
+  getAllUserGroupsFromFirestore,
+  updateItemByIdFromFirestore,
+  getItemByIdFromFirestore
+} from '@services/firestoreService';
 import { type Group } from '@models/Group';
 import ItemInputForm from '@components/common/ItemInputForm';
 import GroupSelectModal from '@components/common/GroupSelectModal';
 import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
 
 export default function ItemEditScreen() {
-  const { id } = useLocalSearchParams();
+  const { id } = useLocalSearchParams<{ id: string }>();
   const navigation = useNavigation();
   const user = useAuthenticatedUser();
   // タイトルと内容の状態
@@ -32,7 +35,7 @@ export default function ItemEditScreen() {
   useEffect(() => {
     const fetchItem = async () => {
       try {
-        const item = await ItemService.getItemById(id as string);
+        const item = await getItemByIdFromFirestore(user.id, id);
         const groups = await getAllUserGroupsFromFirestore(user.id);
         setGroups(groups);
         if (item) {
@@ -70,7 +73,7 @@ export default function ItemEditScreen() {
 
     // 保存処理
     try {
-      await ItemService.updateItemById(id as string, title, content, selectedGroup?.id ?? null);
+      await updateItemByIdFromFirestore(user.id, id, title, content, selectedGroup?.id as string);
       router.back();
     } catch (e) {
       Alert.alert('エラー', '保存に失敗しました', [{ text: 'OK', onPress: () => router.back() }]);
