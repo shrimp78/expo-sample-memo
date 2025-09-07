@@ -4,10 +4,8 @@ import { getAllUserGroupsFromFirestore } from '@services/firestoreService';
 import { useAuthenticatedUser } from './AuthContext';
 
 interface GroupContextType {
-  groups: Group[];
   firestoreGroups: Group[];
-  setGroups: (groups: Group[]) => void;
-  loadGroups: () => Promise<void>;
+  setFirestoreGroups: (groups: Group[]) => void;
   loadGroupsFromFirestore: () => Promise<void>;
 }
 
@@ -18,20 +16,8 @@ interface GroupProviderProps {
 }
 
 export const GroupProvider: React.FC<GroupProviderProps> = ({ children }) => {
-  const [groups, setGroups] = useState<Group[]>([]);
   const [firestoreGroups, setFirestoreGroups] = useState<Group[]>([]);
   const user = useAuthenticatedUser();
-
-  // SQLiteからデータを取得するやつ
-  const loadGroups = React.useCallback(async () => {
-    try {
-      const allGroups = await getAllUserGroupsFromFirestore(user.id);
-      const sortedGroups = allGroups.sort((a, b) => a.position - b.position);
-      setGroups(sortedGroups);
-    } catch (error) {
-      console.error('Error loading groups:', error);
-    }
-  }, []);
 
   // Firestoreからデータを取得するやつ
   const loadGroupsFromFirestore = React.useCallback(async () => {
@@ -46,10 +32,8 @@ export const GroupProvider: React.FC<GroupProviderProps> = ({ children }) => {
   }, [user]);
 
   const value: GroupContextType = {
-    groups,
     firestoreGroups,
-    setGroups,
-    loadGroups,
+    setFirestoreGroups,
     loadGroupsFromFirestore
   };
 

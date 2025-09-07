@@ -39,7 +39,6 @@ import GroupCreateModal from '@screens/groups/GroupCreateModal';
 export default function HomeIndexScreen() {
   const { isLoggedIn, isLoading, logout } = useAuth();
   const user = useAuthenticatedUser();
-  const { groups, loadGroups } = useGroups(); // TODO: あとで消す
   const { firestoreGroups, loadGroupsFromFirestore } = useGroups();
   const [items, setItems] = useState<Item[]>([]);
   const [groupName, setGroupName] = useState<string>('');
@@ -181,7 +180,6 @@ export default function HomeIndexScreen() {
   const loadData = async () => {
     const items = await getAllUserItemsFromFirestore(user.id);
     setItems(items);
-    await loadGroups(); // TODO: あとで消す
     await loadGroupsFromFirestore();
   };
 
