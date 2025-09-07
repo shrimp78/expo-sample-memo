@@ -39,7 +39,7 @@ import GroupCreateModal from '@screens/groups/GroupCreateModal';
 export default function HomeIndexScreen() {
   const { isLoggedIn, isLoading, logout } = useAuth();
   const user = useAuthenticatedUser();
-  const { firestoreGroups, loadGroupsFromFirestore } = useGroups();
+  const { groups, loadGroups } = useGroups();
   const [items, setItems] = useState<Item[]>([]);
   const [groupName, setGroupName] = useState<string>('');
   const [groupColor, setGroupColor] = useState<string>('#2196f3');
@@ -56,8 +56,8 @@ export default function HomeIndexScreen() {
       setSelectedGroup(null);
     } else {
       // モーダルを開く際、groupsが1個しかない場合は自動選択
-      if (firestoreGroups.length === 1) {
-        setSelectedGroup(firestoreGroups[0]);
+      if (groups.length === 1) {
+        setSelectedGroup(groups[0]);
       }
     }
     setCreateModalVisible(!createModalVisible);
@@ -159,7 +159,7 @@ export default function HomeIndexScreen() {
     await deleteAllItemFromFirestore(user.id);
     await deleteAllFireStoreGroup(user.id);
     const items = await getAllUserItemsFromFirestore(user.id);
-    await loadGroupsFromFirestore();
+    await loadGroups();
 
     setItems(items);
   };
@@ -180,13 +180,13 @@ export default function HomeIndexScreen() {
   const loadData = async () => {
     const items = await getAllUserItemsFromFirestore(user.id);
     setItems(items);
-    await loadGroupsFromFirestore();
+    await loadGroups();
   };
 
   // アイテムの新規作成
   const handleAddItemPress = () => {
     console.log('アイテムの新規作成が押されました');
-    if (firestoreGroups.length === 0) {
+    if (groups.length === 0) {
       Alert.alert('確認', '現在グループがありません。先にグループを作成してください');
       setGroupCreateModalVisible(true);
     } else {
@@ -263,7 +263,7 @@ export default function HomeIndexScreen() {
       await createFireStoreGroup(user.id, groupId, groupName, groupColor, position);
       const items = await getAllUserItemsFromFirestore(user.id); // TBC : なんか冗長かも?
       setItems(items);
-      await loadGroupsFromFirestore();
+      await loadGroups();
 
       // 新しく作成されたグループを選択状態に設定
       const newGroup: Group = {
@@ -282,7 +282,7 @@ export default function HomeIndexScreen() {
   };
 
   // グループセクション用のデータ整形
-  const sections = firestoreGroups
+  const sections = groups
     .map(group => ({
       title: group.name,
       color: group.color,
@@ -355,7 +355,7 @@ export default function HomeIndexScreen() {
         content={content}
         groupModalVisible={groupModalVisible}
         toggleGroupModal={toggleGroupModal}
-        groups={firestoreGroups}
+        groups={groups}
         selectedGroup={selectedGroup}
         setSelectedGroup={setSelectedGroup}
       />

@@ -21,7 +21,7 @@ import {
 import { useAuthenticatedUser } from '@context/AuthContext';
 
 export default function GroupIndexScreen() {
-  const { firestoreGroups, loadGroupsFromFirestore } = useGroups();
+  const { groups, loadGroups } = useGroups();
   const [isReorderMode, setIsReorderMode] = useState(false);
   const [groupCreateModalVisible, setGroupCreateModalVisible] = useState(false);
   const [groupName, setGroupName] = useState('');
@@ -31,7 +31,7 @@ export default function GroupIndexScreen() {
   //  画面がフォーカスされたときにグループを再取得;
   useFocusEffect(
     useCallback(() => {
-      loadGroupsFromFirestore();
+      loadGroups();
     }, [])
   );
 
@@ -54,7 +54,7 @@ export default function GroupIndexScreen() {
     } catch (error) {
       console.error('Error updating group position:', error);
       // エラーの場合は元の状態に戻す
-      loadGroupsFromFirestore();
+      loadGroups();
     }
   };
 
@@ -95,7 +95,7 @@ export default function GroupIndexScreen() {
 
       await createFireStoreGroup(user.id, groupId, groupName, groupColor, position);
       toggleGroupCreateModal();
-      await loadGroupsFromFirestore();
+      await loadGroups();
     } catch (e) {
       Alert.alert('エラー', '保存に失敗しました');
       console.error(e);
@@ -144,7 +144,7 @@ export default function GroupIndexScreen() {
 
   const deleteGroup = async (groupId: string) => {
     await deleteFireStoreGroup(user.id, groupId);
-    await loadGroupsFromFirestore();
+    await loadGroups();
   };
 
   return (
@@ -163,7 +163,7 @@ export default function GroupIndexScreen() {
       </View>
 
       <DraggableFlatList
-        data={firestoreGroups}
+        data={groups}
         onDragEnd={handleDragEnd}
         keyExtractor={item => item.id}
         renderItem={({ item, drag }) => (
