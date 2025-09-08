@@ -1,4 +1,15 @@
-import { doc, getDoc, setDoc, updateDoc, deleteDoc, Timestamp } from 'firebase/firestore';
+import {
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  deleteDoc,
+  Timestamp,
+  query,
+  orderBy,
+  getDocs,
+  collection
+} from 'firebase/firestore';
 import { db } from '@root/firebaseConfig';
 import { type Group } from '@models/Group';
 
@@ -59,5 +70,71 @@ export const getGroupById = async (userId: string, groupId: string): Promise<Gro
   } catch (error) {
     console.error('Error getting group by id from Firestore:', error);
     return null;
+  }
+};
+
+/**
+ * グループをIDベースで更新
+ * @param userId ユーザーID
+ * @param groupId グループID
+ * @param name グループ名
+ * @param color グループ色
+ */
+export const updateGroupById = async (
+  userId: string,
+  groupId: string,
+  name: string,
+  color: string
+): Promise<void> => {
+  try {
+    const groupRef = doc(db, USERS_COLLECTION, userId, GROUPS_COLLECTION, groupId);
+    await updateDoc(groupRef, {
+      name,
+      color,
+      updatedAt: Timestamp.now()
+    });
+    console.log(`Group ${name} updated in Firestore for user ${userId}`);
+  } catch (error) {
+    console.error('Error updating group in Firestore:', error);
+    throw error;
+  }
+};
+
+/**
+ * グループを削除
+ * @param userId ユーザーID
+ * @param groupId グループID
+ */
+export const deleteGroupById = async (userId: string, groupId: string) => {
+  try {
+    // TODO : あとで、グループに紐づくアイテムの削除もここで実行する
+    const groupRef = doc(db, USERS_COLLECTION, userId, GROUPS_COLLECTION, groupId);
+    await deleteDoc(groupRef);
+    console.log(`Group ${groupId} deleted from Firestore for user ${userId}`);
+  } catch (error) {
+    console.error('Error deleting group in Firestore:', error);
+    throw error;
+  }
+};
+
+/**
+ * 全グループを取得
+ * @param userId ユーザーID
+ */
+export const getAllGroupsByUserId = async (userId: string): Promise<Group[]> => {
+  try {
+    const groupsRef = collection(db, USERS_COLLECTION, userId, GROUPS_COLLECTION);
+    const q = query(groupsRef, orderBy('position', 'asc'));
+    const snapshot = await getDocs(q);
+
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      name: doc.data().name,
+      color: doc.data().color,
+      position: doc.data().position
+    }));
+  } catch (error) {
+    console.error('Error getting groups from Firestore:', error);
+    return [];
   }
 };

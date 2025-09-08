@@ -13,12 +13,10 @@ import { useGroups } from '@context/GroupContext';
 import {
   calculateNewPosition,
   updateFireStoreGroupPosition,
-  createFireStoreGroup,
-  deleteFireStoreGroup,
   countUserGroupsInFirestore,
   getMaxPosition
 } from '@services/firestoreService';
-import { saveGroup } from '@services/groupService';
+import { saveGroup, deleteGroupById } from '@services/groupService';
 import { useAuthenticatedUser } from '@context/AuthContext';
 
 export default function GroupIndexScreen() {
@@ -144,7 +142,7 @@ export default function GroupIndexScreen() {
   };
 
   const deleteGroup = async (groupId: string) => {
-    await deleteFireStoreGroup(user.id, groupId);
+    await deleteGroupById(user.id, groupId);
     await loadGroups();
   };
 

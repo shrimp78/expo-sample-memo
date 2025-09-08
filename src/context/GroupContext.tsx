@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { type Group } from '@models/Group';
-import { getAllUserGroupsFromFirestore } from '@services/firestoreService';
+import { getAllGroupsByUserId } from '@services/groupService';
 import { useAuthenticatedUser } from './AuthContext';
 
 interface GroupContextType {
@@ -22,7 +22,7 @@ export const GroupProvider: React.FC<GroupProviderProps> = ({ children }) => {
   // Firestoreからデータを取得するやつ
   const loadGroups = React.useCallback(async () => {
     try {
-      const allGroups = await getAllUserGroupsFromFirestore(user.id);
+      const allGroups = await getAllGroupsByUserId(user.id);
       console.log('\n\n\nFirestoreからデータを取得しました');
       console.log(allGroups);
       setGroups(allGroups);

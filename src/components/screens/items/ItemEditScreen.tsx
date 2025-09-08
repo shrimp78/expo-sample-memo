@@ -2,11 +2,8 @@ import { StyleSheet, Button, Alert, View } from 'react-native';
 import { useLocalSearchParams, useNavigation, router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { KeyboardAvoidingView } from '@gluestack-ui/themed';
-import {
-  getAllUserGroupsFromFirestore,
-  updateItemByIdFromFirestore,
-  getItemByIdFromFirestore
-} from '@services/firestoreService';
+import { updateItemByIdFromFirestore, getItemByIdFromFirestore } from '@services/firestoreService';
+import { getAllGroupsByUserId } from '@services/groupService';
 import { type Group } from '@models/Group';
 import ItemInputForm from '@components/common/ItemInputForm';
 import GroupSelectModal from '@components/common/GroupSelectModal';
@@ -36,7 +33,7 @@ export default function ItemEditScreen() {
     const fetchItem = async () => {
       try {
         const item = await getItemByIdFromFirestore(user.id, id);
-        const groups = await getAllUserGroupsFromFirestore(user.id);
+        const groups = await getAllGroupsByUserId(user.id);
         setGroups(groups);
         if (item) {
           setTitle(item.title);
