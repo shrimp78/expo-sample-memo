@@ -1,6 +1,6 @@
 import { doc, getDoc, setDoc, updateDoc, deleteDoc, Timestamp } from 'firebase/firestore';
 import { db } from '@root/firebaseConfig';
-import { Group } from '@models/Group';
+import { type Group } from '@models/Group';
 
 const USERS_COLLECTION = 'users';
 const GROUPS_COLLECTION = 'groups';
@@ -21,7 +21,7 @@ export const saveGroup = async (
   position: number
 ) => {
   try {
-    const groupRef = doc(db, 'users', userId, 'groups', groupId);
+    const groupRef = doc(db, USERS_COLLECTION, userId, GROUPS_COLLECTION, groupId);
     await setDoc(groupRef, {
       name: groupName,
       color: groupColor,
@@ -33,5 +33,31 @@ export const saveGroup = async (
   } catch (error) {
     console.error('Error creating group in Firestore:', error);
     throw error;
+  }
+};
+
+/**
+ * グループをIDベースで取得
+ * @param userId ユーザーID
+ * @param groupId グループID
+ */
+export const getGroupById = async (userId: string, groupId: string): Promise<Group | null> => {
+  try {
+    const groupsRef = doc(db, USERS_COLLECTION, userId, GROUPS_COLLECTION, groupId);
+    const snapshot = await getDoc(groupsRef);
+    if (snapshot.exists()) {
+      return {
+        id: groupId,
+        name: snapshot.data().name,
+        color: snapshot.data().color,
+        position: snapshot.data().position
+      };
+    } else {
+      console.log('グループが見つかりません');
+    }
+    return null;
+  } catch (error) {
+    console.error('Error getting group by id from Firestore:', error);
+    return null;
   }
 };

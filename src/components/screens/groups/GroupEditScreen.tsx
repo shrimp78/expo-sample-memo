@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Alert, Button, Platform, InputAccessoryView } from 'react-native';
 import { useLocalSearchParams, router, useNavigation } from 'expo-router';
-import {
-  getGroupByIdFromFirestore,
-  updateGroupByIdFromFirestore
-} from '@services/firestoreService';
+import { updateGroupByIdFromFirestore } from '@services/firestoreService';
+import { getGroupById } from '@services/groupService';
 import { KeyboardAvoidingView, Input, InputField } from '@gluestack-ui/themed';
 import { type Group } from '@models/Group';
 import KeyboardCloseButton from '@components/common/KeyboardCloseButton';
@@ -38,7 +36,7 @@ export default function GroupEditScreen() {
     try {
       if (!id) return;
 
-      const groupData = await getGroupByIdFromFirestore(user.id, id);
+      const groupData = await getGroupById(user.id, id);
       if (groupData) {
         setGroup(groupData);
         setGroupName(groupData.name);
