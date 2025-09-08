@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { useEffect } from 'react';
 import * as Crypto from 'expo-crypto';
 import * as FirestoreService from '../src/services/firestoreService';
+import { saveGroup } from '@services/groupService';
 
 import { initialItemData, initialGroupData } from '../constants/initialData';
 import { useAuth } from '../src/context/AuthContext';
@@ -52,7 +53,7 @@ export default function InitialScreen() {
       if (firestoreGroupNum === 0) {
         console.log('初期グループデータを作成します');
         for (const group of initialGroupData) {
-          await FirestoreService.saveGroupToFirestore(authUserId, group);
+          await saveGroup(authUserId, group.id, group.name, group.color, group.position);
         }
       }
 

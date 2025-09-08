@@ -18,6 +18,7 @@ import {
   countUserGroupsInFirestore,
   getMaxPosition
 } from '@services/firestoreService';
+import { saveGroup } from '@services/groupService';
 import { useAuthenticatedUser } from '@context/AuthContext';
 
 export default function GroupIndexScreen() {
@@ -93,7 +94,7 @@ export default function GroupIndexScreen() {
       const maxPosition = await getMaxPosition(user.id); // TODO: これってここで計算しなくてもいいのでは？Insert時によしなにできないのかな
       const position = maxPosition + 65536;
 
-      await createFireStoreGroup(user.id, groupId, groupName, groupColor, position);
+      await saveGroup(user.id, groupId, groupName, groupColor, position);
       toggleGroupCreateModal();
       await loadGroups();
     } catch (e) {

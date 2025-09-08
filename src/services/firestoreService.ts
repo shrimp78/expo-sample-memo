@@ -19,27 +19,6 @@ import type { Item } from '@models/Item';
  */
 
 /**
- * Groupをユーザーのサブコレクションに保存
- */
-export const saveGroupToFirestore = async (
-  userId: string,
-  group: Omit<Group, 'id'> & { id: string }
-): Promise<void> => {
-  try {
-    const groupRef = doc(db, 'users', userId, 'groups', group.id);
-    await setDoc(groupRef, {
-      ...group,
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now()
-    });
-    console.log(`Group ${group.name} saved to Firestore for user ${userId}`);
-  } catch (error) {
-    console.error('Error saving group to Firestore:', error);
-    throw error;
-  }
-};
-
-/**
  * Itemをユーザーのサブコレクションに保存
  */
 export const saveItemToFirestore = async (

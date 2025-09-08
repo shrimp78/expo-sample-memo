@@ -19,6 +19,7 @@ import {
   deleteItemFromFirestore,
   deleteAllItemFromFirestore
 } from '@services/firestoreService';
+import { saveGroup } from '@services/groupService';
 import { deleteAllFireStoreGroup } from '@services/firestoreService';
 import { type Item } from '@models/Item';
 import { type Group } from '@models/Group';
@@ -260,7 +261,7 @@ export default function HomeIndexScreen() {
     const position = 65536;
     console.log('グループの保存が押されました');
     try {
-      await createFireStoreGroup(user.id, groupId, groupName, groupColor, position);
+      await saveGroup(user.id, groupId, groupName, groupColor, position);
       const items = await getAllUserItemsFromFirestore(user.id); // TBC : なんか冗長かも?
       setItems(items);
       await loadGroups();
