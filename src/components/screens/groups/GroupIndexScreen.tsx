@@ -13,11 +13,11 @@ import { useGroups } from '@context/GroupContext';
 import {
   saveGroup,
   deleteGroupById,
-  countGroup,
   calculateGroupNewPosition,
   getMaxGroupPosition,
   updateGroupPosition
 } from '@services/groupService';
+import { countItemsByGroupId } from '@services/itemService';
 import { useAuthenticatedUser } from '@context/AuthContext';
 
 export default function GroupIndexScreen() {
@@ -111,7 +111,7 @@ export default function GroupIndexScreen() {
 
     try {
       // グループに紐づくアイテム数を取得
-      const itemCount = await countGroup(user.id);
+      const itemCount = await countItemsByGroupId(user.id, groupId);
 
       if (itemCount === 0) {
         // アイテムが0件の場合

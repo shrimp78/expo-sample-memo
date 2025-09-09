@@ -6,7 +6,7 @@ import {
   deleteDoc,
   Timestamp,
   query,
-  orderBy,
+  where,
   getDocs,
   collection
 } from 'firebase/firestore';
@@ -167,6 +167,23 @@ export const countItemsByUserId = async (userId: string): Promise<number> => {
     return snapshot.size;
   } catch (error) {
     console.error('Error counting items in Firestore:', error);
+    return 0;
+  }
+};
+
+/**
+ * ユーザーの持っているグループ数をカウント
+ * @param userId ユーザーID
+ * @param groupId グループID
+ */
+export const countItemsByGroupId = async (userId: string, groupId: string): Promise<number> => {
+  try {
+    const groupsRef = collection(db, USERS_COLLECTION, userId, ITEMS_COLLECTION);
+    const itemsQuery = query(groupsRef, where('group_id', '==', groupId));
+    const itemsSnapshot = await getDocs(itemsQuery);
+    return itemsSnapshot.size;
+  } catch (error) {
+    console.error('Error counting items:', error);
     return 0;
   }
 };
