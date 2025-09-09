@@ -8,13 +8,15 @@ import {
   query,
   orderBy,
   getDocs,
-  collection
+  collection,
+  where
 } from 'firebase/firestore';
 import { db } from '@root/firebaseConfig';
 import { type Group } from '@models/Group';
 
 const USERS_COLLECTION = 'users';
 const GROUPS_COLLECTION = 'groups';
+const ITEMS_COLLECTION = 'items';
 
 /**
  * グループの新規作成
@@ -107,10 +109,21 @@ export const updateGroupById = async (
  */
 export const deleteGroupById = async (userId: string, groupId: string) => {
   try {
-    // TODO : あとで、グループに紐づくアイテムの削除もここで実行する
+    // グループに紐づくアイテムを削除
+    const itemsRef = collection(db, USERS_COLLECTION, userId, ITEMS_COLLECTION);
+    const itemsQuery = query(itemsRef, where('group_id', '==', groupId));
+    const itemsSnapshot = await getDocs(itemsQuery);
+
+    const itemDeletePromises: Promise<void>[] = [];
+    itemsSnapshot.docs.forEach(doc => {
+      itemDeletePromises.push(deleteDoc(doc.ref));
+    });
+    await Promise.all(itemDeletePromises);
+
+    // グループ本体を削除
     const groupRef = doc(db, USERS_COLLECTION, userId, GROUPS_COLLECTION, groupId);
     await deleteDoc(groupRef);
-    console.log(`Group ${groupId} deleted from Firestore for user ${userId}`);
+    console.log(`Group ${groupId} and related items deleted from Firestore for user ${userId}`);
   } catch (error) {
     console.error('Error deleting group in Firestore:', error);
     throw error;
