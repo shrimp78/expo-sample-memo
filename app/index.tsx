@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { useEffect } from 'react';
 import * as Crypto from 'expo-crypto';
 import * as FirestoreService from '../src/services/firestoreService';
-import { saveGroup } from '@services/groupService';
+import { saveGroup, countGroup } from '@services/groupService';
 
 import { initialItemData, initialGroupData } from '../constants/initialData';
 import { useAuth } from '../src/context/AuthContext';
@@ -47,7 +47,7 @@ export default function InitialScreen() {
       }
 
       const firestoreItemNum = await FirestoreService.countUserItemsInFirestore(authUserId);
-      const firestoreGroupNum = await FirestoreService.countUserGroupsInFirestore(authUserId);
+      const firestoreGroupNum = await countGroup(authUserId);
 
       // Groupの初期化（SQLiteとFirestore両方）
       if (firestoreGroupNum === 0) {

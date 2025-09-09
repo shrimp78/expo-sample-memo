@@ -118,6 +118,31 @@ export const deleteGroupById = async (userId: string, groupId: string) => {
 };
 
 /**
+ * 全てのグループを削除
+ * @param userId ユーザーID
+ */
+export const deleteAllGroup = async (userId: string) => {
+  try {
+    const groupsRef = collection(db, USERS_COLLECTION, userId, GROUPS_COLLECTION);
+    const snapshot = await getDocs(groupsRef);
+
+    const deletePromises: Promise<void>[] = [];
+
+    snapshot.docs.forEach(doc => {
+      deletePromises.push(deleteDoc(doc.ref));
+    });
+
+    // 全ての削除処理を並行実行
+    await Promise.all(deletePromises);
+
+    console.log(`All groups deleted from Firestore for user ${userId}`);
+  } catch (error) {
+    console.error('Error deleting all groups from Firestore:', error);
+    throw error;
+  }
+};
+
+/**
  * 全グループを取得
  * @param userId ユーザーID
  */
@@ -136,5 +161,82 @@ export const getAllGroupsByUserId = async (userId: string): Promise<Group[]> => 
   } catch (error) {
     console.error('Error getting groups from Firestore:', error);
     return [];
+  }
+};
+
+/**
+ * ユーザーの持っているグループ数をカウント
+ * @param userId ユーザーID
+ */
+export const countGroup = async (userId: string): Promise<number> => {
+  try {
+    const groupsRef = collection(db, USERS_COLLECTION, userId, GROUPS_COLLECTION);
+    const snapshot = await getDocs(groupsRef);
+    return snapshot.size;
+  } catch (error) {
+    console.error('Error counting groups:', error);
+    return 0;
+  }
+};
+
+/**
+ * 移動後のPosition値を計算（Trello方式）
+ * @param toIndex 移動先のインデックス
+ * @param groupList グループリスト
+ */
+export const calculateGroupNewPosition = (toIndex: number, groupList: Group[]): number => {
+  if (toIndex === 0) {
+    // 最初に移動する場合
+    return groupList[0].position / 2;
+  } else if (toIndex === groupList.length - 1) {
+    // 最後に移動する場合
+    return groupList[groupList.length - 1].position + 65536;
+  } else {
+    // 中間に移動する場合
+    const prevPosition = groupList[toIndex - 1].position;
+    const nextPosition = groupList[toIndex + 1].position;
+    return (prevPosition + nextPosition) / 2;
+  }
+};
+
+/**
+ * グループの最大position値を取得
+ * @param userId ユーザーID
+ */
+export const getMaxGroupPosition = async (userId: string): Promise<number> => {
+  try {
+    const groupsRef = collection(db, USERS_COLLECTION, userId, GROUPS_COLLECTION);
+    const q = query(groupsRef, orderBy('position', 'desc'));
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) {
+      return 0; // グループが存在しない場合は0を返す
+    }
+
+    // 最初のドキュメント（position値が最大）を取得
+    const maxDoc = snapshot.docs[0];
+    return maxDoc.data().position || 0;
+  } catch (error) {
+    console.error('Error getting max position from Firestore:', error);
+    return 0;
+  }
+};
+
+/**
+ * グループのPosition値だけを更新
+ * @param userId ユーザーID
+ * @param groupId グループID
+ * @param position 新しいPosition値
+ */
+export const updateGroupPosition = async (userId: string, groupId: string, position: number) => {
+  try {
+    const groupRef = doc(db, USERS_COLLECTION, userId, GROUPS_COLLECTION, groupId);
+    await updateDoc(groupRef, {
+      position
+    });
+    console.log(`Group ${groupId} position updated to ${position} in Firestore for user ${userId}`);
+  } catch (error) {
+    console.error('Error updating group position in Firestore:', error);
+    throw error;
   }
 };

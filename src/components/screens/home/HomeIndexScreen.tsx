@@ -13,14 +13,12 @@ import {
 import { useCallback, useState } from 'react';
 import { Entypo } from '@expo/vector-icons';
 import {
-  createFireStoreGroup,
   getAllUserItemsFromFirestore,
   saveItemToFirestore,
   deleteItemFromFirestore,
   deleteAllItemFromFirestore
 } from '@services/firestoreService';
-import { saveGroup } from '@services/groupService';
-import { deleteAllFireStoreGroup } from '@services/firestoreService';
+import { saveGroup, deleteAllGroup } from '@services/groupService';
 import { type Item } from '@models/Item';
 import { type Group } from '@models/Group';
 import ItemList from '@screens/home/ItemList';
@@ -158,7 +156,7 @@ export default function HomeIndexScreen() {
 
   const deleteAllItem = async () => {
     await deleteAllItemFromFirestore(user.id);
-    await deleteAllFireStoreGroup(user.id);
+    await deleteAllGroup(user.id);
     const items = await getAllUserItemsFromFirestore(user.id);
     await loadGroups();
 

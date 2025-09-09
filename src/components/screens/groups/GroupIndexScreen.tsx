@@ -11,12 +11,13 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colorOptions } from '@constants/colors';
 import { useGroups } from '@context/GroupContext';
 import {
-  calculateNewPosition,
-  updateFireStoreGroupPosition,
-  countUserGroupsInFirestore,
-  getMaxPosition
-} from '@services/firestoreService';
-import { saveGroup, deleteGroupById } from '@services/groupService';
+  saveGroup,
+  deleteGroupById,
+  countGroup,
+  calculateGroupNewPosition,
+  getMaxGroupPosition,
+  updateGroupPosition
+} from '@services/groupService';
 import { useAuthenticatedUser } from '@context/AuthContext';
 
 export default function GroupIndexScreen() {
@@ -42,10 +43,10 @@ export default function GroupIndexScreen() {
 
       // 移動したグループの新しいposition値を計算してデータベースに保存
       const movedGroup = data[to];
-      const newPosition = calculateNewPosition(to, data);
+      const newPosition = calculateGroupNewPosition(to, data);
 
       // データベースのposition値を更新
-      await updateFireStoreGroupPosition(user.id, movedGroup.id, newPosition);
+      await updateGroupPosition(user.id, movedGroup.id, newPosition);
 
       // position値をローカルstateにも反映
       const updatedData = [...data];
@@ -89,7 +90,7 @@ export default function GroupIndexScreen() {
       const groupId = Crypto.randomUUID();
 
       // 新しいグループは必ず一番最後の位置に保存する
-      const maxPosition = await getMaxPosition(user.id); // TODO: これってここで計算しなくてもいいのでは？Insert時によしなにできないのかな
+      const maxPosition = await getMaxGroupPosition(user.id); // TODO: これってここで計算しなくてもいいのでは？Insert時によしなにできないのかな
       const position = maxPosition + 65536;
 
       await saveGroup(user.id, groupId, groupName, groupColor, position);
@@ -110,7 +111,7 @@ export default function GroupIndexScreen() {
 
     try {
       // グループに紐づくアイテム数を取得
-      const itemCount = await countUserGroupsInFirestore(user.id);
+      const itemCount = await countGroup(user.id);
 
       if (itemCount === 0) {
         // アイテムが0件の場合
