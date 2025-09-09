@@ -13,12 +13,12 @@ import {
 import { useCallback, useState } from 'react';
 import { Entypo } from '@expo/vector-icons';
 import {
-  getAllUserItemsFromFirestore,
-  saveItemToFirestore,
-  deleteItemFromFirestore,
-  deleteAllItemFromFirestore
-} from '@services/firestoreService';
-import { saveGroup, deleteAllGroup } from '@services/groupService';
+  saveItem,
+  getAllItemsByUserId,
+  deleteItemById,
+  deleteAllItems
+} from '@services/itemService';
+import { saveGroup, deleteAllGroups } from '@services/groupService';
 import { type Item } from '@models/Item';
 import { type Group } from '@models/Group';
 import ItemList from '@screens/home/ItemList';
@@ -155,9 +155,9 @@ export default function HomeIndexScreen() {
   };
 
   const deleteAllItem = async () => {
-    await deleteAllItemFromFirestore(user.id);
-    await deleteAllGroup(user.id);
-    const items = await getAllUserItemsFromFirestore(user.id);
+    await deleteAllItems(user.id);
+    await deleteAllGroups(user.id);
+    const items = await getAllItemsByUserId(user.id); // TODO: これ本当にいるの？
     await loadGroups();
 
     setItems(items);
@@ -177,7 +177,7 @@ export default function HomeIndexScreen() {
 
   // 初回データ読み込み
   const loadData = async () => {
-    const items = await getAllUserItemsFromFirestore(user.id);
+    const items = await getAllItemsByUserId(user.id);
     setItems(items);
     await loadGroups();
   };
@@ -220,9 +220,9 @@ export default function HomeIndexScreen() {
     try {
       const id = Crypto.randomUUID();
       const group_id = selectedGroup?.id ?? null;
-      await saveItemToFirestore(user.id, { id, title, content, group_id });
+      await saveItem(user.id, id, title, content, group_id);
       toggleCreateModal();
-      const items = await getAllUserItemsFromFirestore(user.id); // TBC : なんか冗長かも?
+      const items = await getAllItemsByUserId(user.id); // TBC : なんか冗長かも?
       setItems(items);
     } catch (e) {
       Alert.alert('エラー', '保存に失敗しました');
@@ -243,9 +243,9 @@ export default function HomeIndexScreen() {
   const handleDeletePress = async (itemId: string) => {
     console.log('アイテムの削除が押されました', itemId);
     try {
-      await deleteItemFromFirestore(user.id, itemId);
+      await deleteItemById(user.id, itemId);
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-      const updatedItems = await getAllUserItemsFromFirestore(user.id); // TBC : なんか冗長かも?
+      const updatedItems = await getAllItemsByUserId(user.id); // TBC : なんか冗長かも?
       setItems(updatedItems);
     } catch (e) {
       Alert.alert('エラー', '削除に失敗しました');
@@ -260,7 +260,7 @@ export default function HomeIndexScreen() {
     console.log('グループの保存が押されました');
     try {
       await saveGroup(user.id, groupId, groupName, groupColor, position);
-      const items = await getAllUserItemsFromFirestore(user.id); // TBC : なんか冗長かも?
+      const items = await getAllItemsByUserId(user.id); // TBC : なんか冗長かも?
       setItems(items);
       await loadGroups();
 

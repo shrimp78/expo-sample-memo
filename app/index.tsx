@@ -2,7 +2,7 @@ import { router } from 'expo-router';
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { useEffect } from 'react';
 import * as Crypto from 'expo-crypto';
-import * as FirestoreService from '../src/services/firestoreService';
+import { saveItem, countItemsByUserId } from '@services/itemService';
 import { saveGroup, countGroup } from '@services/groupService';
 
 import { initialItemData, initialGroupData } from '../constants/initialData';
@@ -46,7 +46,7 @@ export default function InitialScreen() {
         throw new Error('ユーザー情報が未取得です');
       }
 
-      const firestoreItemNum = await FirestoreService.countUserItemsInFirestore(authUserId);
+      const firestoreItemNum = await countItemsByUserId(authUserId);
       const firestoreGroupNum = await countGroup(authUserId);
 
       // Groupの初期化（SQLiteとFirestore両方）
@@ -63,12 +63,7 @@ export default function InitialScreen() {
         for (const item of initialItemData) {
           const id = Crypto.randomUUID();
           // Firestore（新規）
-          await FirestoreService.saveItemToFirestore(authUserId, {
-            id,
-            title: item.title,
-            content: item.content,
-            group_id: item.group_id
-          });
+          await saveItem(authUserId, id, item.title, item.content, item.group_id);
         }
       }
 

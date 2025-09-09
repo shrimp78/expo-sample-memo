@@ -2,7 +2,7 @@ import { StyleSheet, Button, Alert, View } from 'react-native';
 import { useLocalSearchParams, useNavigation, router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { KeyboardAvoidingView } from '@gluestack-ui/themed';
-import { updateItemByIdFromFirestore, getItemByIdFromFirestore } from '@services/firestoreService';
+import { getItemById, updateItemById } from '@services/itemService';
 import { getAllGroupsByUserId } from '@services/groupService';
 import { type Group } from '@models/Group';
 import ItemInputForm from '@components/common/ItemInputForm';
@@ -32,7 +32,7 @@ export default function ItemEditScreen() {
   useEffect(() => {
     const fetchItem = async () => {
       try {
-        const item = await getItemByIdFromFirestore(user.id, id);
+        const item = await getItemById(user.id, id);
         const groups = await getAllGroupsByUserId(user.id);
         setGroups(groups);
         if (item) {
@@ -70,7 +70,7 @@ export default function ItemEditScreen() {
 
     // 保存処理
     try {
-      await updateItemByIdFromFirestore(user.id, id, title, content, selectedGroup?.id as string);
+      await updateItemById(user.id, id, title, content, selectedGroup?.id as string);
       router.back();
     } catch (e) {
       Alert.alert('エラー', '保存に失敗しました', [{ text: 'OK', onPress: () => router.back() }]);

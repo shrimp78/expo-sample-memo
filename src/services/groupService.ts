@@ -121,7 +121,7 @@ export const deleteGroupById = async (userId: string, groupId: string) => {
  * 全てのグループを削除
  * @param userId ユーザーID
  */
-export const deleteAllGroup = async (userId: string) => {
+export const deleteAllGroups = async (userId: string) => {
   try {
     const groupsRef = collection(db, USERS_COLLECTION, userId, GROUPS_COLLECTION);
     const snapshot = await getDocs(groupsRef);
