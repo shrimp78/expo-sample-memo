@@ -35,34 +35,33 @@ export default function InitialScreen() {
 
   /**
    * データベース初期化処理
-   * SQLiteとFirestore両方に初期データを保存
    */
   const initDatabase = async () => {
     try {
       // NOTE: ここに到達するのは isLoggedIn が true の時のみ
+      // ログイン済みになる前に useAuthenticatedUserを呼び出すとエラーになるのでuserを使っている
       const authUserId = user?.id;
       // 念のための安全ガード
       if (!authUserId) {
         throw new Error('ユーザー情報が未取得です');
       }
 
-      const firestoreItemNum = await countItemsByUserId(authUserId);
-      const firestoreGroupNum = await countGroup(authUserId);
+      const itemCount = await countItemsByUserId(authUserId);
+      const groupCount = await countGroup(authUserId);
 
-      // Groupの初期化（SQLiteとFirestore両方）
-      if (firestoreGroupNum === 0) {
+      // Groupの初期化
+      if (groupCount === 0) {
         console.log('初期グループデータを作成します');
         for (const group of initialGroupData) {
           await saveGroup(authUserId, group.id, group.name, group.color);
         }
       }
 
-      // Itemの初期化（SQLiteとFirestore両方）
-      if (firestoreItemNum === 0) {
+      // Itemの初期化
+      if (itemCount === 0) {
         console.log('初期アイテムデータを作成します');
         for (const item of initialItemData) {
           const id = Crypto.randomUUID();
-          // Firestore（新規）
           await saveItem(authUserId, id, item.title, item.content, item.group_id);
         }
       }
