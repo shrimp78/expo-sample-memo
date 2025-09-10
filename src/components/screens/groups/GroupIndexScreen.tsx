@@ -12,7 +12,7 @@ import { colorOptions } from '@constants/colors';
 import { useGroups } from '@context/GroupContext';
 import {
   saveGroup,
-  deleteGroupById,
+  deleteGroupByIdWithItems,
   calculateGroupNewPosition,
   updateGroupPosition
 } from '@services/groupService';
@@ -137,7 +137,7 @@ export default function GroupIndexScreen() {
   };
 
   const deleteGroup = async (groupId: string) => {
-    await deleteGroupById(user.id, groupId);
+    await deleteGroupByIdWithItems(user.id, groupId);
     await loadGroups();
   };
 
