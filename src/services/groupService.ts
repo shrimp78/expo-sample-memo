@@ -9,7 +9,8 @@ import {
   orderBy,
   getDocs,
   collection,
-  where
+  where,
+  limit
 } from 'firebase/firestore';
 import { db } from '@root/firebaseConfig';
 import { type Group } from '@models/Group';
@@ -19,30 +20,39 @@ const GROUPS_COLLECTION = 'groups';
 const ITEMS_COLLECTION = 'items';
 
 /**
- * グループの新規作成
+ * グループの新規作成（positionはサービス側で自動計算）
+ * - 既存グループが0件: 65536
+ * - 既存あり: 最大position + 65536
  * @param userId ユーザーID
  * @param groupId グループID
  * @param groupName グループ名
  * @param groupColor グループ色
- * @param position Position値
+ * @returns 採用したposition値を返却
  */
 export const saveGroup = async (
   userId: string,
   groupId: string,
   groupName: string,
-  groupColor: string,
-  position: number
-) => {
+  groupColor: string
+): Promise<number> => {
   try {
+    // 最大positionの取得（1件のみ）
+    const groupsRef = collection(db, USERS_COLLECTION, userId, GROUPS_COLLECTION);
+    const q = query(groupsRef, orderBy('position', 'desc'), limit(1));
+    const snapshot = await getDocs(q);
+
+    const newPosition = snapshot.empty ? 65536 : (snapshot.docs[0].data().position || 0) + 65536;
+
     const groupRef = doc(db, USERS_COLLECTION, userId, GROUPS_COLLECTION, groupId);
     await setDoc(groupRef, {
       name: groupName,
       color: groupColor,
-      position: position,
+      position: newPosition,
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now()
     });
     console.log(`Group ${groupName} created in Firestore for user ${userId}`);
+    return newPosition;
   } catch (error) {
     console.error('Error creating group in Firestore:', error);
     throw error;

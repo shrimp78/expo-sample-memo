@@ -14,7 +14,6 @@ import {
   saveGroup,
   deleteGroupById,
   calculateGroupNewPosition,
-  getMaxGroupPosition,
   updateGroupPosition
 } from '@services/groupService';
 import { countItemsByGroupId } from '@services/itemService';
@@ -88,12 +87,7 @@ export default function GroupIndexScreen() {
     // 保存処理
     try {
       const groupId = Crypto.randomUUID();
-
-      // 新しいグループは必ず一番最後の位置に保存する
-      const maxPosition = await getMaxGroupPosition(user.id); // TODO: これってここで計算しなくてもいいのでは？Insert時によしなにできないのかな
-      const position = maxPosition + 65536;
-
-      await saveGroup(user.id, groupId, groupName, groupColor, position);
+      await saveGroup(user.id, groupId, groupName, groupColor);
       toggleGroupCreateModal();
       await loadGroups();
     } catch (e) {

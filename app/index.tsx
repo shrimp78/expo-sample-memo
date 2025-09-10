@@ -53,7 +53,7 @@ export default function InitialScreen() {
       if (firestoreGroupNum === 0) {
         console.log('初期グループデータを作成します');
         for (const group of initialGroupData) {
-          await saveGroup(authUserId, group.id, group.name, group.color, group.position);
+          await saveGroup(authUserId, group.id, group.name, group.color);
         }
       }
 

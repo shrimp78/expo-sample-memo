@@ -256,10 +256,9 @@ export default function HomeIndexScreen() {
   // グループの保存処理
   const handleSaveGroupPress = async () => {
     const groupId = Crypto.randomUUID();
-    const position = 65536;
     console.log('グループの保存が押されました');
     try {
-      await saveGroup(user.id, groupId, groupName, groupColor, position);
+      const position = await saveGroup(user.id, groupId, groupName, groupColor);
       const items = await getAllItemsByUserId(user.id); // TBC : なんか冗長かも?
       setItems(items);
       await loadGroups();
