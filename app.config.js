@@ -32,7 +32,6 @@ export default {
     },
     plugins: [
       'expo-router',
-      'expo-sqlite',
       '@react-native-google-signin/google-signin',
       'expo-apple-authentication',
       'expo-secure-store'
