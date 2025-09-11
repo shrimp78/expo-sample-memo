@@ -1,16 +1,14 @@
 import { doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@root/firebaseConfig';
 import { User } from '@models/User';
-
-// Firestoreのコレクション名
-const USERS_COLLECTION = 'users';
+import { COLLECTION } from '@constants/firebaseCollectionName';
 
 /**
  * Firestoreからユーザー情報を取得
  */
 export const getUserFromFirestore = async (uid: string): Promise<User | null> => {
   try {
-    const userDocRef = doc(db, USERS_COLLECTION, uid);
+    const userDocRef = doc(db, COLLECTION.USERS, uid);
     const userDoc = await getDoc(userDocRef);
 
     if (userDoc.exists()) {
@@ -34,7 +32,7 @@ export const getUserFromFirestore = async (uid: string): Promise<User | null> =>
  */
 export const createUserInFirestore = async (user: User): Promise<void> => {
   try {
-    const userDocRef = doc(db, USERS_COLLECTION, user.id);
+    const userDocRef = doc(db, COLLECTION.USERS, user.id);
     await setDoc(userDocRef, {
       email: user.email,
       name: user.name,
@@ -58,7 +56,7 @@ export const updateUserInFirestore = async (
   updates: Partial<Omit<User, 'id'>>
 ): Promise<void> => {
   try {
-    const userDocRef = doc(db, USERS_COLLECTION, uid);
+    const userDocRef = doc(db, COLLECTION.USERS, uid);
     await updateDoc(userDocRef, {
       ...updates,
       updatedAt: serverTimestamp()
@@ -76,7 +74,7 @@ export const updateUserInFirestore = async (
  */
 export const deleteUserFromFirestore = async (uid: string): Promise<void> => {
   try {
-    const userDocRef = doc(db, USERS_COLLECTION, uid);
+    const userDocRef = doc(db, COLLECTION.USERS, uid);
     await deleteDoc(userDocRef);
 
     console.log('User deleted from Firestore:', uid);
@@ -91,7 +89,7 @@ export const deleteUserFromFirestore = async (uid: string): Promise<void> => {
  */
 export const checkUserExists = async (uid: string): Promise<boolean> => {
   try {
-    const userDocRef = doc(db, USERS_COLLECTION, uid);
+    const userDocRef = doc(db, COLLECTION.USERS, uid);
     const userDoc = await getDoc(userDocRef);
 
     return userDoc.exists();

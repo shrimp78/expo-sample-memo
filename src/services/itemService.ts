@@ -12,9 +12,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '@root/firebaseConfig';
 import { type Item } from '@models/Item';
-
-const USERS_COLLECTION = 'users';
-const ITEMS_COLLECTION = 'items';
+import { COLLECTION } from '@constants/firebaseCollectionName';
 
 /**
  * Itemをユーザーのサブコレクションに保存
@@ -27,7 +25,7 @@ export const saveItem = async (
   group_id: string
 ): Promise<void> => {
   try {
-    const itemRef = doc(db, USERS_COLLECTION, userId, ITEMS_COLLECTION, itemId);
+    const itemRef = doc(db, COLLECTION.USERS, userId, COLLECTION.ITEMS, itemId);
     await setDoc(itemRef, {
       title: itemTitle,
       content: itemContent,
@@ -49,7 +47,7 @@ export const saveItem = async (
  */
 export const getItemById = async (userId: string, itemId: string): Promise<Item | null> => {
   try {
-    const itemRef = doc(db, USERS_COLLECTION, userId, ITEMS_COLLECTION, itemId);
+    const itemRef = doc(db, COLLECTION.USERS, userId, COLLECTION.ITEMS, itemId);
     const snapshot = await getDoc(itemRef);
     if (snapshot.exists()) {
       return {
@@ -84,7 +82,7 @@ export const updateItemById = async (
   group_id: string
 ): Promise<void> => {
   try {
-    const itemRef = doc(db, USERS_COLLECTION, userId, ITEMS_COLLECTION, itemId);
+    const itemRef = doc(db, COLLECTION.USERS, userId, COLLECTION.ITEMS, itemId);
     await updateDoc(itemRef, {
       title,
       content,
@@ -105,7 +103,7 @@ export const updateItemById = async (
  */
 export const deleteItemById = async (userId: string, itemId: string): Promise<void> => {
   try {
-    const itemRef = doc(db, USERS_COLLECTION, userId, ITEMS_COLLECTION, itemId);
+    const itemRef = doc(db, COLLECTION.USERS, userId, COLLECTION.ITEMS, itemId);
     await deleteDoc(itemRef);
     console.log(`Item ${itemId} deleted from Firestore for user ${userId}`);
   } catch (error) {
@@ -120,7 +118,7 @@ export const deleteItemById = async (userId: string, itemId: string): Promise<vo
  */
 export const deleteAllItems = async (userId: string): Promise<void> => {
   try {
-    const itemsRef = collection(db, USERS_COLLECTION, userId, ITEMS_COLLECTION);
+    const itemsRef = collection(db, COLLECTION.USERS, userId, COLLECTION.ITEMS);
     const snapshot = await getDocs(itemsRef);
     const deletePromises: Promise<void>[] = [];
 
@@ -141,7 +139,7 @@ export const deleteAllItems = async (userId: string): Promise<void> => {
  */
 export const getAllItemsByUserId = async (userId: string): Promise<Item[]> => {
   try {
-    const itemsRef = collection(db, USERS_COLLECTION, userId, ITEMS_COLLECTION);
+    const itemsRef = collection(db, COLLECTION.USERS, userId, COLLECTION.ITEMS);
     const snapshot = await getDocs(itemsRef);
 
     return snapshot.docs.map(doc => ({
@@ -162,7 +160,7 @@ export const getAllItemsByUserId = async (userId: string): Promise<Item[]> => {
  */
 export const countItemsByUserId = async (userId: string): Promise<number> => {
   try {
-    const itemsRef = collection(db, USERS_COLLECTION, userId, ITEMS_COLLECTION);
+    const itemsRef = collection(db, COLLECTION.USERS, userId, COLLECTION.ITEMS);
     const snapshot = await getDocs(itemsRef);
     return snapshot.size;
   } catch (error) {
@@ -178,7 +176,7 @@ export const countItemsByUserId = async (userId: string): Promise<number> => {
  */
 export const countItemsByGroupId = async (userId: string, groupId: string): Promise<number> => {
   try {
-    const groupsRef = collection(db, USERS_COLLECTION, userId, ITEMS_COLLECTION);
+    const groupsRef = collection(db, COLLECTION.USERS, userId, COLLECTION.ITEMS);
     const itemsQuery = query(groupsRef, where('group_id', '==', groupId));
     const itemsSnapshot = await getDocs(itemsQuery);
     return itemsSnapshot.size;

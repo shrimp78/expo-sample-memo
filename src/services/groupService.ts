@@ -14,10 +14,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '@root/firebaseConfig';
 import { type Group } from '@models/Group';
-
-const USERS_COLLECTION = 'users';
-const GROUPS_COLLECTION = 'groups';
-const ITEMS_COLLECTION = 'items';
+import { COLLECTION } from '@constants/firebaseCollectionName';
 
 /**
  * グループの新規作成（positionはサービス側で自動計算）
@@ -37,13 +34,13 @@ export const saveGroup = async (
 ): Promise<number> => {
   try {
     // 最大positionの取得（1件のみ）
-    const groupsRef = collection(db, USERS_COLLECTION, userId, GROUPS_COLLECTION);
+    const groupsRef = collection(db, COLLECTION.USERS, userId, COLLECTION.GROUPS);
     const q = query(groupsRef, orderBy('position', 'desc'), limit(1));
     const snapshot = await getDocs(q);
 
     const newPosition = snapshot.empty ? 65536 : (snapshot.docs[0].data().position || 0) + 65536;
 
-    const groupRef = doc(db, USERS_COLLECTION, userId, GROUPS_COLLECTION, groupId);
+    const groupRef = doc(db, COLLECTION.USERS, userId, COLLECTION.GROUPS, groupId);
     await setDoc(groupRef, {
       name: groupName,
       color: groupColor,
@@ -66,7 +63,7 @@ export const saveGroup = async (
  */
 export const getGroupById = async (userId: string, groupId: string): Promise<Group | null> => {
   try {
-    const groupsRef = doc(db, USERS_COLLECTION, userId, GROUPS_COLLECTION, groupId);
+    const groupsRef = doc(db, COLLECTION.USERS, userId, COLLECTION.GROUPS, groupId);
     const snapshot = await getDoc(groupsRef);
     if (snapshot.exists()) {
       return {
@@ -99,7 +96,7 @@ export const updateGroupById = async (
   color: string
 ): Promise<void> => {
   try {
-    const groupRef = doc(db, USERS_COLLECTION, userId, GROUPS_COLLECTION, groupId);
+    const groupRef = doc(db, COLLECTION.USERS, userId, COLLECTION.GROUPS, groupId);
     await updateDoc(groupRef, {
       name,
       color,
@@ -120,7 +117,7 @@ export const updateGroupById = async (
 export const deleteGroupByIdWithItems = async (userId: string, groupId: string) => {
   try {
     // グループに紐づくアイテムを削除
-    const itemsRef = collection(db, USERS_COLLECTION, userId, ITEMS_COLLECTION);
+    const itemsRef = collection(db, COLLECTION.USERS, userId, COLLECTION.ITEMS);
     const itemsQuery = query(itemsRef, where('group_id', '==', groupId));
     const itemsSnapshot = await getDocs(itemsQuery);
 
@@ -131,7 +128,7 @@ export const deleteGroupByIdWithItems = async (userId: string, groupId: string) 
     await Promise.all(itemDeletePromises);
 
     // グループ本体を削除
-    const groupRef = doc(db, USERS_COLLECTION, userId, GROUPS_COLLECTION, groupId);
+    const groupRef = doc(db, COLLECTION.USERS, userId, COLLECTION.GROUPS, groupId);
     await deleteDoc(groupRef);
     console.log(`Group ${groupId} and related items deleted from Firestore for user ${userId}`);
   } catch (error) {
@@ -146,7 +143,7 @@ export const deleteGroupByIdWithItems = async (userId: string, groupId: string) 
  */
 export const deleteAllGroups = async (userId: string) => {
   try {
-    const groupsRef = collection(db, USERS_COLLECTION, userId, GROUPS_COLLECTION);
+    const groupsRef = collection(db, COLLECTION.USERS, userId, COLLECTION.GROUPS);
     const snapshot = await getDocs(groupsRef);
 
     const deletePromises: Promise<void>[] = [];
@@ -171,7 +168,7 @@ export const deleteAllGroups = async (userId: string) => {
  */
 export const getAllGroupsByUserId = async (userId: string): Promise<Group[]> => {
   try {
-    const groupsRef = collection(db, USERS_COLLECTION, userId, GROUPS_COLLECTION);
+    const groupsRef = collection(db, COLLECTION.USERS, userId, COLLECTION.GROUPS);
     const q = query(groupsRef, orderBy('position', 'asc'));
     const snapshot = await getDocs(q);
 
@@ -193,7 +190,7 @@ export const getAllGroupsByUserId = async (userId: string): Promise<Group[]> => 
  */
 export const countGroup = async (userId: string): Promise<number> => {
   try {
-    const groupsRef = collection(db, USERS_COLLECTION, userId, GROUPS_COLLECTION);
+    const groupsRef = collection(db, COLLECTION.USERS, userId, COLLECTION.GROUPS);
     const snapshot = await getDocs(groupsRef);
     return snapshot.size;
   } catch (error) {
@@ -228,7 +225,7 @@ export const calculateGroupNewPosition = (toIndex: number, groupList: Group[]): 
  */
 export const getMaxGroupPosition = async (userId: string): Promise<number> => {
   try {
-    const groupsRef = collection(db, USERS_COLLECTION, userId, GROUPS_COLLECTION);
+    const groupsRef = collection(db, COLLECTION.USERS, userId, COLLECTION.GROUPS);
     const q = query(groupsRef, orderBy('position', 'desc'));
     const snapshot = await getDocs(q);
 
@@ -253,7 +250,7 @@ export const getMaxGroupPosition = async (userId: string): Promise<number> => {
  */
 export const updateGroupPosition = async (userId: string, groupId: string, position: number) => {
   try {
-    const groupRef = doc(db, USERS_COLLECTION, userId, GROUPS_COLLECTION, groupId);
+    const groupRef = doc(db, COLLECTION.USERS, userId, COLLECTION.GROUPS, groupId);
     await updateDoc(groupRef, {
       position
     });
