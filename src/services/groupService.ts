@@ -117,7 +117,7 @@ export const updateGroupById = async (
  * @param userId ユーザーID
  * @param groupId グループID
  */
-export const deleteGroupById = async (userId: string, groupId: string) => {
+export const deleteGroupByIdWithItems = async (userId: string, groupId: string) => {
   try {
     // グループに紐づくアイテムを削除
     const itemsRef = collection(db, USERS_COLLECTION, userId, ITEMS_COLLECTION);
