@@ -32,16 +32,11 @@ import HomeMenuModal from '@screens/home/HomeMenuModal';
 import FloatingFolderButton from '@components/common/FloatingFolderButton';
 import FloatingPlusButton from '@components/common/FloatingPlusButton';
 
-// グループ作成モーダル用
-import GroupCreateModal from '@screens/groups/GroupCreateModal';
-
 export default function HomeIndexScreen() {
   const { isLoggedIn, isLoading, logout } = useAuth();
   const user = useAuthenticatedUser();
   const { groups, loadGroups } = useGroups();
   const [items, setItems] = useState<Item[]>([]);
-  const [groupName, setGroupName] = useState<string>('');
-  const [groupColor, setGroupColor] = useState<string>('#2196f3');
 
   // 新規作成画面のModal用
   const [title, setTitle] = useState<string>('');
@@ -60,17 +55,6 @@ export default function HomeIndexScreen() {
       }
     }
     setCreateModalVisible(!createModalVisible);
-  };
-
-  // グループ作成モーダル用
-  const [groupCreateModalVisible, setGroupCreateModalVisible] = useState(false);
-  const toggleGroupCreateModal = () => {
-    if (groupCreateModalVisible) {
-      // モーダルを閉じる際に状態をリセット
-      setGroupName('');
-      setGroupColor('#2196f3');
-    }
-    setGroupCreateModalVisible(!groupCreateModalVisible);
   };
 
   // グループ選択画面のModal用
@@ -186,8 +170,17 @@ export default function HomeIndexScreen() {
   const handleAddItemPress = () => {
     console.log('アイテムの新規作成が押されました');
     if (groups.length === 0) {
-      Alert.alert('確認', '現在グループがありません。先にグループを作成してください');
-      setGroupCreateModalVisible(true);
+      Alert.alert(
+        '注意',
+        '現在グループがありません。アイテムは必ずグループに所属する必要があります。先にグループを作成してください',
+        [
+          {
+            text: 'キャンセル',
+            style: 'cancel'
+          },
+          { text: 'グループ作成', onPress: () => router.push({ pathname: `/groups` }) }
+        ]
+      );
     } else {
       toggleCreateModal();
     }
@@ -250,32 +243,6 @@ export default function HomeIndexScreen() {
     } catch (e) {
       Alert.alert('エラー', '削除に失敗しました');
       throw e;
-    }
-  };
-
-  // グループの保存処理
-  const handleSaveGroupPress = async () => {
-    const groupId = Crypto.randomUUID();
-    console.log('グループの保存が押されました');
-    try {
-      const position = await saveGroup(user.id, groupId, groupName, groupColor);
-      const items = await getAllItemsByUserId(user.id); // TBC : なんか冗長かも?
-      setItems(items);
-      await loadGroups();
-
-      // 新しく作成されたグループを選択状態に設定
-      const newGroup: Group = {
-        id: groupId,
-        name: groupName,
-        color: groupColor,
-        position
-      };
-      setSelectedGroup(newGroup);
-
-      toggleGroupCreateModal();
-      toggleCreateModal();
-    } catch (e) {
-      Alert.alert('エラー', '保存に失敗しました');
     }
   };
 
@@ -365,16 +332,6 @@ export default function HomeIndexScreen() {
         onAccountSettingsPress={handleAccountSettingsPress}
         onDeleteAllItemPress={handleDeleteAllItemPress}
         onLogoutPress={handleLogoutPress}
-      />
-
-      <GroupCreateModal
-        visible={groupCreateModalVisible}
-        toggleCreateModal={toggleGroupCreateModal}
-        onSave={handleSaveGroupPress}
-        groupName={groupName}
-        groupColor={groupColor}
-        onChangeGroupName={setGroupName}
-        onChangeGroupColor={setGroupColor}
       />
     </View>
   );
