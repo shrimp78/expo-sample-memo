@@ -6,7 +6,8 @@ import { KeyboardAvoidingView, Input, InputField } from '@gluestack-ui/themed';
 import { type Group } from '@models/Group';
 import KeyboardCloseButton from '@components/common/KeyboardCloseButton';
 import GroupColorSelector from './GroupColorSelector';
-import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
+import { useAuthenticatedUser } from '@context/AuthContext';
+import { useGroups } from '@context/GroupContext';
 
 const inputAccessoryViewID = 'INPUT_ACCESSORY_VIEW_ID_GROUP';
 
@@ -17,10 +18,24 @@ export default function GroupEditScreen() {
   const [groupColor, setGroupColor] = useState('');
   const navigation = useNavigation();
   const user = useAuthenticatedUser();
+  const { groups } = useGroups();
 
   useEffect(() => {
+    console.log('loadGroup()');
     loadGroup();
   }, [id]);
+
+  // Contextのgroupsから即時に初期値を反映（stale-while-revalidate）
+  useEffect(() => {
+    console.log('stale-while-revalidate');
+    if (!id) return;
+    const cachedGroup = groups.find(g => g.id === id);
+    if (cachedGroup) {
+      setGroup(cachedGroup);
+      setGroupName(cachedGroup.name);
+      setGroupColor(cachedGroup.color);
+    }
+  }, [id, groups]);
 
   // TitleとContentの変更を監視
   useEffect(() => {
@@ -73,7 +88,7 @@ export default function GroupEditScreen() {
   if (!group) {
     return (
       <View style={styles.errorContainer}>
-        <Text style={styles.errorText}>グループが見つかりません</Text>
+        <Text style={styles.errorText}>読み込み中...</Text>
       </View>
     );
   }
