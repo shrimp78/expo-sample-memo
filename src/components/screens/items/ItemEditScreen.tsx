@@ -7,7 +7,8 @@ import { getAllGroupsByUserId } from '@services/groupService';
 import { type Group } from '@models/Group';
 import ItemInputForm from '@components/common/ItemInputForm';
 import GroupSelectModal from '@components/common/GroupSelectModal';
-import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
+import { useAuthenticatedUser } from '@context/AuthContext';
+import { useItems } from '@context/ItemContext';
 
 export default function ItemEditScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -18,6 +19,7 @@ export default function ItemEditScreen() {
   const [content, setContent] = useState('');
   const [groups, setGroups] = useState<Group[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
+  const { items } = useItems();
 
   // グループ選択画面のModal用
   const [groupModalVisible, setGroupModalVisible] = useState(false);
@@ -46,6 +48,18 @@ export default function ItemEditScreen() {
     };
     fetchItem();
   }, [id]);
+
+  // ItemContextからItemを即時に初期値として反映（stale-while-revalidate）
+  useEffect(() => {
+    console.log('stale-while-revalidate for Item');
+    if (!id) return;
+    const cachedItem = items.find(item => item.id === id);
+    if (cachedItem) {
+      setTitle(cachedItem.title);
+      setContent(cachedItem.content);
+      setSelectedGroup(groups.find(group => group.id === cachedItem.group_id) ?? null);
+    }
+  }, [id, items]);
 
   // TitleとContentの変更を監視
   useEffect(() => {
