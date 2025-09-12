@@ -18,11 +18,13 @@ import {
   deleteItemById,
   deleteAllItems
 } from '@services/itemService';
-import { saveGroup, deleteAllGroups } from '@services/groupService';
-import { type Item } from '@models/Item';
+import { deleteAllGroups } from '@services/groupService';
 import { type Group } from '@models/Group';
 import ItemList from '@screens/home/ItemList';
+
+// Contexts
 import { useGroups } from '@context/GroupContext';
+import { useItems } from '@context/ItemContext';
 import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
 
 // 新規作成モーダル用
@@ -36,7 +38,7 @@ export default function HomeIndexScreen() {
   const { isLoggedIn, isLoading, logout } = useAuth();
   const user = useAuthenticatedUser();
   const { groups, loadGroups } = useGroups();
-  const [items, setItems] = useState<Item[]>([]);
+  const { items, setItems, loadItems } = useItems();
 
   // 新規作成画面のModal用
   const [title, setTitle] = useState<string>('');
@@ -161,8 +163,7 @@ export default function HomeIndexScreen() {
 
   // 初回データ読み込み
   const loadData = async () => {
-    const items = await getAllItemsByUserId(user.id);
-    setItems(items);
+    await loadItems();
     await loadGroups();
   };
 
