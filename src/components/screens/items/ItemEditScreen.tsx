@@ -9,6 +9,7 @@ import ItemInputForm from '@components/common/ItemInputForm';
 import GroupSelectModal from '@components/common/GroupSelectModal';
 import { useAuthenticatedUser } from '@context/AuthContext';
 import { useItems } from '@context/ItemContext';
+import { useGroups } from '@context/GroupContext';
 
 export default function ItemEditScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -20,6 +21,7 @@ export default function ItemEditScreen() {
   const [groups, setGroups] = useState<Group[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
   const { items } = useItems();
+  const { groups: contextGroups } = useGroups();
 
   // グループ選択画面のModal用
   const [groupModalVisible, setGroupModalVisible] = useState(false);
@@ -57,7 +59,7 @@ export default function ItemEditScreen() {
     if (cachedItem) {
       setTitle(cachedItem.title);
       setContent(cachedItem.content);
-      setSelectedGroup(groups.find(group => group.id === cachedItem.group_id) ?? null);
+      setSelectedGroup(contextGroups.find(group => group.id === cachedItem.group_id) ?? null);
     }
   }, [id, items]);
 
