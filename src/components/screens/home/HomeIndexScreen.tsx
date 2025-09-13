@@ -37,8 +37,8 @@ import FloatingPlusButton from '@components/common/FloatingPlusButton';
 export default function HomeIndexScreen() {
   const { isLoggedIn, isLoading, logout } = useAuth();
   const user = useAuthenticatedUser();
-  const { groups, loadGroups } = useGroups();
-  const { items, setItems, loadItems } = useItems();
+  const { groups, loadGroups, isHydratedFromCache: groupsHydrated } = useGroups();
+  const { items, setItems, loadItems, isHydratedFromCache: itemsHydrated } = useItems();
 
   // 新規作成画面のModal用
   const [title, setTitle] = useState<string>('');
@@ -299,9 +299,16 @@ export default function HomeIndexScreen() {
           />
         )}
         ListEmptyComponent={
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emptyText}>No items</Text>
-          </View>
+          // キャッシュ未ハイドレートの間は空表示を出さない
+          !(itemsHydrated && groupsHydrated) ? (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>読み込み中...</Text>
+            </View>
+          ) : (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>No items</Text>
+            </View>
+          )
         }
         ListFooterComponent={<View style={styles.bottomContainer} />}
         contentContainerStyle={{ paddingBottom: 100 }}
