@@ -20,9 +20,29 @@ export default function GroupEditScreen() {
   const user = useAuthenticatedUser();
   const { groups } = useGroups();
 
+  // Groupの取得
   useEffect(() => {
     console.log('loadGroup()');
-    loadGroup();
+    const fetchGroup = async () => {
+      try {
+        if (!id) return;
+
+        const groupData = await getGroupById(user.id, id);
+        if (groupData) {
+          setGroup(groupData);
+          setGroupName(groupData.name);
+          setGroupColor(groupData.color);
+        } else {
+          Alert.alert('エラー', 'グループが見つかりません');
+          router.back();
+        }
+      } catch (error) {
+        console.error('Error loading group:', error);
+        Alert.alert('エラー', 'グループの読み込みに失敗しました');
+        router.back();
+      }
+    };
+    fetchGroup();
   }, [id]);
 
   // Contextのgroupsから即時に初期値を反映（stale-while-revalidate）
@@ -45,26 +65,6 @@ export default function GroupEditScreen() {
       }
     });
   }, [groupName, groupColor, group]);
-
-  const loadGroup = async () => {
-    try {
-      if (!id) return;
-
-      const groupData = await getGroupById(user.id, id);
-      if (groupData) {
-        setGroup(groupData);
-        setGroupName(groupData.name);
-        setGroupColor(groupData.color);
-      } else {
-        Alert.alert('エラー', 'グループが見つかりません');
-        router.back();
-      }
-    } catch (error) {
-      console.error('Error loading group:', error);
-      Alert.alert('エラー', 'グループの読み込みに失敗しました');
-      router.back();
-    }
-  };
 
   const handleSavePress = async () => {
     if (!groupName) {
