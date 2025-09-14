@@ -23,6 +23,7 @@ import * as AppleAuthentication from 'expo-apple-authentication';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 import { saveLastAuthProvider } from '@services/secureStore';
+import { clearUserCache } from '@services/cache';
 
 // 認証コンテキストの型定義
 interface AuthContextType {
@@ -473,6 +474,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.error('Logout error:', error);
       throw error;
     } finally {
+      try {
+        // サインアウト後にキャッシュを削除（ユーザー切替でも安全）
+        if (user?.id) {
+          await clearUserCache(user.id);
+        }
+      } catch (e) {
+        console.warn('Failed to clear cache on logout:', e);
+      }
       setIsLoading(false);
     }
   }, []);
@@ -562,6 +571,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.error('アカウント削除エラー:', error);
       throw error; // これなんで？
     } finally {
+      try {
+        if (user?.id) {
+          await clearUserCache(user.id);
+        }
+      } catch (e) {
+        console.warn('Failed to clear cache on account deletion:', e);
+      }
       setIsLoading(false);
     }
   }, [user]);
