@@ -43,7 +43,7 @@ export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
     [user.id]
   );
 
-  // 初期ハイドレーション（Providerマウント時に一度だけ）
+  // 初期ハイドレーション（Providerマウント時に一度だけ。 user.idが変わると再度実施。）
   useEffect(() => {
     let mounted = true;
     (async () => {
