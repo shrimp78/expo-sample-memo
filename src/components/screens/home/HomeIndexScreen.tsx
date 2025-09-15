@@ -143,10 +143,8 @@ export default function HomeIndexScreen() {
   const deleteAllItem = async () => {
     await deleteAllItems(user.id);
     await deleteAllGroups(user.id);
-    const items = await getAllItemsByUserId(user.id); // TODO: これ本当にいるの？
+    await loadItems();
     await loadGroups();
-
-    setItems(items);
   };
 
   const handleFolderIconPress = () => {
