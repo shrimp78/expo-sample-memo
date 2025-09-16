@@ -10,7 +10,7 @@ import {
   User as FirebaseUser
 } from 'firebase/auth';
 import { Alert } from 'react-native';
-import { auth } from '../../firebaseConfig';
+import { auth } from '@root/firebaseConfig';
 import { User } from '@components/types/User';
 import {
   getUserFromFirestore,
