@@ -16,13 +16,14 @@ import {
   getUserFromFirestore,
   createUserInFirestore,
   updateUserInFirestore,
-  deleteUserFromFirestore
+  deleteUserFromFirestore,
+  checkUserExists
 } from '@services/userService';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
-import { saveLastAuthProvider } from '@services/secureStore';
+import { saveLastAuthProvider, clearLastAuthProvider } from '@services/secureStore';
 import { clearUserCache } from '@services/cache';
 
 // 認証コンテキストの型定義
@@ -109,6 +110,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           if (!user) {
             // ユーザーが存在しない場合はログインを拒否
             console.log('ユーザーが見つかりません:', firebaseUser.email);
+
+            // 最後に使用したプロバイダをクリア
+            await clearLastAuthProvider();
 
             // Firebase認証からサインアウト
             await signOut(auth);
@@ -222,6 +226,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // Firebase Authenticationでサインイン
       await signInWithCredential(auth, googleCredential);
+
       // 成功したため、最後に使用したプロバイダを保存
       await saveLastAuthProvider('google');
 
@@ -322,8 +327,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // 一時的にFirebaseでサインインしてユーザー情報を取得
       const userCredential = await signInWithCredential(auth, googleCredential);
-      // 成功したため、最後に使用したプロバイダを保存
-      await saveLastAuthProvider('google');
       const firebaseUser = userCredential.user;
 
       // 既存ユーザーかどうかをチェック
@@ -338,6 +341,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       // 新規ユーザーの場合は作成
       console.log('新規ユーザーを作成します:', firebaseUser.email);
+
+      // 成功したため、最後に使用したプロバイダを保存
+      await saveLastAuthProvider('google');
 
       const newUser: User = {
         id: firebaseUser.uid,
