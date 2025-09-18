@@ -558,10 +558,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log('再認証成功');
 
       // 2. アカウント削除
+      // Firestoreのユーザードキュメント（プロフィール等のアプリ用データ）を削除
+      // userService側で、Userに紐づくGroupやItemも全て削除するので注意
       await deleteUserById(user.id);
+      //  Firebase Authentication 上の「認証アカウント」自体（認証情報・ログイン資格）を削除
       await deleteUser(auth.currentUser);
-
-      // 2.5 TODO:将来的にUserに紐づくGroupやItemも全て削除する
 
       // 3. ログアウト
       await GoogleSignin.signOut();

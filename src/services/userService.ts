@@ -1,4 +1,13 @@
-import { doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import {
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+  deleteDoc,
+  serverTimestamp,
+  collection,
+  getDocs
+} from 'firebase/firestore';
 import { db } from '@root/firebaseConfig';
 import { User } from '@models/User';
 import { COLLECTION } from '@constants/firebaseCollectionName';
@@ -79,12 +88,34 @@ export const updateUserById = async (
  */
 export const deleteUserById = async (uid: string): Promise<void> => {
   try {
+    // サブコレクション（groups, items）を先に全削除
+    const groupsRef = collection(db, COLLECTION.USERS, uid, COLLECTION.GROUPS);
+    const itemsRef = collection(db, COLLECTION.USERS, uid, COLLECTION.ITEMS);
+
+    const [groupsSnapshot, itemsSnapshot] = await Promise.all([
+      getDocs(groupsRef),
+      getDocs(itemsRef)
+    ]);
+
+    const deletePromises: Promise<void>[] = [];
+
+    groupsSnapshot.docs.forEach(doc => {
+      deletePromises.push(deleteDoc(doc.ref));
+    });
+
+    itemsSnapshot.docs.forEach(doc => {
+      deletePromises.push(deleteDoc(doc.ref));
+    });
+
+    await Promise.all(deletePromises);
+
+    // 最後にユーザードキュメント本体を削除
     const userDocRef = doc(db, COLLECTION.USERS, uid);
     await deleteDoc(userDocRef);
 
-    console.log('User deleted from Firestore:', uid);
+    console.log('User and all sub collections deleted from Firestore:', uid);
   } catch (error) {
-    console.error('Error deleting user from Firestore:', error);
+    console.error('Error deleting user and sub collections from Firestore:', error);
     throw error;
   }
 };
