@@ -30,7 +30,7 @@ export const getUserByUid = async (uid: string): Promise<User | null> => {
 
 /**
  * Firestoreに新しいユーザーを作成
- * @param
+ * @param User ユーザー
  */
 export const saveUser = async (user: User): Promise<void> => {
   try {
@@ -52,6 +52,8 @@ export const saveUser = async (user: User): Promise<void> => {
 
 /**
  * Firestoreのユーザー情報を更新
+ * @param uid ユーザーID
+ * @param updates 更新するユーザー情報(User)
  */
 export const updateUserById = async (
   uid: string,
@@ -73,6 +75,7 @@ export const updateUserById = async (
 
 /**
  * Firestoreからユーザーを削除
+ * @param uid ユーザーID
  */
 export const deleteUserById = async (uid: string): Promise<void> => {
   try {
@@ -88,6 +91,7 @@ export const deleteUserById = async (uid: string): Promise<void> => {
 
 /**
  * ユーザーが存在するかチェック
+ * @param uid ユーザーID
  */
 export const checkUserExists = async (uid: string): Promise<boolean> => {
   try {
