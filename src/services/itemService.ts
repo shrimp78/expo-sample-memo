@@ -17,23 +17,17 @@ import { COLLECTION } from '@constants/firebaseCollectionName';
 /**
  * Itemをユーザーのサブコレクションに保存
  */
-export const saveItem = async (
-  userId: string,
-  itemId: string,
-  itemTitle: string,
-  itemContent: string,
-  group_id: string
-): Promise<void> => {
+export const saveItem = async (userId: string, item: Item): Promise<void> => {
   try {
-    const itemRef = doc(db, COLLECTION.USERS, userId, COLLECTION.ITEMS, itemId);
+    const itemRef = doc(db, COLLECTION.USERS, userId, COLLECTION.ITEMS, item.id);
     await setDoc(itemRef, {
-      title: itemTitle,
-      content: itemContent,
-      group_id: group_id,
+      title: item.title,
+      content: item.content,
+      group_id: item.group_id,
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now()
     });
-    console.log(`Item ${itemTitle} saved to Firestore for user ${userId}`);
+    console.log(`Item ${item.title} saved to Firestore for user ${userId}`);
   } catch (error) {
     console.error('Error saving item to Firestore:', error);
     throw error;
