@@ -5,8 +5,9 @@ import { COLLECTION } from '@constants/firebaseCollectionName';
 
 /**
  * Firestoreからユーザー情報を取得
+ * @param uid ユーザーID
  */
-export const getUserFromFirestore = async (uid: string): Promise<User | null> => {
+export const getUserByUid = async (uid: string): Promise<User | null> => {
   try {
     const userDocRef = doc(db, COLLECTION.USERS, uid);
     const userDoc = await getDoc(userDocRef);
@@ -29,8 +30,9 @@ export const getUserFromFirestore = async (uid: string): Promise<User | null> =>
 
 /**
  * Firestoreに新しいユーザーを作成
+ * @param
  */
-export const createUserInFirestore = async (user: User): Promise<void> => {
+export const saveUser = async (user: User): Promise<void> => {
   try {
     const userDocRef = doc(db, COLLECTION.USERS, user.id);
     await setDoc(userDocRef, {
@@ -51,7 +53,7 @@ export const createUserInFirestore = async (user: User): Promise<void> => {
 /**
  * Firestoreのユーザー情報を更新
  */
-export const updateUserInFirestore = async (
+export const updateUserById = async (
   uid: string,
   updates: Partial<Omit<User, 'id'>>
 ): Promise<void> => {
@@ -72,7 +74,7 @@ export const updateUserInFirestore = async (
 /**
  * Firestoreからユーザーを削除
  */
-export const deleteUserFromFirestore = async (uid: string): Promise<void> => {
+export const deleteUserById = async (uid: string): Promise<void> => {
   try {
     const userDocRef = doc(db, COLLECTION.USERS, uid);
     await deleteDoc(userDocRef);

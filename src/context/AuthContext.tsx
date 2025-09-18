@@ -12,13 +12,7 @@ import {
 import { Alert } from 'react-native';
 import { auth } from '@root/firebaseConfig';
 import { User } from '@components/types/User';
-import {
-  getUserFromFirestore,
-  createUserInFirestore,
-  updateUserInFirestore,
-  deleteUserFromFirestore,
-  checkUserExists
-} from '@services/userService';
+import { getUserByUid, saveUser, updateUserById, deleteUserById } from '@services/userService';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import Constants from 'expo-constants';
@@ -105,7 +99,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (firebaseUser) {
         try {
           // Firestoreからユーザー情報を取得
-          let user = await getUserFromFirestore(firebaseUser.uid);
+          let user = await getUserByUid(firebaseUser.uid);
 
           if (!user) {
             // ユーザーが存在しない場合はログインを拒否
@@ -158,7 +152,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             }
 
             if (hasUpdates) {
-              await updateUserInFirestore(firebaseUser.uid, updates);
+              await updateUserById(firebaseUser.uid, updates);
               user = { ...user, ...updates };
               console.log('ユーザー情報が更新されました:', user.email);
             }
@@ -330,7 +324,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const firebaseUser = userCredential.user;
 
       // 既存ユーザーかどうかをチェック
-      const existingUser = await getUserFromFirestore(firebaseUser.uid);
+      const existingUser = await getUserByUid(firebaseUser.uid);
 
       if (existingUser) {
         // 既存ユーザーの場合はサインアウトしてエラーを投げる
@@ -352,7 +346,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         picture: firebaseUser.photoURL || undefined
       };
 
-      await createUserInFirestore(newUser);
+      await saveUser(newUser);
       console.log('新規ユーザーが作成されました:', newUser.email);
 
       // onAuthStateChangedが新規ユーザーの処理を行うため、ここでは何もしない
@@ -417,7 +411,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const firebaseUser = userCredential.user;
 
       // 既存ユーザーかどうかをチェック
-      const existingUser = await getUserFromFirestore(firebaseUser.uid);
+      const existingUser = await getUserByUid(firebaseUser.uid);
 
       if (existingUser) {
         // 既存ユーザーの場合はサインアウトしてエラーを投げる
@@ -440,7 +434,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         picture: firebaseUser.photoURL || undefined
       };
 
-      await createUserInFirestore(newUser);
+      await saveUser(newUser);
       console.log('新規ユーザーが作成されました:', newUser.email);
 
       // onAuthStateChangedが新規ユーザーの処理を行うため、ここでは何もしない
@@ -499,7 +493,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setIsLoading(true);
 
       // Firestoreから最新のユーザー情報を取得
-      const refreshedUser = await getUserFromFirestore(user.id);
+      const refreshedUser = await getUserByUid(user.id);
 
       if (refreshedUser) {
         setUser(refreshedUser);
@@ -528,7 +522,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setIsLoading(true);
 
         // Firestoreのユーザー情報を更新
-        await updateUserInFirestore(user.id, updates);
+        await updateUserById(user.id, updates);
 
         // ローカルStateも更新
         const updatedUser = { ...user, ...updates };
@@ -564,7 +558,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       console.log('再認証成功');
 
       // 2. アカウント削除
-      await deleteUserFromFirestore(user.id);
+      await deleteUserById(user.id);
       await deleteUser(auth.currentUser);
 
       // 2.5 TODO:将来的にUserに紐づくGroupやItemも全て削除する
