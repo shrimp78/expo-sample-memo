@@ -212,7 +212,13 @@ export default function HomeIndexScreen() {
     try {
       const id = Crypto.randomUUID();
       const group_id = selectedGroup?.id ?? null;
-      await saveItem(user.id, id, title, content, group_id);
+      const newItem = {
+        id,
+        title,
+        content,
+        group_id
+      };
+      await saveItem(user.id, newItem);
       toggleCreateModal();
       const items = await getAllItemsByUserId(user.id); // TBC : なんか冗長かも?
       setItems(items);

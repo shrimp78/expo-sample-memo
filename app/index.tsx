@@ -62,7 +62,13 @@ export default function InitialScreen() {
         console.log('初期アイテムデータを作成します');
         for (const item of initialItemData) {
           const id = Crypto.randomUUID();
-          await saveItem(authUserId, id, item.title, item.content, item.group_id);
+          const newItem = {
+            id,
+            title: item.title,
+            content: item.content,
+            group_id: item.group_id
+          };
+          await saveItem(authUserId, newItem);
         }
       }
 
