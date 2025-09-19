@@ -567,10 +567,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // 3. ログアウト
       await GoogleSignin.signOut();
 
+      // 4. 状態をクリアしてナビゲーションの競合を防ぐ
+      setUser(null);
+      setIsLoading(false);
+
       console.log('アカウント削除成功');
     } catch (error) {
       console.error('アカウント削除エラー:', error);
-      throw error; // これなんで？
+      setIsLoading(false);
+      throw error;
     } finally {
       try {
         if (user?.id) {
@@ -579,7 +584,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       } catch (e) {
         console.warn('Failed to clear cache on account deletion:', e);
       }
-      setIsLoading(false);
     }
   }, [user]);
 
