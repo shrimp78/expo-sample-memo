@@ -567,7 +567,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // 3. ログアウト
       await GoogleSignin.signOut();
 
-      // 4. 状態をクリアしてナビゲーションの競合を防ぐ
+      // 4.前回のサインイン情報をクリア
+      await clearLastAuthProvider();
+
+      // 5. 状態をクリアしてナビゲーションの競合を防ぐ
       setUser(null);
       setIsLoading(false);
 
