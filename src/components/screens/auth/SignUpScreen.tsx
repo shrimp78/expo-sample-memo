@@ -1,12 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, View, Alert } from 'react-native';
+import { StyleSheet, Text, View, Alert, ActivityIndicator } from 'react-native';
 import { useAuth } from '@context/AuthContext';
 import { GoogleLoginButton, AppleLoginButton } from '@components/screens/auth/LoginButton';
 
 export default function SignUpScreen() {
-  const { signUpWithGoogle, signUpWithApple, isAppleSignInAvailable } = useAuth();
+  const { signUpWithGoogle, signUpWithApple, isAppleSignInAvailable, isLoading } = useAuth();
 
   const handleGoogleSignUp = async () => {
+    if (isLoading) return;
     try {
       await signUpWithGoogle();
       // 成功した場合はホーム画面に遷移（AuthContextでの処理後）
@@ -30,6 +31,7 @@ export default function SignUpScreen() {
   };
 
   const handleAppleSignUp = async () => {
+    if (isLoading) return;
     try {
       await signUpWithApple();
       // 成功した場合はホーム画面に遷移（AuthContextでの処理後）
@@ -51,6 +53,14 @@ export default function SignUpScreen() {
       }
     }
   };
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#999" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -77,6 +87,12 @@ export default function SignUpScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#F9F9F9'
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#F9F9F9'
   },
   headerSection: {
