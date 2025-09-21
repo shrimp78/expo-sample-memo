@@ -46,6 +46,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isAppleSignInAvailable, setIsAppleSignInAvailable] = useState<boolean>(false);
+  const signUpInProgressRef = React.useRef<boolean>(false);
 
   // ログイン状態の判定
   const isLoggedIn = user !== null;
@@ -102,6 +103,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           let user = await getUserByUid(firebaseUser.uid);
 
           if (!user) {
+            if (signUpInProgressRef.current) {
+              console.log('サインアップ進行中のため、Firestore未登録でも待機します');
+              return;
+            }
             // ユーザーが存在しない場合はログインを拒否
             console.log('ユーザーが見つかりません:', firebaseUser.email);
 
@@ -299,6 +304,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const signUpWithGoogle = React.useCallback(async () => {
     try {
       setIsLoading(true);
+      signUpInProgressRef.current = true;
 
       console.log('=== Google Sign-Up Debug Info ===');
       console.log('Starting Google Sign-Up flow...');
@@ -349,7 +355,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await saveUser(newUser);
       console.log('新規ユーザーが作成されました:', newUser.email);
 
-      // onAuthStateChangedが新規ユーザーの処理を行うため、ここでは何もしない
+      // サインアップ完了後は直接アプリ側のユーザー状態を反映
+      setUser(newUser);
+      setIsLoading(false);
       console.log('Firebase Google Sign-Up successful');
     } catch (error: any) {
       console.error('Google signup error:', error);
@@ -368,12 +376,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       } else {
         throw new Error(`Google新規登録エラー: ${error.message}`);
       }
+    } finally {
+      signUpInProgressRef.current = false;
     }
   }, []);
 
   const signUpWithApple = React.useCallback(async () => {
     try {
       setIsLoading(true);
+      signUpInProgressRef.current = true;
 
       console.log('=== Apple Sign-Up Debug Info ===');
       console.log('Starting Apple Sign-Up flow...');
@@ -437,7 +448,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       await saveUser(newUser);
       console.log('新規ユーザーが作成されました:', newUser.email);
 
-      // onAuthStateChangedが新規ユーザーの処理を行うため、ここでは何もしない
+      // サインアップ完了後は直接アプリ側のユーザー状態を反映
+      setUser(newUser);
+      setIsLoading(false);
       console.log('Firebase Apple Sign-Up successful');
     } catch (error: any) {
       console.error('Apple signup error:', error);
@@ -452,6 +465,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       } else {
         throw new Error(`Apple新規登録エラー: ${error.message}`);
       }
+    } finally {
+      signUpInProgressRef.current = false;
     }
   }, [isAppleSignInAvailable]);
 
