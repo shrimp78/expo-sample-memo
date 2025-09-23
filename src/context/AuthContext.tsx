@@ -575,15 +575,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // 2. アカウント削除
       // Firestoreのユーザードキュメント（プロフィール等のアプリ用データ）を削除
       // userService側で、Userに紐づくGroupやItemも全て削除するので注意
+      await clearLastAuthProvider(); // 前回のサインイン情報をクリア
       await deleteUserById(user.id);
       //  Firebase Authentication 上の「認証アカウント」自体（認証情報・ログイン資格）を削除
       await deleteUser(auth.currentUser);
 
       // 3. ログアウト
       await GoogleSignin.signOut();
-
-      // 4.前回のサインイン情報をクリア
-      await clearLastAuthProvider();
 
       // 5. 状態をクリアしてナビゲーションの競合を防ぐ
       setUser(null);
