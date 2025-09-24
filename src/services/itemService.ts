@@ -149,21 +149,6 @@ export const getAllItemsByUserId = async (userId: string): Promise<Item[]> => {
 };
 
 /**
- * ユーザーのアイテム数をカウント
- * @param userId ユーザーID
- */
-export const countItemsByUserId = async (userId: string): Promise<number> => {
-  try {
-    const itemsRef = collection(db, COLLECTION.USERS, userId, COLLECTION.ITEMS);
-    const snapshot = await getDocs(itemsRef);
-    return snapshot.size;
-  } catch (error) {
-    console.error('Error counting items in Firestore:', error);
-    return 0;
-  }
-};
-
-/**
  * ユーザーの持っているグループ数をカウント
  * @param userId ユーザーID
  * @param groupId グループID

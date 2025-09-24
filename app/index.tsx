@@ -1,9 +1,6 @@
 import { router } from 'expo-router';
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { useEffect } from 'react';
-import * as Crypto from 'expo-crypto';
-import { saveItem, countItemsByUserId } from '@services/itemService';
-import { saveGroup, countGroup } from '@services/groupService';
 
 import { useAuth } from '../src/context/AuthContext';
 import LoginScreen from '../src/components/screens/auth/LoginScreen';
@@ -25,31 +22,10 @@ export default function InitialScreen() {
    */
   const initApp = async () => {
     try {
-      await initDatabase();
+      // TBC: この画面をはさむ意味があまりなくなりましたね？
       router.replace('/home');
     } catch (e) {
       console.log('初期化エラー', e);
-    }
-  };
-
-  /**
-   * データベース初期化処理
-   */
-  const initDatabase = async () => {
-    try {
-      // NOTE: ここに到達するのは isLoggedIn が true の時のみ
-      // ログイン済みになる前に useAuthenticatedUserを呼び出すとエラーになるのでuserを使っている
-      const authUserId = user?.id;
-      // 念のための安全ガード
-      if (!authUserId) {
-        throw new Error('ユーザー情報が未取得です');
-      }
-
-      const itemCount = await countItemsByUserId(authUserId); // アイテム数の取得いらなくなるかも？　本当に不要ならあとで消す
-      const groupCount = await countGroup(authUserId);
-    } catch (error) {
-      console.error('データベース初期化中にエラーが発生しました:', error);
-      throw error;
     }
   };
 

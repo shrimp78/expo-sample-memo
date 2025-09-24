@@ -185,21 +185,6 @@ export const getAllGroupsByUserId = async (userId: string): Promise<Group[]> => 
 };
 
 /**
- * ユーザーの持っているグループ数をカウント
- * @param userId ユーザーID
- */
-export const countGroup = async (userId: string): Promise<number> => {
-  try {
-    const groupsRef = collection(db, COLLECTION.USERS, userId, COLLECTION.GROUPS);
-    const snapshot = await getDocs(groupsRef);
-    return snapshot.size;
-  } catch (error) {
-    console.error('Error counting groups:', error);
-    return 0;
-  }
-};
-
-/**
  * 移動後のPosition値を計算（Trello方式）
  * @param toIndex 移動先のインデックス
  * @param groupList グループリスト
