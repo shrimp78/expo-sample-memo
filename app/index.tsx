@@ -5,7 +5,6 @@ import * as Crypto from 'expo-crypto';
 import { saveItem, countItemsByUserId } from '@services/itemService';
 import { saveGroup, countGroup } from '@services/groupService';
 
-import { initialItemData, initialGroupData } from '../constants/initialData';
 import { useAuth } from '../src/context/AuthContext';
 import LoginScreen from '../src/components/screens/auth/LoginScreen';
 
@@ -46,33 +45,8 @@ export default function InitialScreen() {
         throw new Error('ユーザー情報が未取得です');
       }
 
-      const itemCount = await countItemsByUserId(authUserId);
+      const itemCount = await countItemsByUserId(authUserId); // アイテム数の取得いらなくなるかも？　本当に不要ならあとで消す
       const groupCount = await countGroup(authUserId);
-
-      // Groupの初期化
-      if (groupCount === 0) {
-        console.log('初期グループデータを作成します');
-        for (const group of initialGroupData) {
-          await saveGroup(authUserId, group.id, group.name, group.color);
-        }
-      }
-
-      // Itemの初期化
-      if (itemCount === 0) {
-        console.log('初期アイテムデータを作成します');
-        for (const item of initialItemData) {
-          const id = Crypto.randomUUID();
-          const newItem = {
-            id,
-            title: item.title,
-            content: item.content,
-            group_id: item.group_id
-          };
-          await saveItem(authUserId, newItem);
-        }
-      }
-
-      console.log('データベース初期化が完了しました');
     } catch (error) {
       console.error('データベース初期化中にエラーが発生しました:', error);
       throw error;
