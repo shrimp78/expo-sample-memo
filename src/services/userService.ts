@@ -48,6 +48,7 @@ export const saveUser = async (user: User): Promise<void> => {
       email: user.email,
       name: user.name,
       picture: user.picture || null,
+      onboardingVersion: user.onboardingVersion || 0,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     });

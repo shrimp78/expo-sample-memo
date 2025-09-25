@@ -6,6 +6,7 @@ type User = {
   email: string;
   name: string;
   picture?: string;
+  onboardingVersion?: number;
 };
 
 export type { User };

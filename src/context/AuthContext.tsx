@@ -349,7 +349,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         id: firebaseUser.uid,
         email: firebaseUser.email || '',
         name: firebaseUser.displayName || firebaseUser.email || '',
-        picture: firebaseUser.photoURL || undefined
+        picture: firebaseUser.photoURL || undefined,
+        onboardingVersion: 0
       };
 
       await saveUser(newUser);
@@ -442,7 +443,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         id: firebaseUser.uid,
         email: firebaseUser.email || email || '',
         name: displayName || firebaseUser.email || email || 'Apple User',
-        picture: firebaseUser.photoURL || undefined
+        picture: firebaseUser.photoURL || undefined,
+        onboardingVersion: 0
       };
 
       await saveUser(newUser);
