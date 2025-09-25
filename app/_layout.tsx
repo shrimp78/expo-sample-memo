@@ -38,6 +38,15 @@ export default function Layout() {
                 {/* 認証 */}
                 <Stack.Screen name="auth/signup" options={{ headerTitle: '' }} />
 
+                {/* オンボーディング */}
+                <Stack.Screen
+                  name="onboarding/index"
+                  options={{
+                    headerTitle: '',
+                    headerBackVisible: false
+                  }}
+                />
+
                 {/* ホーム */}
                 <Stack.Screen
                   name="home/index"

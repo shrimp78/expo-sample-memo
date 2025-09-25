@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { useEffect } from 'react';
 
 import { useAuth } from '../src/context/AuthContext';
+import { ONBOARDING_VERSION } from '@constants/onboarding';
 import LoginScreen from '../src/components/screens/auth/LoginScreen';
 
 export default function InitialScreen() {
@@ -22,8 +23,12 @@ export default function InitialScreen() {
    */
   const initApp = async () => {
     try {
-      // TBC: この画面をはさむ意味があまりなくなりましたね？
-      router.replace('/home');
+      const currentVersion = user?.onboardingVersion ?? 0;
+      if (currentVersion < ONBOARDING_VERSION) {
+        router.replace('/onboarding');
+      } else {
+        router.replace('/home');
+      }
     } catch (e) {
       console.log('初期化エラー', e);
     }
