@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Alert, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
 import { updateUserById } from '@services/userService';
@@ -58,6 +58,7 @@ export default function OnboardingScreen() {
   const handleChangeGroupColor = (color: string) => setGroupColor(color);
   const openGroupFlow = () => {
     // オーバーレイはOKで閉じたまま、作成モーダルのみ開く
+    console.log('openGroupFlow');
     setGroupCreateModalVisible(true);
   };
   const handleSaveGroupPress = async () => {
@@ -121,24 +122,27 @@ export default function OnboardingScreen() {
   };
 
   // Overlays for instruction text
-  const InstructionOverlay = ({ text, onOk }: { text: string; onOk: () => void }) => (
-    <Modal transparent visible={overlayVisible} animationType="fade">
-      <View style={styles.overlayWrap}>
-        <View style={styles.overlayCard}>
-          <Text style={styles.overlayText}>{text}</Text>
-          <TouchableOpacity
-            style={styles.overlayOk}
-            onPress={() => {
-              setOverlayVisible(false);
-              onOk();
-            }}
-          >
-            <Text style={styles.overlayOkText}>OK</Text>
-          </TouchableOpacity>
+  const InstructionOverlay = ({ text, onOk }: { text: string; onOk: () => void }) => {
+    if (!overlayVisible) return null;
+    return (
+      <View style={styles.overlayContainer} pointerEvents="box-none">
+        <View style={styles.overlayWrap}>
+          <View style={styles.overlayCard}>
+            <Text style={styles.overlayText}>{text}</Text>
+            <TouchableOpacity
+              style={styles.overlayOk}
+              onPress={() => {
+                setOverlayVisible(false);
+                setTimeout(onOk, 0);
+              }}
+            >
+              <Text style={styles.overlayOkText}>OK</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
-    </Modal>
-  );
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -270,6 +274,14 @@ const styles = StyleSheet.create({
   secondaryButtonText: {
     color: '#2196f3',
     fontWeight: '600'
+  },
+  overlayContainer: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    zIndex: 1000
   },
   overlayWrap: {
     flex: 1,
