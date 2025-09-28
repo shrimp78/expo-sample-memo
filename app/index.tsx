@@ -24,6 +24,8 @@ export default function InitialScreen() {
   const initApp = async () => {
     try {
       const currentVersion = user?.onboardingVersion ?? 0;
+      console.log('currentVersion', user?.onboardingVersion);
+      console.log('ONBOARDING_VERSION', ONBOARDING_VERSION);
       if (currentVersion < ONBOARDING_VERSION) {
         router.replace('/onboarding');
       } else {

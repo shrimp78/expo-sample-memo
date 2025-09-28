@@ -27,7 +27,8 @@ export const getUserByUid = async (uid: string): Promise<User | null> => {
         id: uid,
         email: userData?.email || '',
         name: userData?.name || '',
-        picture: userData?.picture || undefined
+        picture: userData?.picture || undefined,
+        onboardingVersion: userData?.onboardingVersion || 0
       };
     }
     return null;
