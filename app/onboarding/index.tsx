@@ -149,7 +149,6 @@ export default function OnboardingScreen() {
       {step === 1 && (
         <View style={styles.centerContent}>
           <Text style={styles.title}>ようこそ！</Text>
-          <Text style={styles.body}>このアプリでは、グループとItemを取り扱います。</Text>
           <Text style={[styles.body, { marginTop: 16 }]}>
             まず最初のグループを作成してみましょう。
           </Text>
@@ -173,9 +172,7 @@ export default function OnboardingScreen() {
       {step === 2 && (
         <View style={{ flex: 1 }}>
           <InstructionOverlay
-            text={
-              'グループ名を入力後、お好みのカラーを選択してください。OKを押すと実際の作成画面になります。'
-            }
+            text={'グループ名を入力後、お好みのカラーを選択して保存を押してください。'}
             onOk={openGroupFlow}
           />
           <GroupCreateModal
@@ -193,7 +190,9 @@ export default function OnboardingScreen() {
       {step === 3 && (
         <View style={{ flex: 1 }}>
           <InstructionOverlay
-            text={'アイテムを作成します。好きなアイテム名と説明文を入力して保存を押してください。'}
+            text={
+              '次にアイテムを作成します。アイテム名と説明文を入力してグループを選択して保存を押してください。'
+            }
             onOk={openItemFlow}
           />
           <ItemCreateModal
@@ -216,10 +215,10 @@ export default function OnboardingScreen() {
 
       {step === 4 && (
         <View style={styles.centerContent}>
-          <Text style={styles.title}>完了！</Text>
-          <Text style={styles.body}>お疲れ様でした！ 最初のItem作成が完了しました☺️。</Text>
+          <Text style={styles.title}>DONE！</Text>
+          <Text style={styles.body}>最初のアイテムが完成しました☺️。</Text>
           <Text style={[styles.body, { marginTop: 8 }]}>
-            グループ名やItem名などはいつでも編集画面から変更できます。
+            グループやアイテムはいつでも編集画面から修正できます。
           </Text>
           <Text style={[styles.body, { marginTop: 8 }]}>それでは素敵なSPDをお楽しみください。</Text>
           <View style={styles.actions}>
