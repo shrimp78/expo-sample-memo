@@ -12,6 +12,7 @@
     "googleusercontent",
     "firestore",
     "Pressable",
-    "spdapp"
+    "spdapp",
+    "anniv"
   ]
 }
