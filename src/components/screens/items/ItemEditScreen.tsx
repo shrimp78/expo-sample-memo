@@ -1,6 +1,6 @@
 import { StyleSheet, Button, Alert, View } from 'react-native';
 import { useLocalSearchParams, useNavigation, router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { KeyboardAvoidingView } from '@gluestack-ui/themed';
 import { getItemById, updateItemById } from '@services/itemService';
 import { getAllGroupsByUserId } from '@services/groupService';
@@ -10,6 +10,8 @@ import GroupSelectModal from '@components/common/GroupSelectModal';
 import { useAuthenticatedUser } from '@context/AuthContext';
 import { useItems } from '@context/ItemContext';
 import { useGroups } from '@context/GroupContext';
+import { Picker } from '@react-native-picker/picker';
+import { Timestamp } from 'firebase/firestore';
 
 export default function ItemEditScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -22,6 +24,12 @@ export default function ItemEditScreen() {
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
   const { items } = useItems();
   const { groups: contextGroups } = useGroups();
+
+  // Annivの状態と選択肢
+  const [year, setYear] = useState<number>(2000);
+  const [month, setMonth] = useState<number>(1);
+  const [day, setDay] = useState<number>(1);
+  // 明日はここから
 
   // グループ選択画面のModal用
   const [groupModalVisible, setGroupModalVisible] = useState(false);
@@ -60,6 +68,9 @@ export default function ItemEditScreen() {
       setTitle(cachedItem.title);
       setContent(cachedItem.content);
       setSelectedGroup(contextGroups.find(group => group.id === cachedItem.group_id) ?? null);
+      setYear(cachedItem.anniv.toDate().getFullYear());
+      setMonth(cachedItem.anniv.toDate().getMonth() + 1);
+      setDay(cachedItem.anniv.toDate().getDate());
     }
   }, [id, items]);
 
