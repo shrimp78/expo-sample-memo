@@ -10,7 +10,7 @@ import GroupSelectModal from '@components/common/GroupSelectModal';
 import { useAuthenticatedUser } from '@context/AuthContext';
 import { useItems } from '@context/ItemContext';
 import { useGroups } from '@context/GroupContext';
-import { Picker } from '@react-native-picker/picker';
+
 import { Timestamp } from 'firebase/firestore';
 
 export default function ItemEditScreen() {
@@ -29,7 +29,11 @@ export default function ItemEditScreen() {
   const [year, setYear] = useState<number>(2000);
   const [month, setMonth] = useState<number>(1);
   const [day, setDay] = useState<number>(1);
-  // 明日はここから
+  const years = useMemo(() => Array.from({ length: 101 }, (_, i) => 1970 + i), []);
+  const months = useMemo(() => Array.from({ length: 12 }, (_, i) => i + 1), []);
+  // 選択中の年・月の「UTC基準での」月末日数を取得
+  const daysInMonth = useMemo(() => new Date(Date.UTC(year, month, 0)).getDate(), [year, month]);
+  const days = useMemo(() => Array.from({ length: daysInMonth }, (_, i) => i + 1), [daysInMonth]);
 
   // グループ選択画面のModal用
   const [groupModalVisible, setGroupModalVisible] = useState(false);
@@ -68,9 +72,13 @@ export default function ItemEditScreen() {
       setTitle(cachedItem.title);
       setContent(cachedItem.content);
       setSelectedGroup(contextGroups.find(group => group.id === cachedItem.group_id) ?? null);
-      setYear(cachedItem.anniv.toDate().getFullYear());
-      setMonth(cachedItem.anniv.toDate().getMonth() + 1);
-      setDay(cachedItem.anniv.toDate().getDate());
+      // TODO： 後でItemに値が入るようになったら全部修正する！
+      //setYear(cachedItem.anniv.toDate().getFullYear());
+      //setMonth(cachedItem.anniv.toDate().getMonth() + 1);
+      //setDay(cachedItem.anniv.toDate().getDate());
+      setYear(2000);
+      setMonth(1);
+      setDay(1);
     }
   }, [id, items]);
 
@@ -115,6 +123,15 @@ export default function ItemEditScreen() {
           onChangeContent={setContent}
           onSelectGroup={onSelectGroup}
           selectedGroup={selectedGroup}
+          years={years}
+          months={months}
+          days={days}
+          year={year}
+          month={month}
+          day={day}
+          setYear={setYear}
+          setMonth={setMonth}
+          setDay={setDay}
         />
       </KeyboardAvoidingView>
 

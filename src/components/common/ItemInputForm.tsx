@@ -4,6 +4,7 @@ import { InputAccessoryView, View, Platform, TouchableOpacity } from 'react-nati
 import KeyboardCloseButton from '../common/KeyboardCloseButton';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Group } from '@models/Group';
+import { Picker } from '@react-native-picker/picker';
 
 type ItemInputFormProps = {
   title: string;
@@ -12,6 +13,15 @@ type ItemInputFormProps = {
   onChangeContent: (text: string) => void;
   onSelectGroup: () => void;
   selectedGroup: Group | null;
+  years: number[];
+  months: number[];
+  days: number[];
+  year: number;
+  month: number;
+  day: number;
+  setYear: (year: number) => void;
+  setMonth: (month: number) => void;
+  setDay: (day: number) => void;
 };
 
 const inputAccessoryViewID1 = 'INPUT_ACCESSORY_VIEW_ID_1';
@@ -23,7 +33,23 @@ const inputAccessoryViewID2 = 'INPUT_ACCESSORY_VIEW_ID_2';
  * @returns アイテム入力フォーム
  */
 const ItemInputForm: React.FC<ItemInputFormProps> = props => {
-  const { title, content, onChangeTitle, onChangeContent, onSelectGroup, selectedGroup } = props;
+  const {
+    title,
+    content,
+    onChangeTitle,
+    onChangeContent,
+    onSelectGroup,
+    selectedGroup,
+    years,
+    months,
+    days,
+    year,
+    month,
+    day,
+    setYear,
+    setMonth,
+    setDay
+  } = props;
 
   return (
     <View style={{ flex: 1, paddingBottom: 20 }}>
@@ -70,6 +96,25 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           </HStack>
         </TouchableOpacity>
       </HStack>
+
+      {/* 年月日入力 */}
+      <View style={{ flexDirection: 'row', gap: 12 }}>
+        <Picker selectedValue={year} onValueChange={setYear} style={{ flex: 1 }}>
+          {years.map(y => (
+            <Picker.Item key={y} label={`${y}`} value={y} />
+          ))}
+        </Picker>
+        <Picker selectedValue={month} onValueChange={setMonth} style={{ flex: 1 }}>
+          {months.map(m => (
+            <Picker.Item key={m} label={`${m}`} value={m} />
+          ))}
+        </Picker>
+        <Picker selectedValue={day} onValueChange={setDay} style={{ flex: 1 }}>
+          {days.map(d => (
+            <Picker.Item key={d} label={`${d}`} value={d} />
+          ))}
+        </Picker>
+      </View>
 
       {/* 内容入力 */}
       <Textarea
