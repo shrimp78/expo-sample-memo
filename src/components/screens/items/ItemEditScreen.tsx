@@ -32,7 +32,7 @@ export default function ItemEditScreen() {
   const years = useMemo(() => Array.from({ length: 101 }, (_, i) => 1970 + i), []);
   const months = useMemo(() => Array.from({ length: 12 }, (_, i) => i + 1), []);
   // 選択中の年・月の「UTC基準での」月末日数を取得
-  const daysInMonth = useMemo(() => new Date(Date.UTC(year, month, 0)).getDate(), [year, month]);
+  const daysInMonth = useMemo(() => new Date(Date.UTC(year, month, 0)).getUTCDate(), [year, month]);
   const days = useMemo(() => Array.from({ length: daysInMonth }, (_, i) => i + 1), [daysInMonth]);
 
   // グループ選択画面のModal用
