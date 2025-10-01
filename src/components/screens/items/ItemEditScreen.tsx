@@ -1,6 +1,6 @@
 import { StyleSheet, Button, Alert, View } from 'react-native';
 import { useLocalSearchParams, useNavigation, router } from 'expo-router';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { KeyboardAvoidingView } from '@gluestack-ui/themed';
 import { getItemById, updateItemById } from '@services/itemService';
 import { getAllGroupsByUserId } from '@services/groupService';
@@ -72,27 +72,14 @@ export default function ItemEditScreen() {
       setTitle(cachedItem.title);
       setContent(cachedItem.content);
       setSelectedGroup(contextGroups.find(group => group.id === cachedItem.group_id) ?? null);
-      // TODO： 後でItemに値が入るようになったら全部修正する！
-      //setYear(cachedItem.anniv.toDate().getFullYear());
-      //setMonth(cachedItem.anniv.toDate().getMonth() + 1);
-      //setDay(cachedItem.anniv.toDate().getDate());
-      setYear(2000);
-      setMonth(1);
-      setDay(1);
+      setYear(cachedItem.anniv.toDate().getFullYear());
+      setMonth(cachedItem.anniv.toDate().getMonth() + 1);
+      setDay(cachedItem.anniv.toDate().getDate());
     }
   }, [id, items]);
 
-  // TitleとContentの変更を監視
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => {
-        return <Button title="保存" onPress={handleSaveItemPress} />;
-      }
-    });
-  }, [title, content, selectedGroup]);
-
   // 保存ボタン押下時の処理
-  const handleSaveItemPress = async () => {
+  const handleSaveItemPress = useCallback(async () => {
     // Validation
     if (!title) {
       Alert.alert('確認', 'タイトルを入力してください');
@@ -102,16 +89,23 @@ export default function ItemEditScreen() {
       Alert.alert('確認', 'コンテンツを入力してください');
       return;
     }
+    // Annivの変換
+    // 選択日付のUTC0時を作成して、Timestampに変換
+    console.log(`year: ${year}, month: ${month}, day: ${day}`);
+    const utcMidnight = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
+    const anniv = Timestamp.fromDate(utcMidnight);
+    await updateItemById(user.id, id, title, content, selectedGroup?.id as string, anniv);
+    router.back();
+  }, [user.id, id, title, content, selectedGroup, year, month, day]);
 
-    // 保存処理
-    try {
-      await updateItemById(user.id, id, title, content, selectedGroup?.id as string);
-      router.back();
-    } catch (e) {
-      Alert.alert('エラー', '保存に失敗しました', [{ text: 'OK', onPress: () => router.back() }]);
-      console.error(e);
-    }
-  };
+  // TitleとContentの変更を監視
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return <Button title="保存" onPress={handleSaveItemPress} />;
+      }
+    });
+  }, [handleSaveItemPress, navigation]);
 
   return (
     <View style={styles.container}>
