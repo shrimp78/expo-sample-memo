@@ -55,6 +55,10 @@ export default function ItemEditScreen() {
           setTitle(item.title);
           setContent(item.content);
           setSelectedGroup(groups.find(group => group.id === item.group_id) ?? null);
+          const d = item.anniv.toDate();
+          setYear(d.getFullYear());
+          setMonth(d.getMonth() + 1);
+          setDay(d.getDate());
         }
       } catch (error) {
         console.error('Itemの取得に失敗しました', error);
