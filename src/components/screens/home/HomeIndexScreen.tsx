@@ -313,7 +313,7 @@ export default function HomeIndexScreen() {
         renderItem={({ item }) => (
           <ItemList
             name={item.title}
-            content={item.content}
+            anniv={item.anniv}
             onPress={() => handleItemPress(item.id)}
             onDeletePress={() => handleDeletePress(item.id)}
           />
