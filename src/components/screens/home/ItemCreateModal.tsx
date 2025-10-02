@@ -26,6 +26,15 @@ type ItemCreateProps = {
   groups: Group[];
   selectedGroup: Group | null;
   setSelectedGroup: (group: Group | null) => void;
+  years: number[];
+  months: number[];
+  days: number[];
+  year: number;
+  month: number;
+  day: number;
+  setYear: (year: number) => void;
+  setMonth: (month: number) => void;
+  setDay: (day: number) => void;
 };
 
 const ItemCreateModal: React.FC<ItemCreateProps> = props => {
@@ -42,7 +51,16 @@ const ItemCreateModal: React.FC<ItemCreateProps> = props => {
     toggleGroupModal,
     groups,
     selectedGroup,
-    setSelectedGroup
+    setSelectedGroup,
+    years,
+    months,
+    days,
+    year,
+    month,
+    day,
+    setYear,
+    setMonth,
+    setDay
   } = props;
   return (
     <Modal
@@ -78,6 +96,15 @@ const ItemCreateModal: React.FC<ItemCreateProps> = props => {
                     onChangeContent={onChangeContent}
                     onSelectGroup={onSelectGroup}
                     selectedGroup={selectedGroup}
+                    years={years}
+                    months={months}
+                    days={days}
+                    year={year}
+                    month={month}
+                    day={day}
+                    setYear={setYear}
+                    setMonth={setMonth}
+                    setDay={setDay}
                   />
                 </KeyboardAvoidingView>
               </View>

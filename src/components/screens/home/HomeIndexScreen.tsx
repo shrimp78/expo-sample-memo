@@ -10,7 +10,7 @@ import {
   GestureResponderEvent,
   Dimensions
 } from 'react-native';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useMemo } from 'react';
 import { Entypo } from '@expo/vector-icons';
 import {
   saveItem,
@@ -21,6 +21,7 @@ import {
 import { deleteAllGroups } from '@services/groupService';
 import { type Group } from '@models/Group';
 import ItemList from '@screens/home/ItemList';
+import { Timestamp } from 'firebase/firestore';
 
 // Contexts
 import { useGroups } from '@context/GroupContext';
@@ -44,6 +45,15 @@ export default function HomeIndexScreen() {
   const [title, setTitle] = useState<string>('');
   const [content, setContent] = useState<string>('');
   const [createModalVisible, setCreateModalVisible] = useState(false);
+  const [year, setYear] = useState<number>(new Date().getFullYear());
+  const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
+  const [day, setDay] = useState<number>(new Date().getDate());
+  const years = useMemo(() => Array.from({ length: 101 }, (_, i) => 1970 + i), []);
+  const months = useMemo(() => Array.from({ length: 12 }, (_, i) => i + 1), []);
+  // 選択中の年・月の「UTC基準での」月末日数を取得
+  const daysInMonth = useMemo(() => new Date(Date.UTC(year, month, 0)).getUTCDate(), [year, month]);
+  const days = useMemo(() => Array.from({ length: daysInMonth }, (_, i) => i + 1), [daysInMonth]);
+
   const toggleCreateModal = () => {
     if (createModalVisible) {
       // モーダルを閉じる際に状態をリセット
@@ -212,11 +222,17 @@ export default function HomeIndexScreen() {
     try {
       const id = Crypto.randomUUID();
       const group_id = selectedGroup?.id ?? null;
+      // Annivの変換
+      // 選択日付のUTC0時を作成して、Timestampに変換
+      console.log(`year: ${year}, month: ${month}, day: ${day}`);
+      const utcMidnight = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
+      const anniv = Timestamp.fromDate(utcMidnight);
       const newItem = {
         id,
         title,
         content,
-        group_id
+        group_id,
+        anniv
       };
       await saveItem(user.id, newItem);
       toggleCreateModal();
@@ -335,6 +351,15 @@ export default function HomeIndexScreen() {
         groups={groups}
         selectedGroup={selectedGroup}
         setSelectedGroup={setSelectedGroup}
+        years={years}
+        months={months}
+        days={days}
+        year={year}
+        month={month}
+        day={day}
+        setYear={setYear}
+        setMonth={setMonth}
+        setDay={setDay}
       />
 
       <HomeMenuModal
