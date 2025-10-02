@@ -10,7 +10,6 @@ import GroupSelectModal from '@components/common/GroupSelectModal';
 import { useAuthenticatedUser } from '@context/AuthContext';
 import { useItems } from '@context/ItemContext';
 import { useGroups } from '@context/GroupContext';
-
 import { Timestamp } from 'firebase/firestore';
 
 export default function ItemEditScreen() {
@@ -26,8 +25,8 @@ export default function ItemEditScreen() {
   const { groups: contextGroups } = useGroups();
 
   // Annivの状態と選択肢
-  const [year, setYear] = useState<number>(2000);
-  const [month, setMonth] = useState<number>(1);
+  const [year, setYear] = useState<number>(new Date().getFullYear());
+  const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
   const [day, setDay] = useState<number>(1);
   const years = useMemo(() => Array.from({ length: 101 }, (_, i) => 1970 + i), []);
   const months = useMemo(() => Array.from({ length: 12 }, (_, i) => i + 1), []);
