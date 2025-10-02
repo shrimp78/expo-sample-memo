@@ -1,15 +1,16 @@
 import { Button, ListItem } from '@rneui/base';
 import { StyleSheet } from 'react-native';
+import { Timestamp } from 'firebase/firestore';
 
 type ItemListProps = {
   name: string;
-  content?: string;
+  anniv: Timestamp;
   onPress: () => void;
   onDeletePress: () => void;
 };
 
 const ItemList: React.FC<ItemListProps> = props => {
-  const { name, content, onPress, onDeletePress } = props;
+  const { name, anniv, onPress, onDeletePress } = props;
   return (
     <ListItem.Swipeable
       bottomDivider
@@ -32,7 +33,7 @@ const ItemList: React.FC<ItemListProps> = props => {
         <ListItem.Title style={styles.title}> {name}</ListItem.Title>
         <ListItem.Subtitle style={styles.content} numberOfLines={3}>
           {' '}
-          {content ?? ''}
+          {anniv.toDate().toLocaleDateString()}
         </ListItem.Subtitle>
       </ListItem.Content>
       <ListItem.Chevron />
