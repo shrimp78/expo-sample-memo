@@ -13,6 +13,7 @@
     "firestore",
     "Pressable",
     "spdapp",
-    "anniv"
+    "anniv",
+    "millis"
   ]
 }
