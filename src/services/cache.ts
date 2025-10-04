@@ -55,7 +55,11 @@ export async function getCachedItems(userId: string): Promise<Item[] | null> {
 
 export async function setCachedItems(userId: string, items: Item[]): Promise<void> {
   try {
-    // Timestamp は JSON 直列化時にメソッドが失われるため、ミリ秒へ変換して保存
+    // anniv のTimestamp は JSON 直列化時にメソッドが失われるため、ミリ秒へ変換して保存
+    // id: "aaaaaa",
+    // name: "aaaaa",
+    // groupId: "abc",
+    // annivMillis: 1728000000000  // ← 元の{"seconds": 数値, "nanoseconds": 数値} をミリ秒に変換
     const serialized = items.map(({ anniv, ...rest }) => ({
       ...rest,
       annivMillis: anniv.toMillis()
