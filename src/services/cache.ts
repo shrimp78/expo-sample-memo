@@ -13,37 +13,18 @@ export async function getCachedItems(userId: string): Promise<Item[] | null> {
     const parsed = JSON.parse(raw) as unknown[];
     if (!Array.isArray(parsed)) return null;
 
-    // 旧フォーマット互換: annivMillis(number) / anniv({seconds,nanoseconds}) / anniv(Date-string/number)
+    // Anniv フォーマット互換: JSONオブジェクトからTimestampに変換
     const revived: Item[] = parsed.map((entry: any) => {
-      const { annivMillis, anniv, ...rest } = entry ?? {};
+      const { anniv, ...rest } = entry ?? {};
 
-      // 1) 新キャッシュ形式: annivMillis (number)
-      if (typeof annivMillis === 'number') {
-        return { ...rest, anniv: Timestamp.fromMillis(annivMillis) } as Item;
-      }
-
-      // 2) 旧形式: anniv オブジェクトに seconds/nanoseconds
       if (
         anniv &&
         typeof anniv === 'object' &&
         typeof anniv.seconds === 'number' &&
         typeof anniv.nanoseconds === 'number'
       ) {
-        // nanoseconds は 10^-9 秒単位。ミリ秒へ丸める
-        const millis = anniv.seconds * 1000 + Math.floor(anniv.nanoseconds / 1e6);
-        return { ...rest, anniv: Timestamp.fromMillis(millis) } as Item;
+        return { ...rest, anniv: new Timestamp(anniv.seconds, anniv.nanoseconds) };
       }
-
-      // 3) 文字列/数値（Date互換）
-      if (typeof anniv === 'string' || typeof anniv === 'number') {
-        const d = new Date(anniv);
-        if (!Number.isNaN(d.getTime())) {
-          return { ...rest, anniv: Timestamp.fromDate(d) } as Item;
-        }
-      }
-
-      // 4) 不正形の場合は現在時刻でフォールバック（クラッシュ回避）
-      return { ...rest, anniv: Timestamp.fromMillis(Date.now()) } as Item;
     });
 
     return revived;
@@ -55,16 +36,8 @@ export async function getCachedItems(userId: string): Promise<Item[] | null> {
 
 export async function setCachedItems(userId: string, items: Item[]): Promise<void> {
   try {
-    // anniv のTimestamp は JSON 直列化時にメソッドが失われるため、ミリ秒へ変換して保存
-    // id: "aaaaaa",
-    // name: "aaaaa",
-    // groupId: "abc",
-    // annivMillis: 1728000000000  // ← 元の{"seconds": 数値, "nanoseconds": 数値} をミリ秒に変換
-    const serialized = items.map(({ anniv, ...rest }) => ({
-      ...rest,
-      annivMillis: anniv.toMillis()
-    }));
-    await AsyncStorage.setItem(itemsKey(userId), JSON.stringify(serialized));
+    // 注：anniv のTimestamp は JSON 直列化時にメソッドが失われるため、{ seconds: 1728000000, nanoseconds: 0 }のJSONになる
+    await AsyncStorage.setItem(itemsKey(userId), JSON.stringify(items));
   } catch (error) {
     console.warn('Failed to write items cache:', error);
   }
