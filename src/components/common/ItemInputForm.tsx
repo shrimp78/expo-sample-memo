@@ -1,10 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Input, InputField, Textarea, TextareaInput, Text, HStack } from '@gluestack-ui/themed';
-import { InputAccessoryView, View, Platform, TouchableOpacity } from 'react-native';
+import {
+  InputAccessoryView,
+  View,
+  Platform,
+  TouchableOpacity,
+  Modal,
+  SafeAreaView
+} from 'react-native';
 import KeyboardCloseButton from '../common/KeyboardCloseButton';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Group } from '@models/Group';
 import { Picker } from '@react-native-picker/picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 type ItemInputFormProps = {
   title: string;
@@ -51,6 +59,27 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
     setDay
   } = props;
 
+  // 日付選択エリアで使用するモノたち
+  const [isDatePickerOpen, setDatePickerOpen] = useState(false);
+  const [tempDate, setTempDate] = useState<Date>(new Date(year, month - 1, day));
+
+  const formatSelectedDate = (y: number, m: number, d: number): string => {
+    if (!y || !m || !d) return '';
+    const mm = String(m).padStart(2, '0');
+    const dd = String(d).padStart(2, '0');
+    return `${y}/${mm}/${dd}`;
+  };
+
+  const handleConfirmDate = () => {
+    const y = tempDate.getFullYear();
+    const m = tempDate.getMonth() + 1;
+    const d = tempDate.getDate();
+    setYear(y);
+    setMonth(m);
+    setDay(d);
+    setDatePickerOpen(false);
+  };
+
   return (
     <View style={{ flex: 1, paddingBottom: 20 }}>
       {/* タイトル入力 */}
@@ -66,7 +95,6 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           autoFocus={true}
         />
       </Input>
-
       {/* グループ選択エリア */}
       <HStack
         alignItems="center"
@@ -96,26 +124,102 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           </HStack>
         </TouchableOpacity>
       </HStack>
-
-      {/* 年月日入力 */}
-      <View style={{ flexDirection: 'row', gap: 12 }}>
-        <Picker selectedValue={year} onValueChange={setYear} style={{ flex: 1 }}>
-          {years.map(y => (
-            <Picker.Item key={y} label={`${y}`} value={y} />
-          ))}
-        </Picker>
-        <Picker selectedValue={month} onValueChange={setMonth} style={{ flex: 1 }}>
-          {months.map(m => (
-            <Picker.Item key={m} label={`${m}`} value={m} />
-          ))}
-        </Picker>
-        <Picker selectedValue={day} onValueChange={setDay} style={{ flex: 1 }}>
-          {days.map(d => (
-            <Picker.Item key={d} label={`${d}`} value={d} />
-          ))}
-        </Picker>
-      </View>
-
+      {/* 年月日入力　iOSの場合は、ネイティブのホイールを出現させる */}
+      {Platform.OS === 'ios' ? (
+        <>
+          <TouchableOpacity
+            onPress={() => {
+              setTempDate(new Date(year, month - 1, day));
+              setDatePickerOpen(true);
+            }}
+          >
+            <HStack
+              alignItems="center"
+              paddingHorizontal={'$2'}
+              marginTop={'$2'}
+              marginBottom={'$1'}
+              marginLeft={'$2'}
+              height={'$10'}
+            >
+              <FontAwesome name="calendar" size={22} color="#4A5054" />
+              <Text fontSize={'$lg'} fontWeight={'$medium'} color="#4A5054" marginLeft={'$2'}>
+                {formatSelectedDate(year, month, day) || '日付を選択'}
+              </Text>
+            </HStack>
+          </TouchableOpacity>
+          <Modal
+            visible={isDatePickerOpen}
+            animationType="slide"
+            transparent={true}
+            onRequestClose={() => setDatePickerOpen(false)}
+          >
+            <View
+              style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.3)' }}
+            >
+              <View
+                style={{
+                  backgroundColor: '#fff',
+                  borderTopLeftRadius: 12,
+                  borderTopRightRadius: 12,
+                  paddingBottom: 8
+                }}
+              >
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    paddingHorizontal: 16,
+                    paddingVertical: 12,
+                    borderBottomWidth: 1,
+                    borderBottomColor: '#eee'
+                  }}
+                >
+                  <TouchableOpacity onPress={() => setDatePickerOpen(false)}>
+                    <Text color="#007AFF" fontSize={'$md'}>
+                      キャンセル
+                    </Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={handleConfirmDate}>
+                    <Text color="#007AFF" fontSize={'$md'} fontWeight={'$bold'}>
+                      完了
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <SafeAreaView>
+                  <DateTimePicker
+                    value={tempDate}
+                    mode="date"
+                    display="spinner"
+                    onChange={(_, date) => {
+                      if (date) setTempDate(date);
+                    }}
+                  />
+                </SafeAreaView>
+              </View>
+            </View>
+          </Modal>
+        </>
+      ) : (
+        // Androidの場合は既存のクソダサいピッカーを使用
+        <View style={{ flexDirection: 'row', gap: 12 }}>
+          <Picker selectedValue={year} onValueChange={setYear} style={{ flex: 1 }}>
+            {years.map(y => (
+              <Picker.Item key={y} label={`${y}`} value={y} />
+            ))}
+          </Picker>
+          <Picker selectedValue={month} onValueChange={setMonth} style={{ flex: 1 }}>
+            {months.map(m => (
+              <Picker.Item key={m} label={`${m}`} value={m} />
+            ))}
+          </Picker>
+          <Picker selectedValue={day} onValueChange={setDay} style={{ flex: 1 }}>
+            {days.map(d => (
+              <Picker.Item key={d} label={`${d}`} value={d} />
+            ))}
+          </Picker>
+        </View>
+      )}
       {/* 内容入力 */}
       <Textarea
         borderWidth={0}
@@ -136,7 +240,6 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           textAlignVertical="top"
         />
       </Textarea>
-
       {/* iOSのみキーボードの閉じるボタンを表示 */}
       {Platform.OS === 'ios' && (
         <InputAccessoryView nativeID={inputAccessoryViewID1} backgroundColor={'#F1F1F1'}>
