@@ -14,6 +14,7 @@
     "Pressable",
     "spdapp",
     "anniv",
-    "millis"
+    "millis",
+    "datetimepicker"
   ]
 }
