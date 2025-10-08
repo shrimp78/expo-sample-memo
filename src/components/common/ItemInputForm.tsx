@@ -63,6 +63,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
   const [isDatePickerOpen, setDatePickerOpen] = useState(false);
   const [tempDate, setTempDate] = useState<Date>(new Date(year, month - 1, day));
 
+  // y,m,d の各numberを受け取って、YYYY/MM/DD のStringを返す
   const formatSelectedDate = (y: number, m: number, d: number): string => {
     if (!y || !m || !d) return '';
     const mm = String(m).padStart(2, '0');
@@ -70,6 +71,8 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
     return `${y}/${mm}/${dd}`;
   };
 
+  // DatePickerの完了ボタン押下時の処理
+  // DatePickerで変更されたtmpDateの値をy,m,d に設定してPickerを閉じる
   const handleConfirmDate = () => {
     const y = tempDate.getFullYear();
     const m = tempDate.getMonth() + 1;
