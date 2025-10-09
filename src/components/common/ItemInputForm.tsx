@@ -175,7 +175,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
                     </Text>
                   </TouchableOpacity>
                   <TouchableOpacity onPress={handleConfirmDate}>
-                    <Text color="#007AFF" fontSize={'$md'} fontWeight={'$bold'}>
+                    <Text color="#007AFF" fontSize={'$md'}>
                       完了
                     </Text>
                   </TouchableOpacity>
@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 14,
     borderBottomWidth: 1,
     borderBottomColor: '#eee'
   }
