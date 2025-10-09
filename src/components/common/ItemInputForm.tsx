@@ -6,7 +6,8 @@ import {
   Platform,
   TouchableOpacity,
   Modal,
-  SafeAreaView
+  SafeAreaView,
+  StyleSheet
 } from 'react-native';
 import KeyboardCloseButton from '../common/KeyboardCloseButton';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -144,39 +145,29 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
               marginLeft={'$2'}
               height={'$10'}
             >
+              {/* カレンダーのアイコン */}
               <FontAwesome name="calendar" size={22} color="#4A5054" />
               <Text fontSize={'$lg'} fontWeight={'$medium'} color="#4A5054" marginLeft={'$2'}>
                 {formatSelectedDate(year, month, day) || '日付を選択'}
               </Text>
             </HStack>
           </TouchableOpacity>
+
+          {/* iOS用の日付Pickerモーダル */}
           <Modal
             visible={isDatePickerOpen}
-            animationType="slide"
+            animationType="fade"
             transparent={true}
             onRequestClose={() => setDatePickerOpen(false)}
           >
             <View
-              style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0,0,0,0.3)' }}
+              style={styles.datePickerOverlay}
             >
               <View
-                style={{
-                  backgroundColor: '#fff',
-                  borderTopLeftRadius: 12,
-                  borderTopRightRadius: 12,
-                  paddingBottom: 8
-                }}
+                style={styles.datePickerContent}
               >
                 <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    paddingHorizontal: 16,
-                    paddingVertical: 12,
-                    borderBottomWidth: 1,
-                    borderBottomColor: '#eee'
-                  }}
+                  style={styles.datePickerHeader}
                 >
                   <TouchableOpacity onPress={() => setDatePickerOpen(false)}>
                     <Text color="#007AFF" fontSize={'$md'}>
@@ -257,5 +248,27 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  datePickerOverlay: { 
+    flex: 1, 
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0,0,0,0.3)' 
+  },
+  datePickerContent: {
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    paddingBottom: 8
+  },
+  datePickerHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee'
+  }
+});
 
 export default ItemInputForm;

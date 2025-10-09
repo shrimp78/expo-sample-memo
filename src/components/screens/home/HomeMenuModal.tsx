@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, TouchableOpacity, View, Text, StyleSheet, Dimensions } from 'react-native';
+import { Modal, TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 
 interface HomeMenuModalProps {
