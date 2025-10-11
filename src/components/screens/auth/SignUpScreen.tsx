@@ -67,7 +67,6 @@ export default function SignUpScreen() {
       {/* ヘッダーセクション */}
       <View style={styles.headerSection}>
         <Text style={styles.pageTitle}>アカウント新規作成</Text>
-        <Text style={styles.subtitle}>GoogleまたはAppleアカウントでアプリを始めましょう</Text>
       </View>
 
       {/* 新規作成セクション */}
@@ -108,12 +107,6 @@ const styles = StyleSheet.create({
     color: '#333',
     textAlign: 'center',
     marginBottom: 16
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    lineHeight: 24
   },
   signUpSection: {
     flex: 1,
