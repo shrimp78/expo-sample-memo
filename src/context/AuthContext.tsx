@@ -336,7 +336,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // 既存ユーザーの場合はサインアウトしてエラーを投げる
         await signOut(auth);
         await GoogleSignin.signOut();
-        throw new Error('既にこのユーザーが存在します');
+        throw new Error('このアカウントは既に使われています。ログインしてください。');
       }
 
       // 新規ユーザーの場合は作成
@@ -366,9 +366,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // エラー時のみここで isLoading を false に戻す。
       setIsLoading(false);
 
-      if (error.message === '既にこのユーザーが存在します') {
-        throw error; // そのまま再スロー
-      } else if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         throw new Error('Google認証がキャンセルされました');
       } else if (error.code === statusCodes.IN_PROGRESS) {
         throw new Error('Google認証が既に進行中です');
@@ -428,7 +426,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (existingUser) {
         // 既存ユーザーの場合はサインアウトしてエラーを投げる
         await signOut(auth);
-        throw new Error('既にこのユーザーが存在します');
+        throw new Error('このアカウントは既に使われています。ログインしてください。');
       }
 
       // 新規ユーザーの場合は作成
@@ -460,9 +458,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       // エラー時のみここで isLoading を false に戻す。
       setIsLoading(false);
 
-      if (error.message === '既にこのユーザーが存在します') {
-        throw error; // そのまま再スロー
-      } else if (error.code === 'ERR_REQUEST_CANCELED') {
+      if (error.code === 'ERR_REQUEST_CANCELED') {
         throw new Error('Apple認証がキャンセルされました');
       } else {
         throw new Error(`Apple新規登録エラー: ${error.message}`);

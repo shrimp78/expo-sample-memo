@@ -1,5 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Alert, ActivityIndicator } from 'react-native';
+import { router } from 'expo-router';
 import { useAuth } from '@context/AuthContext';
 import { GoogleLoginButton, AppleLoginButton } from '@components/screens/auth/LoginButton';
 
@@ -15,10 +16,14 @@ export default function SignUpScreen() {
       console.error('新規登録エラー:', error);
 
       // 既存ユーザーの場合の処理
-      if (error instanceof Error && error.message.includes('既にこのユーザーが存在します')) {
-        Alert.alert('既にこのユーザーが存在します', '', [
+      if (
+        error instanceof Error &&
+        error.message.includes('このアカウントは既に使われています。ログインしてください。')
+      ) {
+        Alert.alert(error.message, '', [
           {
-            text: '確認'
+            text: '確認',
+            onPress: () => router.replace('/')
           }
         ]);
       } else {
@@ -39,10 +44,14 @@ export default function SignUpScreen() {
       console.error('Apple新規登録エラー:', error);
 
       // 既存ユーザーの場合の処理
-      if (error instanceof Error && error.message.includes('既にこのユーザーが存在します')) {
-        Alert.alert('既にこのユーザーが存在します', '', [
+      if (
+        error instanceof Error &&
+        error.message.includes('このアカウントは既に使われています。ログインしてください。')
+      ) {
+        Alert.alert(error.message, '', [
           {
-            text: '確認'
+            text: '確認',
+            onPress: () => router.replace('/')
           }
         ]);
       } else {
