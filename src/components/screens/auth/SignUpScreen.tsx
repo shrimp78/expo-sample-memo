@@ -16,10 +16,7 @@ export default function SignUpScreen() {
       console.error('新規登録エラー:', error);
 
       // 既存ユーザーの場合の処理
-      if (
-        error instanceof Error &&
-        error.message.includes('このアカウントは既に使われています。ログインしてください。')
-      ) {
+      if (error instanceof Error && error.message) {
         Alert.alert(error.message, '', [
           {
             text: '確認',
@@ -44,10 +41,7 @@ export default function SignUpScreen() {
       console.error('Apple新規登録エラー:', error);
 
       // 既存ユーザーの場合の処理
-      if (
-        error instanceof Error &&
-        error.message.includes('このアカウントは既に使われています。ログインしてください。')
-      ) {
+      if (error instanceof Error && error.message) {
         Alert.alert(error.message, '', [
           {
             text: '確認',
