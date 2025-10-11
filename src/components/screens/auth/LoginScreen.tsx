@@ -68,13 +68,14 @@ export default function LoginScreen() {
           <AppleLoginButton onPress={handleAppleLogin} buttonText="Appleでサインイン" />
         )}
 
-        {/* 新規作成リンク */}
+        {/* 新規作成ボタン */}
         <TouchableOpacity
-          style={styles.signUpTextContainer}
+          style={[styles.signUpButton, isLoading && { opacity: 0.6 }]}
           onPress={handleSignUp}
           disabled={isLoading}
+          activeOpacity={0.7}
         >
-          <Text style={styles.signUpText}>新規作成</Text>
+          <Text style={styles.signUpButtonText}>新しくアカウントを作成する</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -118,13 +119,23 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
 
-  signUpTextContainer: {
-    marginTop: 22,
-    paddingVertical: 8
+  signUpButton: {
+    width: '100%',
+    maxWidth: 320,
+    alignSelf: 'center',
+    marginTop: 24,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: '#DBDBDB',
+    borderRadius: 12,
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
-  signUpText: {
-    fontSize: 16,
-    color: '#666',
-    textDecorationLine: 'underline'
+  signUpButtonText: {
+    fontSize: 15,
+    color: '#262626',
+    fontWeight: '600'
   }
 });
