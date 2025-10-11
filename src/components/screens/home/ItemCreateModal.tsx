@@ -1,3 +1,4 @@
+import { useState, useMemo, useEffect } from 'react';
 import {
   Modal,
   TouchableWithoutFeedback,
@@ -5,71 +6,89 @@ import {
   TouchableOpacity,
   Button,
   KeyboardAvoidingView,
-  StyleSheet
+  StyleSheet,
+  Alert
 } from 'react-native';
 import GroupSelectModal from '@components/common/GroupSelectModal';
 import { AntDesign } from '@expo/vector-icons';
 import ItemInputForm from '@components/common/ItemInputForm';
+import { useAuthenticatedUser } from '@context/AuthContext';
+import { useGroups } from '@context/GroupContext';
 import { type Group } from '@models/Group';
+import * as Crypto from 'expo-crypto';
+import { saveItem } from '@services/itemService';
+import { Timestamp } from 'firebase/firestore';
 
 type ItemCreateProps = {
   visible: boolean;
-  toggleCreateModal: () => void;
-  onSave: () => void;
-  onChangeTitle: (text: string) => void;
-  onChangeContent: (text: string) => void;
-  onSelectGroup: () => void;
-  title: string;
-  content: string;
-  groupModalVisible: boolean;
-  toggleGroupModal: () => void;
-  groups: Group[];
-  selectedGroup: Group | null;
-  setSelectedGroup: (group: Group | null) => void;
-  years: number[];
-  months: number[];
-  days: number[];
-  year: number;
-  month: number;
-  day: number;
-  setYear: (year: number) => void;
-  setMonth: (month: number) => void;
-  setDay: (day: number) => void;
+  onClose: () => void;
+  onSaved: () => void; //　保存後に親に通知する
 };
 
-const ItemCreateModal: React.FC<ItemCreateProps> = props => {
-  const {
-    visible,
-    toggleCreateModal,
-    onSave,
-    onChangeTitle,
-    onChangeContent,
-    onSelectGroup,
-    title,
-    content,
-    groupModalVisible,
-    toggleGroupModal,
-    groups,
-    selectedGroup,
-    setSelectedGroup,
-    years,
-    months,
-    days,
-    year,
-    month,
-    day,
-    setYear,
-    setMonth,
-    setDay
-  } = props;
+const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved }) => {
+  const user = useAuthenticatedUser();
+  const { groups } = useGroups();
+
+  const [title, setTitle] = useState('');
+  const [content, setContent] = useState('');
+  const [groupModalVisible, setGroupModalVisible] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
+
+  const [year, setYear] = useState<number>(new Date().getFullYear());
+  const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
+  const [day, setDay] = useState<number>(new Date().getDate());
+  const years = useMemo(() => Array.from({ length: 101 }, (_, i) => 1970 + i), []);
+  const months = useMemo(() => Array.from({ length: 12 }, (_, i) => i + 1), []);
+  const daysInMonth = useMemo(() => new Date(Date.UTC(year, month, 0)).getUTCDate(), [year, month]);
+  const days = useMemo(() => Array.from({ length: daysInMonth }, (_, i) => i + 1), [daysInMonth]);
+
+  // モーダルが開いたら初期化
+  useEffect(() => {
+    if (!visible) return;
+    setTitle('');
+    setContent('');
+    setGroupModalVisible(false);
+    setSelectedGroup(groups.length === 1 ? groups[0] : null);
+    const now = new Date();
+    setYear(now.getFullYear());
+    setMonth(now.getMonth() + 1);
+    setDay(now.getDate());
+  }, [visible, groups]);
+
+  const handleSave = async () => {
+    if (!title) {
+      Alert.alert('確認', 'タイトルを入力してください');
+      return;
+    }
+    if (!content) {
+      Alert.alert('確認', 'コンテンツを入力してください');
+      return;
+    }
+    if (!selectedGroup) {
+      Alert.alert('確認', 'グループを選択してください');
+      return;
+    }
+
+    try {
+      const id = Crypto.randomUUID();
+      const group_id = selectedGroup.id;
+      const utcMidnight = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
+      const anniv = Timestamp.fromDate(utcMidnight);
+
+      await saveItem(user.id, { id, title, content, group_id, anniv });
+      onClose(); // 自分で閉じる
+      onSaved(); // 親に「保存完了」を通知
+    } catch (e) {
+      Alert.alert('エラー', '保存に失敗しました');
+      console.error(e);
+    }
+  };
+
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={visible}
-      onRequestClose={toggleCreateModal}
-    >
-      <TouchableWithoutFeedback onPress={toggleCreateModal}>
+    <Modal animationType="slide" transparent={true} visible={visible} onRequestClose={onClose}>
+      {' '}
+      {/* <= この onClose って何入ってるんだっけ。。 */}
+      <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.createModalOverlay}>
           <TouchableWithoutFeedback
             onPress={() => {
@@ -77,12 +96,14 @@ const ItemCreateModal: React.FC<ItemCreateProps> = props => {
             }}
           >
             <View style={styles.createModalContent}>
-              <TouchableOpacity style={styles.closeButton} onPress={toggleCreateModal}>
+              <TouchableOpacity style={styles.closeButton} onPress={onClose}>
                 <AntDesign name="closecircleo" size={24} color="#808080" />
               </TouchableOpacity>
+
               <View style={styles.saveButtonArea}>
-                <Button title="保存" onPress={onSave} />
+                <Button title="保存" onPress={handleSave} />
               </View>
+
               <View style={styles.inputArea}>
                 <KeyboardAvoidingView
                   behavior="padding"
@@ -92,9 +113,9 @@ const ItemCreateModal: React.FC<ItemCreateProps> = props => {
                   <ItemInputForm
                     title={title}
                     content={content}
-                    onChangeTitle={onChangeTitle}
-                    onChangeContent={onChangeContent}
-                    onSelectGroup={onSelectGroup}
+                    onChangeTitle={setTitle}
+                    onChangeContent={setContent}
+                    onSelectGroup={() => setGroupModalVisible(true)}
                     selectedGroup={selectedGroup}
                     years={years}
                     months={months}
@@ -112,11 +133,10 @@ const ItemCreateModal: React.FC<ItemCreateProps> = props => {
           </TouchableWithoutFeedback>
         </View>
       </TouchableWithoutFeedback>
-
       {/* グループ選択Modal（ItemCreateModalの内部） */}
       {groupModalVisible && (
         <GroupSelectModal
-          toggleGroupModal={toggleGroupModal}
+          toggleGroupModal={() => setGroupModalVisible(false)}
           groups={groups}
           setSelectedGroup={setSelectedGroup}
         />

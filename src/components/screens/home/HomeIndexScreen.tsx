@@ -10,18 +10,12 @@ import {
   GestureResponderEvent,
   Dimensions
 } from 'react-native';
-import { useCallback, useState, useMemo } from 'react';
+import { useCallback, useState } from 'react';
 import { Entypo } from '@expo/vector-icons';
-import {
-  saveItem,
-  getAllItemsByUserId,
-  deleteItemById,
-  deleteAllItems
-} from '@services/itemService';
+import { getAllItemsByUserId, deleteItemById, deleteAllItems } from '@services/itemService';
 import { deleteAllGroups } from '@services/groupService';
 import { type Group } from '@models/Group';
 import ItemList from '@screens/home/ItemList';
-import { Timestamp } from 'firebase/firestore';
 
 // Contexts
 import { useGroups } from '@context/GroupContext';
@@ -29,7 +23,6 @@ import { useItems } from '@context/ItemContext';
 import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
 
 // 新規作成モーダル用
-import * as Crypto from 'expo-crypto';
 import ItemCreateModal from '@screens/home/ItemCreateModal';
 import HomeMenuModal from '@screens/home/HomeMenuModal';
 import FloatingFolderButton from '@components/common/FloatingFolderButton';
@@ -41,31 +34,8 @@ export default function HomeIndexScreen() {
   const { groups, loadGroups, isHydratedFromCache: groupsHydrated } = useGroups();
   const { items, setItems, loadItems, isHydratedFromCache: itemsHydrated } = useItems();
 
-  // 新規作成画面のModal用
-  const [title, setTitle] = useState<string>('');
-  const [content, setContent] = useState<string>('');
   const [createModalVisible, setCreateModalVisible] = useState(false);
-  const [year, setYear] = useState<number>(new Date().getFullYear());
-  const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
-  const [day, setDay] = useState<number>(new Date().getDate());
-  const years = useMemo(() => Array.from({ length: 101 }, (_, i) => 1970 + i), []);
-  const months = useMemo(() => Array.from({ length: 12 }, (_, i) => i + 1), []);
-  // 選択中の年・月の「UTC基準での」月末日数を取得
-  const daysInMonth = useMemo(() => new Date(Date.UTC(year, month, 0)).getUTCDate(), [year, month]);
-  const days = useMemo(() => Array.from({ length: daysInMonth }, (_, i) => i + 1), [daysInMonth]);
-
   const toggleCreateModal = () => {
-    if (createModalVisible) {
-      // モーダルを閉じる際に状態をリセット
-      setTitle('');
-      setContent('');
-      setSelectedGroup(null);
-    } else {
-      // モーダルを開く際、groupsが1個しかない場合は自動選択
-      if (groups.length === 1) {
-        setSelectedGroup(groups[0]);
-      }
-    }
     setCreateModalVisible(!createModalVisible);
   };
 
@@ -201,52 +171,6 @@ export default function HomeIndexScreen() {
     toggleGroupModal();
   };
 
-  // アイテムの保存処理
-  const handleSaveItemPress = async () => {
-    console.log('アイテムの保存が押されました');
-
-    // バリデーション
-    if (!title) {
-      Alert.alert('確認', 'タイトルを入力してください');
-      return;
-    }
-    if (!content) {
-      Alert.alert('確認', 'コンテンツを入力してください');
-      return;
-    }
-    if (!selectedGroup) {
-      Alert.alert('確認', 'グループを選択してください');
-      return;
-    }
-    // 保存処理
-    try {
-      const id = Crypto.randomUUID();
-      const group_id = selectedGroup?.id ?? null;
-      // Annivの変換
-      // 選択日付のUTC0時を作成して、Timestampに変換
-      console.log(`year: ${year}, month: ${month}, day: ${day}`);
-      const utcMidnight = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
-      const anniv = Timestamp.fromDate(utcMidnight);
-      const newItem = {
-        id,
-        title,
-        content,
-        group_id,
-        anniv
-      };
-      await saveItem(user.id, newItem);
-      toggleCreateModal();
-      const items = await getAllItemsByUserId(user.id); // TBC : なんか冗長かも?
-      setItems(items);
-    } catch (e) {
-      Alert.alert('エラー', '保存に失敗しました');
-      console.error(e);
-    } finally {
-      setTitle('');
-      setContent('');
-    }
-  };
-
   // アイテムが押された時の処理
   const handleItemPress = (itemId: string) => {
     console.log('アイテムが押されました', itemId);
@@ -339,27 +263,10 @@ export default function HomeIndexScreen() {
 
       <ItemCreateModal
         visible={createModalVisible}
-        toggleCreateModal={toggleCreateModal}
-        onSave={handleSaveItemPress}
-        onChangeTitle={setTitle}
-        onChangeContent={setContent}
-        onSelectGroup={handleSelectGroup}
-        title={title}
-        content={content}
-        groupModalVisible={groupModalVisible}
-        toggleGroupModal={toggleGroupModal}
-        groups={groups}
-        selectedGroup={selectedGroup}
-        setSelectedGroup={setSelectedGroup}
-        years={years}
-        months={months}
-        days={days}
-        year={year}
-        month={month}
-        day={day}
-        setYear={setYear}
-        setMonth={setMonth}
-        setDay={setDay}
+        onClose={toggleCreateModal}
+        onSaved={async () => {
+          await loadItems();
+        }}
       />
 
       <HomeMenuModal
