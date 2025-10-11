@@ -14,6 +14,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Group } from '@models/Group';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Feather } from '@expo/vector-icons';
 
 type ItemInputFormProps = {
   title: string;
@@ -146,7 +147,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
               height={'$10'}
             >
               {/* カレンダーのアイコン */}
-              <FontAwesome name="calendar" size={22} color="#4A5054" />
+              <Feather name="calendar" size={22} color="#4A5054" />
               <Text fontSize={'$lg'} fontWeight={'$medium'} color="#4A5054" marginLeft={'$2'}>
                 {formatSelectedDate(year, month, day) || '日付を選択'}
               </Text>
@@ -160,15 +161,9 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
             transparent={true}
             onRequestClose={() => setDatePickerOpen(false)}
           >
-            <View
-              style={styles.datePickerOverlay}
-            >
-              <View
-                style={styles.datePickerContent}
-              >
-                <View
-                  style={styles.datePickerHeader}
-                >
+            <View style={styles.datePickerOverlay}>
+              <View style={styles.datePickerContent}>
+                <View style={styles.datePickerHeader}>
                   <TouchableOpacity onPress={() => setDatePickerOpen(false)}>
                     <Text color="#007AFF" fontSize={'$md'}>
                       キャンセル
@@ -250,10 +245,10 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
 };
 
 const styles = StyleSheet.create({
-  datePickerOverlay: { 
-    flex: 1, 
+  datePickerOverlay: {
+    flex: 1,
     justifyContent: 'flex-end',
-    backgroundColor: 'rgba(0,0,0,0.3)' 
+    backgroundColor: 'rgba(0,0,0,0.3)'
   },
   datePickerContent: {
     backgroundColor: '#fff',
