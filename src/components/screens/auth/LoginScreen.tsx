@@ -88,10 +88,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#F9F9F9'
   },
   headerSection: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 60
+    position: 'absolute',
+    top: 120,
+    left: 0,
+    right: 0,
+    alignItems: 'center'
   },
   appTitle: {
     fontSize: 38,
@@ -102,7 +103,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 24
+    paddingHorizontal: 24,
+    paddingTop: 40
   },
   lastProviderContainer: {
     width: '100%',
@@ -111,6 +113,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 12,
     backgroundColor: '#F3F4F6',
+    borderRadius: 12,
     marginBottom: 20
   },
   lastProviderText: {
@@ -127,7 +130,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderWidth: 1,
-    borderColor: '#DBDBDB',
+    borderColor: '#03a9f4',
     borderRadius: 12,
     backgroundColor: '#ffffff',
     alignItems: 'center',
