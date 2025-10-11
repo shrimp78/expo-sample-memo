@@ -20,7 +20,7 @@ export default function SignUpScreen() {
         Alert.alert(error.message, '', [
           {
             text: '確認',
-            onPress: () => router.replace('/')
+            onPress: () => router.back()
           }
         ]);
       } else {
@@ -45,7 +45,7 @@ export default function SignUpScreen() {
         Alert.alert(error.message, '', [
           {
             text: '確認',
-            onPress: () => router.replace('/')
+            onPress: () => router.back()
           }
         ]);
       } else {
