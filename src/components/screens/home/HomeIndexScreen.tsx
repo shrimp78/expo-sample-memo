@@ -12,9 +12,7 @@ import {
 } from 'react-native';
 import { useCallback, useState } from 'react';
 import { Entypo } from '@expo/vector-icons';
-import { getAllItemsByUserId, deleteItemById, deleteAllItems } from '@services/itemService';
-import { deleteAllGroups } from '@services/groupService';
-import { type Group } from '@models/Group';
+import { getAllItemsByUserId, deleteItemById } from '@services/itemService';
 import ItemList from '@screens/home/ItemList';
 
 // Contexts
@@ -80,18 +78,6 @@ export default function HomeIndexScreen() {
     toggleMenu();
   };
 
-  const handleDeleteAllItemPress = () => {
-    console.log('全てのアイテムを削除するが押されました');
-    toggleMenu();
-    Alert.alert('確認', '全てのアイテムを削除しますか？', [
-      {
-        text: 'キャンセル',
-        style: 'cancel'
-      },
-      { text: '削除', onPress: () => deleteAllItem() }
-    ]);
-  };
-
   const handleLogoutPress = () => {
     console.log('ログアウトが押されました');
     toggleMenu();
@@ -117,13 +103,6 @@ export default function HomeIndexScreen() {
       Alert.alert('エラー', 'ログアウトに失敗しました');
       console.error(error);
     }
-  };
-
-  const deleteAllItem = async () => {
-    await deleteAllItems(user.id);
-    await deleteAllGroups(user.id);
-    await loadItems();
-    await loadGroups();
   };
 
   const handleFolderIconPress = () => {
@@ -267,7 +246,9 @@ export default function HomeIndexScreen() {
         onClose={toggleMenu}
         menuPosition={menuPosition}
         onAccountSettingsPress={handleAccountSettingsPress}
-        onDeleteAllItemPress={handleDeleteAllItemPress}
+        onDeletedAllItems={async () => {
+          await loadItems();
+        }}
         onLogoutPress={handleLogoutPress}
       />
     </View>

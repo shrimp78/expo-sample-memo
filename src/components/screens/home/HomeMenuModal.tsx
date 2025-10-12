@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
-import { Modal, TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
+import { Alert, Modal, TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
 import * as Animatable from 'react-native-animatable';
+import { deleteAllItems } from '@services/itemService';
+import { deleteAllGroups } from '@services/groupService';
+import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
 
 interface HomeMenuModalProps {
   visible: boolean;
   onClose: () => void;
   menuPosition: { x: number; y: number };
   onAccountSettingsPress?: () => void;
-  onDeleteAllItemPress?: () => void;
+  onDeletedAllItems: () => void;
   onGroupEditPress?: () => void;
   onFeedbackPress?: () => void;
   onLogoutPress?: () => void;
@@ -18,10 +21,11 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
   onClose,
   menuPosition,
   onAccountSettingsPress,
-  onDeleteAllItemPress,
+  onDeletedAllItems,
   onFeedbackPress,
   onLogoutPress
 }) => {
+  const user = useAuthenticatedUser();
   const [modalWidth, setModalWidth] = useState(0);
   const screenWidth = Dimensions.get('window').width;
   const margin = 20; // 画面端からの余白
@@ -35,6 +39,26 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
   const handleLayout = (event: any) => {
     const { width } = event.nativeEvent.layout;
     setModalWidth(width);
+  };
+
+  // 全削除処理
+  const deleteExecute = async () => {
+    await deleteAllItems(user.id);
+    await deleteAllGroups(user.id);
+    onClose();
+    onDeletedAllItems();
+  };
+
+  // 全削除ボタン処理
+  const handleDeleteAllPress = async () => {
+    console.log('全てのアイテムを削除するが押されました');
+    Alert.alert('確認', '全てのアイテムを削除しますか？', [
+      {
+        text: 'キャンセル',
+        style: 'cancel'
+      },
+      { text: '削除', onPress: () => deleteExecute() }
+    ]);
   };
 
   return (
@@ -56,7 +80,7 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
           <TouchableOpacity style={styles.menuItem} onPress={onAccountSettingsPress}>
             <Text style={styles.menuText}>アカウント設定</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={onDeleteAllItemPress}>
+          <TouchableOpacity style={styles.menuItem} onPress={handleDeleteAllPress}>
             <Text style={styles.menuText}>全てのアイテムを削除する</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={onFeedbackPress}>
