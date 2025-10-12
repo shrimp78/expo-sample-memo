@@ -86,7 +86,6 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
 
   return (
     <Modal animationType="slide" transparent={true} visible={visible} onRequestClose={onClose}>
-      {' '}
       {/* <= この onClose って何入ってるんだっけ。。 */}
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.createModalOverlay}>
