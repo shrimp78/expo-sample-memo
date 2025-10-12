@@ -41,7 +41,6 @@ export default function HomeIndexScreen() {
 
   // グループ選択画面のModal用
   const [groupModalVisible, setGroupModalVisible] = useState(false);
-  const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
   const toggleGroupModal = () => {
     setGroupModalVisible(!groupModalVisible);
   };
@@ -163,12 +162,6 @@ export default function HomeIndexScreen() {
     } else {
       toggleCreateModal();
     }
-  };
-
-  // グループ選択処理
-  const handleSelectGroup = () => {
-    console.log('グループ選択が押されました');
-    toggleGroupModal();
   };
 
   // アイテムが押された時の処理
