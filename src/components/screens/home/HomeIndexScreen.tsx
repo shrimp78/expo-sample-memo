@@ -37,12 +37,6 @@ export default function HomeIndexScreen() {
     setCreateModalVisible(!createModalVisible);
   };
 
-  // グループ選択画面のModal用
-  const [groupModalVisible, setGroupModalVisible] = useState(false);
-  const toggleGroupModal = () => {
-    setGroupModalVisible(!groupModalVisible);
-  };
-
   // ホームメニューModal用
   const [menuVisible, setMenuVisible] = useState(false);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
