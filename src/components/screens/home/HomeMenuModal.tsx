@@ -1,3 +1,4 @@
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import { Alert, Modal, TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
 import * as Animatable from 'react-native-animatable';
@@ -9,23 +10,17 @@ interface HomeMenuModalProps {
   visible: boolean;
   onClose: () => void;
   menuPosition: { x: number; y: number };
-  onAccountSettingsPress?: () => void;
   onDeletedAllItems: () => void;
-  onGroupEditPress?: () => void;
-  onFeedbackPress?: () => void;
-  onLogoutPress?: () => void;
 }
 
 const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
   visible,
   onClose,
   menuPosition,
-  onAccountSettingsPress,
   onDeletedAllItems,
-  onFeedbackPress,
-  onLogoutPress
 }) => {
   const user = useAuthenticatedUser();
+  const { logout } = useAuth();
   const [modalWidth, setModalWidth] = useState(0);
   const screenWidth = Dimensions.get('window').width;
   const margin = 20; // 画面端からの余白
@@ -61,6 +56,47 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
     ]);
   };
 
+  // アカウント設定ボタン
+  const handleAccountSettingsPress = () => {
+    console.log('アカウント設定が押されました');
+    router.push({ pathname: `/account` });
+    onClose();
+  };
+
+  // フィードバックボタン
+  const handleFeedbackPress = () => {
+    console.log('フィードバックが押されました');
+    onClose();
+  };
+
+  // ログアウトボタン
+  const handleLogoutPress = () => {
+    console.log('ログアウトが押されました');
+    onClose();
+    Alert.alert('確認', 'ログアウトしますか？', [
+      {
+        text: 'キャンセル',
+        style: 'cancel'
+      },
+      { text: 'ログアウト', onPress: () => performLogout() }
+    ]);
+  };
+
+  const performLogout = async () => {
+    try {
+      await logout();
+      // 直後のレイアウト再マウント完了を待ってから遷移
+      requestAnimationFrame(() => {
+        setTimeout(() => {
+          router.replace('/');
+        }, 0);
+      });
+    } catch (error) {
+      Alert.alert('エラー', 'ログアウトに失敗しました');
+      console.error(error);
+    }
+  };
+
   return (
     <Modal visible={visible} transparent={true} animationType="none" onRequestClose={onClose}>
       <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={onClose}>
@@ -77,16 +113,16 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
           ]}
           onLayout={handleLayout}
         >
-          <TouchableOpacity style={styles.menuItem} onPress={onAccountSettingsPress}>
+          <TouchableOpacity style={styles.menuItem} onPress={handleAccountSettingsPress}>
             <Text style={styles.menuText}>アカウント設定</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={handleDeleteAllPress}>
             <Text style={styles.menuText}>全てのアイテムを削除する</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={onFeedbackPress}>
+          <TouchableOpacity style={styles.menuItem} onPress={handleFeedbackPress}>
             <Text style={styles.menuText}>フィードバック</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={onLogoutPress}>
+          <TouchableOpacity style={styles.menuItem} onPress={handleLogoutPress}>
             <Text style={[styles.menuText, styles.logoutText]}>ログアウト</Text>
           </TouchableOpacity>
         </Animatable.View>

@@ -27,7 +27,7 @@ import FloatingFolderButton from '@components/common/FloatingFolderButton';
 import FloatingPlusButton from '@components/common/FloatingPlusButton';
 
 export default function HomeIndexScreen() {
-  const { isLoggedIn, isLoading, logout } = useAuth();
+  const { isLoggedIn, isLoading } = useAuth();
   const user = useAuthenticatedUser();
   const { groups, loadGroups, isHydratedFromCache: groupsHydrated } = useGroups();
   const { items, setItems, loadItems, isHydratedFromCache: itemsHydrated } = useItems();
@@ -64,39 +64,6 @@ export default function HomeIndexScreen() {
 
     setMenuPosition({ x, y: pageY + 10 });
     toggleMenu();
-  };
-
-  const handleAccountSettingsPress = () => {
-    console.log('アカウント設定が押されました');
-    router.push({ pathname: `/account` });
-    toggleMenu();
-  };
-
-  const handleLogoutPress = () => {
-    console.log('ログアウトが押されました');
-    toggleMenu();
-    Alert.alert('確認', 'ログアウトしますか？', [
-      {
-        text: 'キャンセル',
-        style: 'cancel'
-      },
-      { text: 'ログアウト', onPress: () => performLogout() }
-    ]);
-  };
-
-  const performLogout = async () => {
-    try {
-      await logout();
-      // 直後のレイアウト再マウント完了を待ってから遷移
-      requestAnimationFrame(() => {
-        setTimeout(() => {
-          router.replace('/');
-        }, 0);
-      });
-    } catch (error) {
-      Alert.alert('エラー', 'ログアウトに失敗しました');
-      console.error(error);
-    }
   };
 
   const handleFolderIconPress = () => {
@@ -239,11 +206,9 @@ export default function HomeIndexScreen() {
         visible={menuVisible}
         onClose={toggleMenu}
         menuPosition={menuPosition}
-        onAccountSettingsPress={handleAccountSettingsPress}
         onDeletedAllItems={async () => {
           await loadItems();
         }}
-        onLogoutPress={handleLogoutPress}
       />
     </View>
   );
