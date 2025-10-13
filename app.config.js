@@ -1,8 +1,8 @@
 import 'dotenv/config';
 export default {
   expo: {
-    name: 'spd-app',
-    slug: 'spd-app',
+    name: 'EXPO_SAMPLE_MEMO',
+    slug: 'EXPO_SAMPLE_MEMO',
     version: '1.0.0',
     orientation: 'portrait',
     icon: './assets/icon.png',
