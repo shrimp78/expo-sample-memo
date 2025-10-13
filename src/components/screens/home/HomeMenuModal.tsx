@@ -62,10 +62,11 @@ const HomeMenuModal = forwardRef<HomeMenuModalRef, HomeMenuModalProps>(({ onDele
   // 全削除ボタン処理
   const handleDeleteAllPress = async () => {
     console.log('全てのアイテムを削除するが押されました');
+    setVisible(false)
     Alert.alert('確認', '全てのアイテムを削除しますか？', [
       {
         text: 'キャンセル',
-        style: 'cancel'
+        style: 'cancel',
       },
       { text: '削除', onPress: () => deleteExecute() }
     ]);
