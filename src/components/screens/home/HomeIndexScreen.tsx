@@ -10,7 +10,7 @@ import {
   GestureResponderEvent,
   Dimensions
 } from 'react-native';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useRef } from 'react';
 import { Entypo } from '@expo/vector-icons';
 import { getAllItemsByUserId, deleteItemById } from '@services/itemService';
 import ItemList from '@screens/home/ItemList';
@@ -22,7 +22,7 @@ import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
 
 // 新規作成モーダル用
 import ItemCreateModal from '@screens/home/ItemCreateModal';
-import HomeMenuModal from '@screens/home/HomeMenuModal';
+import HomeMenuModal, { HomeMenuModalRef } from '@screens/home/HomeMenuModal';
 import FloatingFolderButton from '@components/common/FloatingFolderButton';
 import FloatingPlusButton from '@components/common/FloatingPlusButton';
 
@@ -38,32 +38,10 @@ export default function HomeIndexScreen() {
   };
 
   // ホームメニューModal用
-  const [menuVisible, setMenuVisible] = useState(false);
-  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
-
-  const toggleMenu = () => {
-    setMenuVisible(!menuVisible);
-  };
+  const menuModalRef = useRef<HomeMenuModalRef>(null);
 
   const handleMenuPress = (event: GestureResponderEvent) => {
-    const { pageX, pageY } = event.nativeEvent;
-    const screenWidth = Dimensions.get('window').width;
-
-    // メニューボタンの位置を画面の右端に近い場合は左寄せに、左端に近い場合は右寄せに調整 TODO: この部分キモいから後で直す
-    const margin = 20;
-    const estimatedMenuWidth = 150; // より現実的な推定値
-
-    let x = pageX - estimatedMenuWidth / 2; // 中央揃えを試みる
-
-    // 画面内に収まるように調整
-    if (x < margin) {
-      x = margin;
-    } else if (x + estimatedMenuWidth > screenWidth - margin) {
-      x = screenWidth - estimatedMenuWidth - margin;
-    }
-
-    setMenuPosition({ x, y: pageY + 10 });
-    toggleMenu();
+    menuModalRef.current?.openAt(event);
   };
 
   const handleFolderIconPress = () => {
@@ -203,9 +181,7 @@ export default function HomeIndexScreen() {
       />
 
       <HomeMenuModal
-        visible={menuVisible}
-        onClose={toggleMenu}
-        menuPosition={menuPosition}
+        ref={menuModalRef}
         onDeletedAllItems={async () => {
           await loadItems();
         }}
