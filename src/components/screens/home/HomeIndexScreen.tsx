@@ -10,7 +10,7 @@ import {
   GestureResponderEvent,
   Dimensions
 } from 'react-native';
-import { useCallback, useState, useRef } from 'react';
+import { useCallback, useState } from 'react';
 import { Entypo } from '@expo/vector-icons';
 import { getAllItemsByUserId, deleteItemById } from '@services/itemService';
 import ItemList from '@screens/home/ItemList';
@@ -22,7 +22,7 @@ import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
 
 // 新規作成モーダル用
 import ItemCreateModal from '@screens/home/ItemCreateModal';
-import HomeMenuModal, { HomeMenuModalRef } from '@screens/home/HomeMenuModal';
+import HomeMenuModal from '@screens/home/HomeMenuModal';
 import FloatingFolderButton from '@components/common/FloatingFolderButton';
 import FloatingPlusButton from '@components/common/FloatingPlusButton';
 
@@ -37,11 +37,13 @@ export default function HomeIndexScreen() {
     setCreateModalVisible(!createModalVisible);
   };
 
-  // ホームメニューModal用
-  const menuModalRef = useRef<HomeMenuModalRef>(null);
-
+  // ホームメニューModal用（親制御）
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [menuAnchor, setMenuAnchor] = useState<{ x: number; y: number } | null>(null);
   const handleMenuPress = (event: GestureResponderEvent) => {
-    menuModalRef.current?.openAt(event);
+    const { pageX, pageY } = event.nativeEvent;
+    setMenuAnchor({ x: pageX, y: pageY + 10 });
+    setMenuVisible(true);
   };
 
   const handleFolderIconPress = () => {
@@ -181,7 +183,9 @@ export default function HomeIndexScreen() {
       />
 
       <HomeMenuModal
-        ref={menuModalRef}
+        visible={menuVisible}
+        anchor={menuAnchor}
+        onRequestClose={() => setMenuVisible(false)}
         onDeletedAllItems={async () => {
           await loadItems();
         }}

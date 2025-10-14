@@ -1,50 +1,42 @@
 import { router } from 'expo-router';
-import React, { useState, forwardRef, useImperativeHandle } from 'react';
-import { Alert, Modal, TouchableOpacity, Text, StyleSheet, Dimensions, GestureResponderEvent } from 'react-native';
+import React, { useState } from 'react';
+import { Alert, Modal, TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { deleteAllItems } from '@services/itemService';
 import { deleteAllGroups } from '@services/groupService';
 import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
 
-export type HomeMenuModalRef = {
-  openAt: (event: GestureResponderEvent) => void;
-  close: () => void;
-};
+type Anchor = { x: number; y: number } | null;
 
 interface HomeMenuModalProps {
+  visible: boolean;
+  anchor: Anchor;
+  onRequestClose: () => void;
   onDeletedAllItems: () => void;
 }
 
-const HomeMenuModal = forwardRef<HomeMenuModalRef, HomeMenuModalProps>(({ onDeletedAllItems }, ref) => {
+const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
+  visible,
+  anchor,
+  onRequestClose,
+  onDeletedAllItems
+}) => {
   const user = useAuthenticatedUser();
   const { logout } = useAuth();
-  const [visible, setVisible] = useState(false);
-  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const [modalWidth, setModalWidth] = useState(0);
   const screenWidth = Dimensions.get('window').width;
   const margin = 20; // 画面端からの余白
 
-  // Imperative methods
-  useImperativeHandle(ref, () => ({
-    openAt: (event: GestureResponderEvent) => {
-      const { pageX, pageY } = event.nativeEvent;
-      const estimatedWidth = modalWidth || 150;
-      let x = pageX - estimatedWidth / 2; // タップ位置中央に揃える
-      if (x < margin) {
-        x = margin;
-      } else if (x + estimatedWidth > screenWidth - margin) {
-        x = screenWidth - estimatedWidth - margin;
+  const estimatedWidth = modalWidth || 150;
+  const adjustedPosition = anchor
+    ? {
+        x: Math.min(
+          Math.max(margin, anchor.x - estimatedWidth / 2),
+          screenWidth - estimatedWidth - margin
+        ),
+        y: anchor.y
       }
-      setMenuPosition({ x, y: pageY + 10 });
-      setVisible(true);
-    },
-    close: () => setVisible(false)
-  }));
-
-  const adjustedPosition = {
-    x: Math.min(Math.max(margin, menuPosition.x), screenWidth - modalWidth - margin),
-    y: menuPosition.y
-  };
+    : { x: margin, y: margin };
 
   const handleLayout = (event: any) => {
     const { width } = event.nativeEvent.layout;
@@ -55,18 +47,18 @@ const HomeMenuModal = forwardRef<HomeMenuModalRef, HomeMenuModalProps>(({ onDele
   const deleteExecute = async () => {
     await deleteAllItems(user.id);
     await deleteAllGroups(user.id);
-    setVisible(false);
+    onRequestClose();
     onDeletedAllItems();
   };
 
   // 全削除ボタン処理
   const handleDeleteAllPress = async () => {
     console.log('全てのアイテムを削除するが押されました');
-    setVisible(false)
+    onRequestClose();
     Alert.alert('確認', '全てのアイテムを削除しますか？', [
       {
         text: 'キャンセル',
-        style: 'cancel',
+        style: 'cancel'
       },
       { text: '削除', onPress: () => deleteExecute() }
     ]);
@@ -76,19 +68,19 @@ const HomeMenuModal = forwardRef<HomeMenuModalRef, HomeMenuModalProps>(({ onDele
   const handleAccountSettingsPress = () => {
     console.log('アカウント設定が押されました');
     router.push({ pathname: `/account` });
-    setVisible(false);
+    onRequestClose();
   };
 
   // フィードバックボタン
   const handleFeedbackPress = () => {
     console.log('フィードバックが押されました');
-    setVisible(false);
+    onRequestClose();
   };
 
   // ログアウトボタン
   const handleLogoutPress = () => {
     console.log('ログアウトが押されました');
-    setVisible(false);
+    onRequestClose();
     Alert.alert('確認', 'ログアウトしますか？', [
       {
         text: 'キャンセル',
@@ -114,8 +106,13 @@ const HomeMenuModal = forwardRef<HomeMenuModalRef, HomeMenuModalProps>(({ onDele
   };
 
   return (
-    <Modal visible={visible} transparent={true} animationType="none" onRequestClose={() => setVisible(false)}>
-      <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={() => setVisible(false)}>
+    <Modal
+      visible={visible}
+      transparent={true}
+      animationType="none"
+      onRequestClose={onRequestClose}
+    >
+      <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={onRequestClose}>
         <Animatable.View
           animation={visible ? 'fadeIn' : 'fadeOut'}
           duration={visible ? 200 : 50}
@@ -145,7 +142,7 @@ const HomeMenuModal = forwardRef<HomeMenuModalRef, HomeMenuModalProps>(({ onDele
       </TouchableOpacity>
     </Modal>
   );
-});
+};
 
 const styles = StyleSheet.create({
   modalOverlay: {

@@ -22,7 +22,7 @@ import { Timestamp } from 'firebase/firestore';
 type ItemCreateProps = {
   visible: boolean;
   onClose: () => void;
-  onSaved: () => void; //　保存後に親に通知する
+  onSaved: () => void; //保存後に親に通知する
 };
 
 const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved }) => {
