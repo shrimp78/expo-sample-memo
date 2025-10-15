@@ -6,7 +6,7 @@ import { deleteAllItems } from '@services/itemService';
 import { deleteAllGroups } from '@services/groupService';
 import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
 
-type Anchor = { x: number; y: number } | null;
+type Anchor = { x: number; y: number };
 
 interface HomeMenuModalProps {
   visible: boolean;
@@ -25,19 +25,20 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
   const { logout } = useAuth();
   const [modalWidth, setModalWidth] = useState(0);
   const screenWidth = Dimensions.get('window').width;
-  const margin = 20; // 画面端からの余白
+  const leftMargin = 20; // 画面端からの余白
+  const rightMargin = 20; // 画面端からの余白
 
   const estimatedWidth = modalWidth || 150;
-  const adjustedPosition = anchor
-    ? {
-        x: Math.min(
-          Math.max(margin, anchor.x - estimatedWidth / 2),
-          screenWidth - estimatedWidth - margin
-        ),
-        y: anchor.y
-      }
-    : { x: margin, y: margin };
-
+  const modalLeftEdge = anchor.x - estimatedWidth / 2;
+  const minWidthFromRightEdge = screenWidth - estimatedWidth - rightMargin;
+  // モーダル左上の角の位置は以下の３択となる
+  // 1. アンカーが中央付近の場合、中央に揃える
+  // 2. 左側にはみ出しそうなら、leftMargin に揃える
+  // 3. 右側にはみ出しそうなら、rightMarginに揃える（画面幅 - Margin - モーダル幅）
+  const adjustedPosition = {
+    x: Math.min(Math.max(leftMargin, modalLeftEdge), minWidthFromRightEdge),
+    y: anchor.y
+  };
   const handleLayout = (event: any) => {
     const { width } = event.nativeEvent.layout;
     setModalWidth(width);

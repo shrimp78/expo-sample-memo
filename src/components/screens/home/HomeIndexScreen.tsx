@@ -39,7 +39,7 @@ export default function HomeIndexScreen() {
 
   // ホームメニューModal用（親制御）
   const [menuVisible, setMenuVisible] = useState(false);
-  const [menuAnchor, setMenuAnchor] = useState<{ x: number; y: number } | null>(null);
+  const [menuAnchor, setMenuAnchor] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const handleMenuPress = (event: GestureResponderEvent) => {
     const { pageX, pageY } = event.nativeEvent;
     setMenuAnchor({ x: pageX, y: pageY + 10 });
