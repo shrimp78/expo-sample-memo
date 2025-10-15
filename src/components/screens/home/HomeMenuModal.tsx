@@ -1,6 +1,6 @@
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { Alert, Modal, TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
+import { Alert, Modal, View, TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { deleteAllItems } from '@services/itemService';
 import { deleteAllGroups } from '@services/groupService';
@@ -112,13 +112,11 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
     <Modal
       visible={visible}
       transparent={true}
-      animationType="none"
+      animationType="fade"
       onRequestClose={onRequestClose}
     >
       <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={onRequestClose}>
-        <Animatable.View
-          animation={visible ? 'fadeIn' : 'fadeOut'}
-          duration={visible ? 200 : 50}
+        <View
           onLayout={handleLayout} // モーダルの幅を取得する
           style={[
             styles.menuContainer,
@@ -141,7 +139,7 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
           <TouchableOpacity style={styles.menuItem} onPress={handleLogoutPress}>
             <Text style={[styles.menuText, styles.logoutText]}>ログアウト</Text>
           </TouchableOpacity>
-        </Animatable.View>
+        </View>
       </TouchableOpacity>
     </Modal>
   );
