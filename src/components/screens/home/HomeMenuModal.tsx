@@ -39,8 +39,10 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
     x: Math.min(Math.max(leftMargin, modalLeftEdge), minWidthFromRightEdge),
     y: anchor.y
   };
+
+  // 初回マウント時に onLayoutのイベントを受け取り、モーダルの幅を取得する
   const handleLayout = (event: any) => {
-    const { width } = event.nativeEvent.layout;
+    const { width } = event.nativeEvent.layout; // モーダルの幅だけ取得
     setModalWidth(width);
   };
 
@@ -117,6 +119,7 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
         <Animatable.View
           animation={visible ? 'fadeIn' : 'fadeOut'}
           duration={visible ? 200 : 50}
+          onLayout={handleLayout} // モーダルの幅を取得する
           style={[
             styles.menuContainer,
             {
@@ -125,7 +128,6 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
               left: adjustedPosition.x
             }
           ]}
-          onLayout={handleLayout}
         >
           <TouchableOpacity style={styles.menuItem} onPress={handleAccountSettingsPress}>
             <Text style={styles.menuText}>アカウント設定</Text>
