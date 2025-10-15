@@ -54,15 +54,12 @@ export default function HomeIndexScreen() {
   // リストのデータを都度更新するためのフック
   useFocusEffect(
     useCallback(() => {
-      loadData();
+      async () => {
+        await loadItems();
+        await loadGroups();
+      };
     }, [])
   );
-
-  // 初回データ読み込み
-  const loadData = async () => {
-    await loadItems();
-    await loadGroups();
-  };
 
   // アイテムの新規作成
   const handleAddItemPress = () => {
