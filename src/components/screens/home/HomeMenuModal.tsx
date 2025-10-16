@@ -1,6 +1,15 @@
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import { Alert, Modal, View, TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
+import {
+  Alert,
+  Modal,
+  View,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  Dimensions,
+  ActivityIndicator
+} from 'react-native';
 import { deleteAllItems } from '@services/itemService';
 import { deleteAllGroups } from '@services/groupService';
 import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
@@ -23,6 +32,7 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
   const user = useAuthenticatedUser();
   const { logout } = useAuth();
   const [modalWidth, setModalWidth] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const screenWidth = Dimensions.get('window').width;
   const leftMargin = 20; // 画面端からの余白
   const rightMargin = 20; // 画面端からの余白
@@ -47,10 +57,18 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
 
   // 全削除処理
   const deleteExecute = async () => {
-    await deleteAllItems(user.id);
-    await deleteAllGroups(user.id);
-    onRequestClose();
-    onDeletedAllItems();
+    setIsLoading(true);
+    try {
+      await deleteAllItems(user.id);
+      await deleteAllGroups(user.id);
+      onRequestClose();
+      onDeletedAllItems();
+    } catch (error) {
+      Alert.alert('エラー', '削除に失敗しました');
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   // 全削除ボタン処理
@@ -108,39 +126,51 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
   };
 
   return (
-    <Modal
-      visible={visible}
-      transparent={true}
-      animationType="fade"
-      onRequestClose={onRequestClose}
-    >
-      <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={onRequestClose}>
-        <View
-          onLayout={handleLayout} // モーダルの幅を取得する
-          style={[
-            styles.menuContainer,
-            {
-              position: 'absolute',
-              top: adjustedPosition.y,
-              left: adjustedPosition.x
-            }
-          ]}
-        >
-          <TouchableOpacity style={styles.menuItem} onPress={handleAccountSettingsPress}>
-            <Text style={styles.menuText}>アカウント設定</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={handleDeleteAllPress}>
-            <Text style={styles.menuText}>全てのアイテムを削除する</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={handleFeedbackPress}>
-            <Text style={styles.menuText}>フィードバック</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={handleLogoutPress}>
-            <Text style={[styles.menuText, styles.logoutText]}>ログアウト</Text>
-          </TouchableOpacity>
+    <>
+      <Modal
+        visible={visible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={onRequestClose}
+      >
+        <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={onRequestClose}>
+          <View
+            onLayout={handleLayout} // モーダルの幅を取得する
+            style={[
+              styles.menuContainer,
+              {
+                position: 'absolute',
+                top: adjustedPosition.y,
+                left: adjustedPosition.x
+              }
+            ]}
+          >
+            <TouchableOpacity style={styles.menuItem} onPress={handleAccountSettingsPress}>
+              <Text style={styles.menuText}>アカウント設定</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={handleDeleteAllPress}>
+              <Text style={styles.menuText}>全てのアイテムを削除する</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={handleFeedbackPress}>
+              <Text style={styles.menuText}>フィードバック</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={handleLogoutPress}>
+              <Text style={[styles.menuText, styles.logoutText]}>ログアウト</Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableOpacity>
+      </Modal>
+
+      {/* TODO: 外部コンポーネント化したい */}
+      <Modal visible={isLoading} transparent={true} animationType="fade" onRequestClose={() => {}}>
+        <View style={styles.loadingOverlay}>
+          <View style={styles.loadingBox}>
+            <ActivityIndicator size="large" color="#ffffff" />
+            <Text style={styles.loadingText}>削除しています…</Text>
+          </View>
         </View>
-      </TouchableOpacity>
-    </Modal>
+      </Modal>
+    </>
   );
 };
 
@@ -171,6 +201,24 @@ const styles = StyleSheet.create({
   },
   logoutText: {
     color: '#ff0000' // ログアウトボタンのテキスト色を赤に設定
+  },
+  loadingOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  loadingBox: {
+    backgroundColor: 'rgba(0,0,0,0.7)',
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    alignItems: 'center'
+  },
+  loadingText: {
+    marginTop: 8,
+    color: '#ffffff',
+    fontSize: 14
   }
 });
 
