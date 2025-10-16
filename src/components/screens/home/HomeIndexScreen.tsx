@@ -52,11 +52,11 @@ export default function HomeIndexScreen() {
   };
 
   // リストのデータを都度更新するためのフック
+  // ItemEditから戻ってきた時に更新するよう
   useFocusEffect(
     useCallback(() => {
       const loadData = async () => {
         await loadItems();
-        await loadGroups();
       };
       loadData();
     }, [])
