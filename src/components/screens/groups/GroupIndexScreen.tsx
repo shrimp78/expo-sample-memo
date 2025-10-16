@@ -20,7 +20,7 @@ import { countItemsByGroupId } from '@services/itemService';
 import { useAuthenticatedUser } from '@context/AuthContext';
 
 export default function GroupIndexScreen() {
-  const { groups, loadGroups } = useGroups();
+  const { groups, loadGroups, setGroups } = useGroups();
   const [isReorderMode, setIsReorderMode] = useState(false);
   const [groupCreateModalVisible, setGroupCreateModalVisible] = useState(false);
   const [groupName, setGroupName] = useState('');
@@ -50,6 +50,8 @@ export default function GroupIndexScreen() {
       // position値をローカルstateにも反映
       const updatedData = [...data];
       updatedData[to] = { ...movedGroup, position: newPosition };
+      // Contextのgroupsを即時更新（キャッシュも更新される）
+      await setGroups(updatedData);
     } catch (error) {
       console.error('Error updating group position:', error);
       // エラーの場合は元の状態に戻す

@@ -56,7 +56,8 @@ export default function HomeIndexScreen() {
   useFocusEffect(
     useCallback(() => {
       const loadData = async () => {
-        await loadItems();
+        // グループの並び順変更を即時反映するため、グループも再取得
+        await Promise.all([loadItems(), loadGroups()]);
       };
       loadData();
     }, [])
