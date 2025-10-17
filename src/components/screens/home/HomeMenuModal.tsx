@@ -1,18 +1,10 @@
 import { router } from 'expo-router';
 import React, { useState } from 'react';
-import {
-  Alert,
-  Modal,
-  View,
-  TouchableOpacity,
-  Text,
-  StyleSheet,
-  Dimensions,
-  ActivityIndicator
-} from 'react-native';
+import { Alert, Modal, View, TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
 import { deleteAllItems } from '@services/itemService';
 import { deleteAllGroups } from '@services/groupService';
 import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
+import ActivityIndicatorModal from '@components/common/ActivityIndicatorModal';
 
 type Anchor = { x: number; y: number };
 
@@ -161,15 +153,8 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
         </TouchableOpacity>
       </Modal>
 
-      {/* TODO: 外部コンポーネント化したい */}
-      <Modal visible={isLoading} transparent={true} animationType="fade" onRequestClose={() => {}}>
-        <View style={styles.loadingOverlay}>
-          <View style={styles.loadingBox}>
-            <ActivityIndicator size="large" color="#ffffff" />
-            <Text style={styles.loadingText}>削除しています…</Text>
-          </View>
-        </View>
-      </Modal>
+      {/* 読込中のくるくる */}
+      <ActivityIndicatorModal isLoading={isLoading} loadingText="削除しています…" />
     </>
   );
 };
@@ -201,24 +186,6 @@ const styles = StyleSheet.create({
   },
   logoutText: {
     color: '#ff0000' // ログアウトボタンのテキスト色を赤に設定
-  },
-  loadingOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  loadingBox: {
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    alignItems: 'center'
-  },
-  loadingText: {
-    marginTop: 8,
-    color: '#ffffff',
-    fontSize: 14
   }
 });
 
