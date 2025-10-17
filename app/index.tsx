@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { useAuth } from '../src/context/AuthContext';
 import { ONBOARDING_VERSION } from '@constants/onboarding';
 import LoginScreen from '../src/components/screens/auth/LoginScreen';
+import ActivityIndicatorModal from '@components/common/ActivityIndicatorModal';
 
 export default function InitialScreen() {
   const { isLoggedIn, isLoading, user } = useAuth();
@@ -38,11 +39,7 @@ export default function InitialScreen() {
 
   // 認証状態のロード中
   if (isLoading) {
-    return (
-      <View style={styles.container}>
-        <ActivityIndicator size="large" color="#999" />
-      </View>
-    );
+    return <ActivityIndicatorModal isLoading={true} loadingText="ログイン中…" />;
   }
 
   // ログインしていない場合はログイン画面を表示
@@ -53,7 +50,7 @@ export default function InitialScreen() {
   // ログイン済みで初期化中
   return (
     <View style={styles.container}>
-      <ActivityIndicator size="large" color="#999" />
+      <ActivityIndicatorModal isLoading={true} loadingText="初期化中…" />
     </View>
   );
 }
