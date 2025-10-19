@@ -60,7 +60,7 @@ export default function HomeIndexScreen() {
         await Promise.all([loadItems(), loadGroups()]);
       };
       loadData();
-    }, [])
+    }, [loadItems, loadGroups])
   );
 
   // アイテムの新規作成
