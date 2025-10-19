@@ -4,14 +4,11 @@ import { useState, useCallback } from 'react';
 import { type Group } from '@models/Group';
 import FloatingPlusButton from '@components/common/FloatingPlusButton';
 import GroupCreateModal from '@screens/groups/GroupCreateModal';
-import * as Crypto from 'expo-crypto';
 import { useFocusEffect } from 'expo-router';
 import RenderGroupItem from '@screens/groups/RenderGroupItem';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { colorOptions } from '@constants/colors';
 import { useGroups } from '@context/GroupContext';
 import {
-  saveGroup,
   deleteGroupByIdWithItems,
   calculateGroupNewPosition,
   updateGroupPosition
@@ -23,8 +20,6 @@ export default function GroupIndexScreen() {
   const { groups, loadGroups, setGroups } = useGroups();
   const [isReorderMode, setIsReorderMode] = useState(false);
   const [groupCreateModalVisible, setGroupCreateModalVisible] = useState(false);
-  const [groupName, setGroupName] = useState('');
-  const [groupColor, setGroupColor] = useState(colorOptions[0]);
   const user = useAuthenticatedUser();
 
   //  画面がフォーカスされたときにグループを再取得;
@@ -66,39 +61,6 @@ export default function GroupIndexScreen() {
 
   const toggleGroupCreateModal = () => {
     setGroupCreateModalVisible(!groupCreateModalVisible);
-  };
-
-  const handleChangeGroupColor = (color: string) => {
-    setGroupColor(color);
-  };
-
-  // グループの保存処理
-  const handleSaveGroupPress = async () => {
-    console.log('グループの保存が押されました');
-
-    // バリデーション
-    if (!groupName) {
-      Alert.alert('確認', 'グループ名を入力してください');
-      return;
-    }
-    if (!groupColor) {
-      Alert.alert('確認', 'グループの色を選択してください');
-      return;
-    }
-
-    // 保存処理
-    try {
-      const groupId = Crypto.randomUUID();
-      await saveGroup(user.id, groupId, groupName, groupColor);
-      toggleGroupCreateModal();
-      await loadGroups();
-    } catch (e) {
-      Alert.alert('エラー', '保存に失敗しました');
-      console.error(e);
-    } finally {
-      setGroupName('');
-      setGroupColor('#2196f3');
-    }
   };
 
   // グループの削除処理
@@ -186,12 +148,10 @@ export default function GroupIndexScreen() {
       <FloatingPlusButton onPress={addGroupPress} />
       <GroupCreateModal
         visible={groupCreateModalVisible}
-        toggleCreateModal={toggleGroupCreateModal}
-        onSave={handleSaveGroupPress}
-        groupName={groupName}
-        groupColor={groupColor}
-        onChangeGroupName={setGroupName}
-        onChangeGroupColor={handleChangeGroupColor}
+        onClose={toggleGroupCreateModal}
+        onSaved={async () => {
+          await loadGroups();
+        }}
       />
     </View>
   );

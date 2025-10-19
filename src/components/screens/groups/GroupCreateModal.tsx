@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import {
+  Alert,
   Modal,
   TouchableWithoutFeedback,
   View,
@@ -7,38 +9,64 @@ import {
   KeyboardAvoidingView,
   StyleSheet
 } from 'react-native';
+import * as Crypto from 'expo-crypto';
 import { AntDesign } from '@expo/vector-icons';
 import { Input, InputField } from '@gluestack-ui/themed';
+
+import { saveGroup } from '@services/groupService';
+import { useAuthenticatedUser } from '@context/AuthContext';
 import GroupColorSelector from './GroupColorSelector';
+import { colorOptions } from '@constants/colors';
 
 type ItemCreateProps = {
   visible: boolean;
-  toggleCreateModal: () => void;
-  onSave: () => void;
-  onChangeGroupName: (text: string) => void;
-  groupName: string;
-  groupColor: string;
-  onChangeGroupColor: (color: string) => void;
+  onClose: () => void;
+  onSaved: () => void;
 };
 
 const ItemCreateModal: React.FC<ItemCreateProps> = ({
   visible,
-  toggleCreateModal,
-  onSave,
-  onChangeGroupName,
-  groupName,
-  groupColor,
-  onChangeGroupColor
+  onClose,
+  onSaved
 }) => {
+  const user = useAuthenticatedUser();
+  const [groupName, setGroupName] = useState('');
+  const [groupColor, setGroupColor] = useState(colorOptions[0]);
+
+  const handleSave = async () => {
+        // バリデーション
+        if (!groupName) {
+          Alert.alert('確認', 'グループ名を入力してください');
+          return;
+        }
+        if (!groupColor) {
+          Alert.alert('確認', 'グループの色を選択してください');
+          return;
+        }
+    
+        // 保存処理
+        try {
+          const groupId = Crypto.randomUUID();
+          await saveGroup(user.id, groupId, groupName, groupColor);
+          onClose();
+          onSaved();
+        } catch (e) {
+          Alert.alert('エラー', '保存に失敗しました');
+          console.error(e);
+        } finally {
+          setGroupName('');
+          setGroupColor('#2196f3');
+        }
+  }
 
   return (
     <Modal
       animationType="slide"
       transparent={true}
       visible={visible}
-      onRequestClose={toggleCreateModal}
+      onRequestClose={onClose}
     >
-      <TouchableWithoutFeedback onPress={toggleCreateModal}>
+      <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.createModalOverlay}>
           <TouchableWithoutFeedback
             onPress={() => {
@@ -46,11 +74,11 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({
             }}
           >
             <View style={styles.createModalContent}>
-              <TouchableOpacity style={styles.closeButton} onPress={toggleCreateModal}>
+              <TouchableOpacity style={styles.closeButton} onPress={onClose}>
                 <AntDesign name="closecircleo" size={24} color="#808080" />
               </TouchableOpacity>
               <View style={styles.saveButtonArea}>
-                <Button title="保存" onPress={onSave} />
+                <Button title="保存" onPress={handleSave} />
               </View>
               <View style={styles.inputArea}>
                 <KeyboardAvoidingView
@@ -63,7 +91,7 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({
                     <InputField
                       placeholder="グループ名"
                       value={groupName}
-                      onChangeText={onChangeGroupName}
+                      onChangeText={setGroupName}
                       fontSize={'$3xl'}
                       fontWeight={'$bold'}
                       editable={true}
@@ -74,7 +102,7 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({
                   {/* カラーオプション */}
                   <GroupColorSelector
                     groupColor={groupColor}
-                    onChangeGroupColor={onChangeGroupColor}
+                    onChangeGroupColor={setGroupColor}
                   />
                 </KeyboardAvoidingView>
               </View>
