@@ -21,16 +21,16 @@ type ItemCreateProps = {
   onChangeGroupColor: (color: string) => void;
 };
 
-const ItemCreateModal: React.FC<ItemCreateProps> = props => {
-  const {
-    visible,
-    toggleCreateModal,
-    onSave,
-    onChangeGroupName,
-    groupName,
-    groupColor,
-    onChangeGroupColor
-  } = props;
+const ItemCreateModal: React.FC<ItemCreateProps> = ({
+  visible,
+  toggleCreateModal,
+  onSave,
+  onChangeGroupName,
+  groupName,
+  groupColor,
+  onChangeGroupColor
+}) => {
+
   return (
     <Modal
       animationType="slide"
