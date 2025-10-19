@@ -141,7 +141,7 @@ export default function HomeIndexScreen() {
         sections={sections}
         keyExtractor={item => item.id}
         renderSectionHeader={({ section }) => (
-          <View style={styles.sectionHeader}>
+          <View>
             <Text style={[styles.groupName, { color: section.color }]}>{section.title}</Text>
             <View style={[styles.sectionHeaderBorder, { backgroundColor: section.color }]} />
           </View>
