@@ -48,7 +48,7 @@ export default function HomeIndexScreen() {
 
   const handleFolderIconPress = () => {
     console.log('フォルダーのアイコンが押されました');
-    router.push({ pathname: `/groups` });
+    router.push('/groups');
   };
 
   // リストのデータを都度更新するためのフック
@@ -75,7 +75,7 @@ export default function HomeIndexScreen() {
             text: 'キャンセル',
             style: 'cancel'
           },
-          { text: 'グループ作成', onPress: () => router.push({ pathname: `/groups` }) }
+          { text: 'グループ作成', onPress: () => router.push('/groups') }
         ]
       );
     } else {
@@ -201,7 +201,6 @@ const styles = StyleSheet.create({
   bottomContainer: {
     height: 100
   },
-  sectionHeader: {},
   groupName: {
     marginTop: 30,
     marginBottom: 10,
