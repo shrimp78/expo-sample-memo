@@ -101,8 +101,19 @@ export default function GroupIndexScreen() {
   };
 
   const deleteGroup = async (groupId: string) => {
-    await deleteGroupByIdWithItems(user.id, groupId);
-    await loadGroups();
+    // 楽観的削除（SWR）
+    const currentGroups = [...groups];
+    const updatedGroups = groups.filter(g => g.id !== groupId); // groupId を除外したグループを作成
+    try {
+      await setGroups(updatedGroups);
+      await deleteGroupByIdWithItems(user.id, groupId);
+      // Revalidate in background
+      loadGroups();
+    } catch (error) {
+      console.error('Error deleting group:', error);
+      Alert.alert('エラー', '削除に失敗しました。元に戻します。');
+      await setGroups(currentGroups);
+    }
   };
 
   return (
