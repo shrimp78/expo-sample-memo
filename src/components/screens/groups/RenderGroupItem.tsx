@@ -47,7 +47,8 @@ const RenderGroupItem: React.FC<RenderGroupItemParams> = props => {
         </Text>
         {!isReorderMode && (
           <Button
-            icon={{ name: 'trash-can', type: 'material-community', color: '#ffa38c' }}
+            title="削除"
+            titleStyle={styles.deleteButtonText}
             buttonStyle={styles.deleteButton}
             containerStyle={{ marginLeft: 'auto' }}
             onPress={onDeletePress}
@@ -87,6 +88,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     alignItems: 'flex-end',
     padding: 0
+  },
+  deleteButtonText: {
+    color: '#ff0000',
+    fontSize: 16
   }
 });
 
