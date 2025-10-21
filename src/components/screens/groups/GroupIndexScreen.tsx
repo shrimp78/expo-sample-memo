@@ -105,10 +105,11 @@ export default function GroupIndexScreen() {
     const currentGroups = [...groups];
     const updatedGroups = groups.filter(g => g.id !== groupId); // groupId を除外したグループを作成
     try {
-      await setGroups(updatedGroups);
-      await deleteGroupByIdWithItems(user.id, groupId);
+      await setGroups(updatedGroups); // Contextのgroupsを即時更新（キャッシュも更新される）
+      await deleteGroupByIdWithItems(user.id, groupId); // Firestoreのグループを削除
       // Revalidate in background
-      loadGroups();
+      // └ 再取得してローカルとキャッシュを同期（SWRの再検証）。他端末からの変更や、サーバー側で発生する副作用を検知
+      loadGroups(); 
     } catch (error) {
       console.error('Error deleting group:', error);
       Alert.alert('エラー', '削除に失敗しました。元に戻します。');
