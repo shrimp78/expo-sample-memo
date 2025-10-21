@@ -5,8 +5,8 @@ import type { Timestamp } from 'firebase/firestore';
 type Item = {
   id: string;
   title: string;
-  content: string;
-  group_id: string | null;
+  content: string | null;
+  group_id: string | null; // TBC : これは必須項目にしてもいいかも
   anniv: Timestamp;
 };
 

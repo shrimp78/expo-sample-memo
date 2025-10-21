@@ -60,10 +60,6 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
       Alert.alert('確認', 'タイトルを入力してください');
       return;
     }
-    if (!content) {
-      Alert.alert('確認', 'コンテンツを入力してください');
-      return;
-    }
     if (!selectedGroup) {
       Alert.alert('確認', 'グループを選択してください');
       return;
