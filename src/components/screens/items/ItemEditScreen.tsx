@@ -52,7 +52,7 @@ export default function ItemEditScreen() {
         setGroups(groups);
         if (item) {
           setTitle(item.title);
-          setContent(item.content);
+          setContent(item.content ?? '');
           setSelectedGroup(groups.find(group => group.id === item.group_id) ?? null);
           const d = item.anniv.toDate();
           setYear(d.getFullYear());
@@ -73,7 +73,7 @@ export default function ItemEditScreen() {
     const cachedItem = items.find(item => item.id === id);
     if (cachedItem) {
       setTitle(cachedItem.title);
-      setContent(cachedItem.content);
+      setContent(cachedItem.content ?? '');
       setSelectedGroup(contextGroups.find(group => group.id === cachedItem.group_id) ?? null);
       setYear(cachedItem.anniv.toDate().getFullYear());
       setMonth(cachedItem.anniv.toDate().getMonth() + 1);
@@ -86,10 +86,6 @@ export default function ItemEditScreen() {
     // Validation
     if (!title) {
       Alert.alert('確認', 'タイトルを入力してください');
-      return;
-    }
-    if (!content) {
-      Alert.alert('確認', 'コンテンツを入力してください');
       return;
     }
     // Annivの変換
