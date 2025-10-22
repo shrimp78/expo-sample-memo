@@ -43,41 +43,21 @@ export default function ItemEditScreen() {
     toggleGroupModal();
   };
 
-  // Itemの取得
-  useEffect(() => {
-    const fetchItem = async () => {
-      try {
-        const item = await getItemById(user.id, id);
-        const groups = await getAllGroupsByUserId(user.id);
-        setGroups(groups);
-        if (item) {
-          setTitle(item.title);
-          setContent(item.content ?? '');
-          setSelectedGroup(groups.find(group => group.id === item.group_id) ?? null);
-          const d = item.anniv.toDate();
-          setYear(d.getFullYear());
-          setMonth(d.getMonth() + 1);
-          setDay(d.getDate());
-        }
-      } catch (error) {
-        console.error('Itemの取得に失敗しました', error);
-      }
-    };
-    fetchItem();
-  }, [id]);
-
   // ItemContextからItemを即時に初期値として反映（stale-while-revalidate）
   useEffect(() => {
     console.log('stale-while-revalidate for Item');
     if (!id) return;
     const cachedItem = items.find(item => item.id === id);
     if (cachedItem) {
+      console.log('loadItem from cache');
       setTitle(cachedItem.title);
       setContent(cachedItem.content ?? '');
       setSelectedGroup(contextGroups.find(group => group.id === cachedItem.group_id) ?? null);
       setYear(cachedItem.anniv.toDate().getFullYear());
       setMonth(cachedItem.anniv.toDate().getMonth() + 1);
       setDay(cachedItem.anniv.toDate().getDate());
+    } else {
+      // TODO : キャッシュにない場合の処理を追加する
     }
   }, [id, items]);
 
