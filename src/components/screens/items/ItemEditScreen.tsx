@@ -21,8 +21,8 @@ export default function ItemEditScreen() {
   const [content, setContent] = useState('');
   const [groups, setGroups] = useState<Group[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
-  const { items } = useItems();
-  const { groups: contextGroups } = useGroups();
+  const { items, setItems } = useItems();
+  const { groups: contextGroups } = useGroups(); // TODO: なんでこれだけType名入ってる？
 
   // Annivの状態と選択肢
   const [year, setYear] = useState<number>(new Date().getFullYear());
@@ -73,9 +73,15 @@ export default function ItemEditScreen() {
     console.log(`year: ${year}, month: ${month}, day: ${day}`);
     const utcMidnight = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
     const anniv = Timestamp.fromDate(utcMidnight);
-    await updateItemById(user.id, id, title, content, selectedGroup?.id as string, anniv);
+    // Optimistic update: 画面遷移前にItemContextを更新して即時反映
+    const nextItems = items.map(item =>
+      item.id === id ? { ...item, title, content, group_id: selectedGroup ? selectedGroup.id : null, anniv } : item
+    );
+    setItems(nextItems);
+    // 非同期で永続化（待たない）
+    void updateItemById(user.id, id, title, content, selectedGroup?.id as string, anniv);
     router.back();
-  }, [user.id, id, title, content, selectedGroup, year, month, day]);
+  }, [user.id, id, title, content, selectedGroup, year, month, day, items, setItems]);
 
   // TitleとContentの変更を監視
   useEffect(() => {
