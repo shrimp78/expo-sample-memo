@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { useEffect } from 'react';
 
 import { useAuth } from '../src/context/AuthContext';
+import { getCachedItems, getCachedGroups } from '@services/cache';
 import { ONBOARDING_VERSION } from '@constants/onboarding';
 import LoginScreen from '../src/components/screens/auth/LoginScreen';
 import ActivityIndicatorModal from '@components/common/ActivityIndicatorModal';
@@ -12,10 +13,8 @@ export default function InitialScreen() {
 
   useEffect(() => {
     // ログイン状態が確定したら処理を開始
-    if (!isLoading) {
-      if (isLoggedIn) {
-        initApp();
-      }
+    if (!isLoading && isLoggedIn) {
+      initApp();
     }
   }, [isLoggedIn, isLoading]);
 
@@ -24,12 +23,20 @@ export default function InitialScreen() {
    */
   const initApp = async () => {
     try {
+      if (!user?.id) return;
       const currentVersion = user?.onboardingVersion ?? 0;
       console.log('currentVersion', user?.onboardingVersion);
       console.log('ONBOARDING_VERSION', ONBOARDING_VERSION);
       if (currentVersion < ONBOARDING_VERSION) {
+        // オンボーディングが必要な場合はオンボ画面に遷移
         router.replace('/onboarding');
       } else {
+        // Home表示前にキャッシュをウォームアップ
+        try {
+          await Promise.all([getCachedItems(user.id), getCachedGroups(user.id)]);
+        } catch (e) {
+          console.log('ウォームアップ時にErrorが発生しました:', e);
+        }
         router.replace('/home');
       }
     } catch (e) {
