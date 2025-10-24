@@ -33,6 +33,17 @@ const ItemList: React.FC<ItemListProps> = props => {
   // アイテムの削除
   const handleDeletePress = async (itemId: string) => {
     console.log('アイテムの削除が押されました', itemId);
+    Alert.alert('確認', '削除しますが、よろしいですか？', [
+      {
+        text: 'キャンセル',
+        style: 'cancel'
+      },
+      { text: '削除', onPress: () => deleteItem(itemId) }
+    ]);
+  };
+
+  const deleteItem = async (itemId: string) => {
+    console.log('アイテムの削除が押されました', itemId);
     try {
       // Optimistic update: ItemContextを即時反映
       const nextItems = items.filter(item => item.id !== itemId);
