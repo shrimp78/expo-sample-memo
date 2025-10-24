@@ -89,22 +89,6 @@ export default function HomeIndexScreen() {
     router.push({ pathname: `/items/${itemId}` });
   };
 
-  // アイテムの削除
-  const handleDeletePress = async (itemId: string) => {
-    console.log('アイテムの削除が押されました', itemId);
-    try {
-      // Optimistic update: ItemContextを即時反映
-      const nextItems = items.filter(item => item.id !== itemId);
-      setItems(nextItems);
-      // 非同期で永続化（待たない）
-      void deleteItemById(user.id, itemId);
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    } catch (e) {
-      Alert.alert('エラー', '削除に失敗しました');
-      throw e;
-    }
-  };
-
   // グループセクション用のデータ整形
   const sections = groups
     .map(group => ({
@@ -150,10 +134,10 @@ export default function HomeIndexScreen() {
         )}
         renderItem={({ item }) => (
           <ItemList
+            id={item.id}
             name={item.title}
             anniv={item.anniv}
             onPress={() => handleItemPress(item.id)}
-            onDeletePress={() => handleDeletePress(item.id)}
           />
         )}
         ListEmptyComponent={

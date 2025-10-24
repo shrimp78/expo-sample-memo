@@ -1,16 +1,21 @@
 import { Button, ListItem } from '@rneui/base';
-import { StyleSheet, Alert } from 'react-native';
+import { StyleSheet, Alert, LayoutAnimation } from 'react-native';
 import { Timestamp } from 'firebase/firestore';
+import { useItems } from '@context/ItemContext';
+import { useAuthenticatedUser } from '@context/AuthContext';
+import { deleteItemById } from '@services/itemService';
 
 type ItemListProps = {
+  id: string;
   name: string;
   anniv: Timestamp;
   onPress: () => void;
-  onDeletePress: () => void;
 };
 
 const ItemList: React.FC<ItemListProps> = props => {
-  const { name, anniv, onPress, onDeletePress } = props;
+  const { id, name, anniv, onPress } = props;
+  const { items, setItems } = useItems();
+  const user = useAuthenticatedUser();
   // ローカル時刻の文字列へ安全に変換
   const formatAnniv = (anniv: Timestamp): string => {
     try {
@@ -25,6 +30,22 @@ const ItemList: React.FC<ItemListProps> = props => {
     return '';
   };
 
+  // アイテムの削除
+  const handleDeletePress = async (itemId: string) => {
+    console.log('アイテムの削除が押されました', itemId);
+    try {
+      // Optimistic update: ItemContextを即時反映
+      const nextItems = items.filter(item => item.id !== itemId);
+      setItems(nextItems);
+      // 非同期で永続化（待たない）
+      void deleteItemById(user.id, itemId);
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    } catch (e) {
+      Alert.alert('エラー', '削除に失敗しました');
+      throw e;
+    }
+  };
+
   return (
     <ListItem.Swipeable
       bottomDivider
@@ -33,10 +54,7 @@ const ItemList: React.FC<ItemListProps> = props => {
           icon={{ name: 'trash-can', type: 'material-community', size: 26, color: '#ffffff' }}
           buttonStyle={{ minHeight: '100%', backgroundColor: '#ff0000' }}
           onPress={() => {
-            console.log('DeleteButton onPress');
-            if (onDeletePress) {
-              onDeletePress();
-            }
+            handleDeletePress(id);
             reset();
           }}
         />
