@@ -42,13 +42,12 @@ export default function ItemEditScreen() {
     toggleGroupModal();
   };
 
-  // ItemContextからItemを即時に初期値として反映（stale-while-revalidate）
   useEffect(() => {
-    console.log('stale-while-revalidate for Item');
-    if (!id) return;
+    if (!id) {
+      return;
+    }
     const cachedItem = items.find(item => item.id === id);
     if (cachedItem) {
-      console.log('loadItem from cache');
       setTitle(cachedItem.title);
       setContent(cachedItem.content ?? '');
       setSelectedGroup(contextGroups.find(group => group.id === cachedItem.group_id) ?? null);
@@ -74,7 +73,9 @@ export default function ItemEditScreen() {
     const anniv = Timestamp.fromDate(utcMidnight);
     // Optimistic update: 画面遷移前にItemContextを更新して即時反映
     const nextItems = items.map(item =>
-      item.id === id ? { ...item, title, content, group_id: selectedGroup ? selectedGroup.id : null, anniv } : item
+      item.id === id
+        ? { ...item, title, content, group_id: selectedGroup ? selectedGroup.id : null, anniv }
+        : item
     );
     setItems(nextItems);
     // 非同期で永続化（待たない）
