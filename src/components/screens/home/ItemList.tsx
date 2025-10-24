@@ -31,6 +31,7 @@ const ItemList: React.FC<ItemListProps> = props => {
   };
 
   // アイテムの削除
+  // TODO: やっぱりこのスワイプでItem削除するのキモい。　ItemEditScreenに移行する
   const handleDeletePress = async (itemId: string) => {
     console.log('アイテムの削除が押されました', itemId);
     Alert.alert('確認', '削除しますが、よろしいですか？', [
