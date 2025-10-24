@@ -93,10 +93,12 @@ export default function HomeIndexScreen() {
   const handleDeletePress = async (itemId: string) => {
     console.log('アイテムの削除が押されました', itemId);
     try {
-      await deleteItemById(user.id, itemId);
+      // Optimistic update: ItemContextを即時反映
+      const nextItems = items.filter(item => item.id !== itemId);
+      setItems(nextItems);
+      // 非同期で永続化（待たない）
+      void deleteItemById(user.id, itemId);
       LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-      const updatedItems = await getAllItemsByUserId(user.id); // TBC : なんか冗長かも?
-      setItems(updatedItems);
     } catch (e) {
       Alert.alert('エラー', '削除に失敗しました');
       throw e;
