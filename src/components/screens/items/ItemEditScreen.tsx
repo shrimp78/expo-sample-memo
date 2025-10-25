@@ -18,7 +18,7 @@ export default function ItemEditScreen() {
   // タイトルと内容の状態
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [groups, setGroups] = useState<Group[]>([]);
+  const [groups] = useState<Group[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
   const { items, setItems } = useItems();
   const { groups: contextGroups } = useGroups(); // TODO: なんでこれだけType名入ってる？
