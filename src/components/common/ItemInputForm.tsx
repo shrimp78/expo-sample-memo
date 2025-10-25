@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Input, InputField, Textarea, TextareaInput, Text, HStack } from '@gluestack-ui/themed';
 import {
   InputAccessoryView,
@@ -23,9 +23,6 @@ type ItemInputFormProps = {
   onChangeContent: (text: string) => void;
   onSelectGroup: () => void;
   selectedGroup: Group | null;
-  years: number[];
-  months: number[];
-  days: number[];
   year: number;
   month: number;
   day: number;
@@ -50,9 +47,6 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
     onChangeContent,
     onSelectGroup,
     selectedGroup,
-    years,
-    months,
-    days,
     year,
     month,
     day,
@@ -72,6 +66,12 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
     const dd = String(d).padStart(2, '0');
     return `${y}/${mm}/${dd}`;
   };
+
+  // YYMMDDの選択肢
+  const years = useMemo(() => Array.from({ length: 101 }, (_, i) => 1970 + i), []);
+  const months = useMemo(() => Array.from({ length: 12 }, (_, i) => i + 1), []);
+  const daysInMonth = useMemo(() => new Date(Date.UTC(year, month, 0)).getUTCDate(), [year, month]);
+  const days = useMemo(() => Array.from({ length: daysInMonth }, (_, i) => i + 1), [daysInMonth]);
 
   // DatePickerの完了ボタン押下時の処理
   // DatePickerで変更されたtmpDateの値をy,m,d に設定してPickerを閉じる

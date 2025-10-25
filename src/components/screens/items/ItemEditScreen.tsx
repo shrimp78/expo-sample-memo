@@ -27,11 +27,6 @@ export default function ItemEditScreen() {
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
   const [day, setDay] = useState<number>(1);
-  const years = useMemo(() => Array.from({ length: 101 }, (_, i) => 1970 + i), []);
-  const months = useMemo(() => Array.from({ length: 12 }, (_, i) => i + 1), []);
-  // 選択中の年・月の「UTC基準での」月末日数を取得
-  const daysInMonth = useMemo(() => new Date(Date.UTC(year, month, 0)).getUTCDate(), [year, month]);
-  const days = useMemo(() => Array.from({ length: daysInMonth }, (_, i) => i + 1), [daysInMonth]);
 
   // グループ選択画面のModal用
   const [groupModalVisible, setGroupModalVisible] = useState(false);
@@ -102,9 +97,6 @@ export default function ItemEditScreen() {
           onChangeContent={setContent}
           onSelectGroup={onSelectGroup}
           selectedGroup={selectedGroup}
-          years={years}
-          months={months}
-          days={days}
           year={year}
           month={month}
           day={day}

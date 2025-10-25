@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Modal,
   TouchableWithoutFeedback,
@@ -38,10 +38,6 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
   const [day, setDay] = useState<number>(new Date().getDate());
-  const years = useMemo(() => Array.from({ length: 101 }, (_, i) => 1970 + i), []);
-  const months = useMemo(() => Array.from({ length: 12 }, (_, i) => i + 1), []);
-  const daysInMonth = useMemo(() => new Date(Date.UTC(year, month, 0)).getUTCDate(), [year, month]);
-  const days = useMemo(() => Array.from({ length: daysInMonth }, (_, i) => i + 1), [daysInMonth]);
 
   // モーダルが開いたら初期化
   useEffect(() => {
@@ -114,9 +110,6 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
                     onChangeContent={setContent}
                     onSelectGroup={() => setGroupModalVisible(true)}
                     selectedGroup={selectedGroup}
-                    years={years}
-                    months={months}
-                    days={days}
                     year={year}
                     month={month}
                     day={day}
