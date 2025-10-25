@@ -18,6 +18,7 @@ import { type Group } from '@models/Group';
 import * as Crypto from 'expo-crypto';
 import { saveItem } from '@services/itemService';
 import { Timestamp } from 'firebase/firestore';
+import { useItems } from '@context/ItemContext';
 
 type ItemCreateProps = {
   visible: boolean;
@@ -28,7 +29,7 @@ type ItemCreateProps = {
 const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved }) => {
   const user = useAuthenticatedUser();
   const { groups } = useGroups();
-
+  const { items, setItems } = useItems();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [groupModalVisible, setGroupModalVisible] = useState(false);
@@ -71,7 +72,8 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
       const utcMidnight = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
       const anniv = Timestamp.fromDate(utcMidnight);
 
-      await saveItem(user.id, { id, title, content, group_id, anniv });
+      await setItems([...items, { id, title, content, group_id, anniv }]);
+      void saveItem(user.id, { id, title, content, group_id, anniv });
       onClose(); // 自分で閉じる
       onSaved(); // 親に「保存完了」を通知
     } catch (e) {
