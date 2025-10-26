@@ -11,6 +11,7 @@ import { useAuthenticatedUser } from '@context/AuthContext';
 import { useItems } from '@context/ItemContext';
 import { useGroups } from '@context/GroupContext';
 import { Timestamp } from 'firebase/firestore';
+import { deleteItemById } from '@services/itemService';
 
 export default function ItemEditScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -88,6 +89,32 @@ export default function ItemEditScreen() {
     });
   }, [handleSaveItemPress, navigation]);
 
+  // 削除ボタン押下時の処理
+  const handleDeleteItemPress = () => {
+    Alert.alert('確認', '削除しますが、よろしいですか？', [
+      {
+        text: 'キャンセル',
+        style: 'cancel'
+      },
+      { text: '削除', onPress: () => deleteItem() }
+    ]);
+  };
+
+  const deleteItem = async () => {
+    console.log('アイテムの削除が押されました', id);
+    try {
+      // Optimistic update: ItemContextを即時反映
+      const nextItems = items.filter(item => item.id !== id);
+      setItems(nextItems);
+      // 非同期で永続化（待たない）
+      void deleteItemById(user.id, id);
+      router.back();
+    } catch (e) {
+      Alert.alert('エラー', '削除に失敗しました');
+      throw e;
+    }
+  };
+
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100} style={{ flex: 1 }}>
@@ -112,7 +139,7 @@ export default function ItemEditScreen() {
           title="削除"
           titleStyle={styles.deleteButtonText}
           buttonStyle={styles.deleteButton}
-          onPress={() => {}}
+          onPress={handleDeleteItemPress}
         />
       </View>
 
