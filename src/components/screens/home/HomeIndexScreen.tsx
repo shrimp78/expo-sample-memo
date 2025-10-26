@@ -133,12 +133,7 @@ export default function HomeIndexScreen() {
           </View>
         )}
         renderItem={({ item }) => (
-          <ItemList
-            id={item.id}
-            name={item.title}
-            anniv={item.anniv}
-            onPress={() => handleItemPress(item.id)}
-          />
+          <ItemList name={item.title} anniv={item.anniv} onPress={() => handleItemPress(item.id)} />
         )}
         ListEmptyComponent={
           // キャッシュ未ハイドレートの間は空表示を出さない

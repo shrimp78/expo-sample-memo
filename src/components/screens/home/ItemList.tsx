@@ -1,21 +1,15 @@
-import { Button, ListItem } from '@rneui/base';
-import { StyleSheet, Alert, LayoutAnimation } from 'react-native';
+import { ListItem } from '@rneui/base';
+import { StyleSheet, Alert } from 'react-native';
 import { Timestamp } from 'firebase/firestore';
-import { useItems } from '@context/ItemContext';
-import { useAuthenticatedUser } from '@context/AuthContext';
-import { deleteItemById } from '@services/itemService';
 
 type ItemListProps = {
-  id: string;
   name: string;
   anniv: Timestamp;
   onPress: () => void;
 };
 
 const ItemList: React.FC<ItemListProps> = props => {
-  const { id, name, anniv, onPress } = props;
-  const { items, setItems } = useItems();
-  const user = useAuthenticatedUser();
+  const { name, anniv, onPress } = props;
   // ローカル時刻の文字列へ安全に変換
   const formatAnniv = (anniv: Timestamp): string => {
     try {
@@ -30,49 +24,8 @@ const ItemList: React.FC<ItemListProps> = props => {
     return '';
   };
 
-  // アイテムの削除
-  // TODO: やっぱりこのスワイプでItem削除するのキモい。　ItemEditScreenに移行する
-  const handleDeletePress = async (itemId: string) => {
-    console.log('アイテムの削除が押されました', itemId);
-    Alert.alert('確認', '削除しますが、よろしいですか？', [
-      {
-        text: 'キャンセル',
-        style: 'cancel'
-      },
-      { text: '削除', onPress: () => deleteItem(itemId) }
-    ]);
-  };
-
-  const deleteItem = async (itemId: string) => {
-    console.log('アイテムの削除が押されました', itemId);
-    try {
-      // Optimistic update: ItemContextを即時反映
-      const nextItems = items.filter(item => item.id !== itemId);
-      setItems(nextItems);
-      // 非同期で永続化（待たない）
-      void deleteItemById(user.id, itemId);
-      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-    } catch (e) {
-      Alert.alert('エラー', '削除に失敗しました');
-      throw e;
-    }
-  };
-
   return (
-    <ListItem.Swipeable
-      bottomDivider
-      rightContent={reset => (
-        <Button
-          icon={{ name: 'trash-can', type: 'material-community', size: 26, color: '#ffffff' }}
-          buttonStyle={{ minHeight: '100%', backgroundColor: '#ff0000' }}
-          onPress={() => {
-            handleDeletePress(id);
-            reset();
-          }}
-        />
-      )}
-      onPress={onPress}
-    >
+    <ListItem.Swipeable bottomDivider onPress={onPress}>
       <ListItem.Content>
         <ListItem.Title style={styles.title}> {name}</ListItem.Title>
         <ListItem.Subtitle style={styles.content} numberOfLines={3}>
