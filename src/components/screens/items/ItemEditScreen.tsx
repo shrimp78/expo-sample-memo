@@ -1,6 +1,7 @@
-import { StyleSheet, Button, Alert, View } from 'react-native';
+import { StyleSheet, Alert, View } from 'react-native';
+import { Button } from '@rneui/base';
 import { useLocalSearchParams, useNavigation, router } from 'expo-router';
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { KeyboardAvoidingView } from '@gluestack-ui/themed';
 import { updateItemById } from '@services/itemService';
 import { type Group } from '@models/Group';
@@ -105,6 +106,15 @@ export default function ItemEditScreen() {
           setDay={setDay}
         />
       </KeyboardAvoidingView>
+      {/* 削除ボタン ※ここにあるのはキモいが、あとあとメニューを増やして下の方に押し込められるので一旦OK */}
+      <View style={styles.deleteButtonContainer}>
+        <Button
+          title="削除"
+          titleStyle={styles.deleteButtonText}
+          buttonStyle={styles.deleteButton}
+          onPress={() => {}}
+        />
+      </View>
 
       {/* グループ選択Modal（ItemCreateModalの内部） */}
       {groupModalVisible && (
@@ -122,6 +132,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
-    padding: 16
+    padding: 16,
+    marginBottom: 16
+  },
+  deleteButtonContainer: {
+    marginTop: 16,
+    alignItems: 'center'
+  },
+  deleteButtonText: {
+    color: '#ff0000'
+  },
+  deleteButton: {
+    backgroundColor: '#ffffff'
   }
 });
