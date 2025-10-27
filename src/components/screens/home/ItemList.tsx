@@ -25,7 +25,7 @@ const ItemList: React.FC<ItemListProps> = props => {
   };
 
   return (
-    <ListItem.Swipeable bottomDivider onPress={onPress}>
+    <ListItem bottomDivider onPress={onPress}>
       <ListItem.Content>
         <ListItem.Title style={styles.title}> {name}</ListItem.Title>
         <ListItem.Subtitle style={styles.content} numberOfLines={3}>
@@ -34,7 +34,7 @@ const ItemList: React.FC<ItemListProps> = props => {
         </ListItem.Subtitle>
       </ListItem.Content>
       <ListItem.Chevron />
-    </ListItem.Swipeable>
+    </ListItem>
   );
 };
 
