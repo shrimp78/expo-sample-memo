@@ -5,15 +5,13 @@ import {
   StyleSheet,
   Text,
   SectionList,
-  LayoutAnimation,
   TouchableOpacity,
   GestureResponderEvent,
   Dimensions
 } from 'react-native';
 import { useCallback, useState } from 'react';
+import { ListItem } from '@rneui/base';
 import { Entypo } from '@expo/vector-icons';
-import { getAllItemsByUserId, deleteItemById } from '@services/itemService';
-import ItemList from '@screens/home/ItemList';
 
 // Contexts
 import { useGroups } from '@context/GroupContext';
@@ -28,9 +26,8 @@ import FloatingPlusButton from '@components/common/FloatingPlusButton';
 
 export default function HomeIndexScreen() {
   const { isLoggedIn, isLoading } = useAuth();
-  const user = useAuthenticatedUser();
   const { groups, loadGroups, isHydratedFromCache: groupsHydrated } = useGroups();
-  const { items, setItems, loadItems, isHydratedFromCache: itemsHydrated } = useItems();
+  const { items, loadItems, isHydratedFromCache: itemsHydrated } = useItems();
 
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const toggleCreateModal = () => {
@@ -133,7 +130,15 @@ export default function HomeIndexScreen() {
           </View>
         )}
         renderItem={({ item }) => (
-          <ItemList name={item.title} anniv={item.anniv} onPress={() => handleItemPress(item.id)} />
+          <ListItem bottomDivider onPress={() => handleItemPress(item.id)}>
+            <ListItem.Content>
+              <ListItem.Title style={styles.listItemTitle}>{item.title}</ListItem.Title>
+              <ListItem.Subtitle style={styles.ListItemSubtitle} numberOfLines={3}>
+                {item.anniv.toDate().toLocaleDateString()}
+              </ListItem.Subtitle>
+            </ListItem.Content>
+            <ListItem.Chevron />
+          </ListItem>
         )}
         ListEmptyComponent={
           // キャッシュ未ハイドレートの間は空表示を出さない
@@ -214,5 +219,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#808080'
+  },
+  listItemTitle: {
+    color: '#4A5054',
+    fontWeight: 'bold',
+    fontSize: 20
+  },
+  ListItemSubtitle: {
+    color: '#95A2AC',
+    fontSize: 14,
+    padding: 4,
+    maxHeight: 100
   }
 });
