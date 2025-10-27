@@ -97,7 +97,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           fontSize={'$3xl'}
           fontWeight={'$bold'}
           editable={true}
-          autoFocus={true}
+          autoFocus={false}
         />
       </Input>
       {/* グループ選択エリア */}
