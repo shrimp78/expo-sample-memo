@@ -29,6 +29,7 @@ type ItemInputFormProps = {
   setYear: (year: number) => void;
   setMonth: (month: number) => void;
   setDay: (day: number) => void;
+  autoFocus: boolean;
 };
 
 const inputAccessoryViewID1 = 'INPUT_ACCESSORY_VIEW_ID_1';
@@ -52,7 +53,8 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
     day,
     setYear,
     setMonth,
-    setDay
+    setDay,
+    autoFocus
   } = props;
 
   // 日付選択エリアで使用するモノたち
@@ -97,7 +99,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           fontSize={'$3xl'}
           fontWeight={'$bold'}
           editable={true}
-          autoFocus={false}
+          autoFocus={autoFocus}
         />
       </Input>
       {/* グループ選択エリア */}

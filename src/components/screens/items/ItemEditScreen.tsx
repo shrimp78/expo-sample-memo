@@ -131,6 +131,7 @@ export default function ItemEditScreen() {
           setYear={setYear}
           setMonth={setMonth}
           setDay={setDay}
+          autoFocus={false}
         />
       </KeyboardAvoidingView>
       {/* 削除ボタン ※ここにあるのはキモいが、あとあとメニューを増やして下の方に押し込められるので一旦OK */}
