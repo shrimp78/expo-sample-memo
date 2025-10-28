@@ -20,10 +20,9 @@ export default function ItemEditScreen() {
   // タイトルと内容の状態
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [groups] = useState<Group[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
   const { items, setItems } = useItems();
-  const { groups: contextGroups } = useGroups(); // TODO: なんでこれだけType名入ってる？
+  const { groups } = useGroups();
 
   // Annivの状態と選択肢
   const [year, setYear] = useState<number>(new Date().getFullYear());
@@ -41,7 +40,7 @@ export default function ItemEditScreen() {
     if (cachedItem) {
       setTitle(cachedItem.title);
       setContent(cachedItem.content ?? '');
-      setSelectedGroup(contextGroups.find(group => group.id === cachedItem.group_id) ?? null);
+      setSelectedGroup(groups.find(group => group.id === cachedItem.group_id) ?? null);
       setYear(cachedItem.anniv.toDate().getFullYear());
       setMonth(cachedItem.anniv.toDate().getMonth() + 1);
       setDay(cachedItem.anniv.toDate().getDate());
