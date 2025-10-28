@@ -32,12 +32,6 @@ export default function ItemEditScreen() {
 
   // グループ選択画面のModal用
   const [groupModalVisible, setGroupModalVisible] = useState(false);
-  const toggleGroupModal = () => {
-    setGroupModalVisible(!groupModalVisible);
-  };
-  const onSelectGroup = () => {
-    toggleGroupModal();
-  };
 
   useEffect(() => {
     if (!id) {
@@ -123,7 +117,7 @@ export default function ItemEditScreen() {
           content={content}
           onChangeTitle={setTitle}
           onChangeContent={setContent}
-          onSelectGroup={onSelectGroup}
+          onSelectGroup={() => setGroupModalVisible(true)}
           selectedGroup={selectedGroup}
           year={year}
           month={month}
@@ -147,7 +141,7 @@ export default function ItemEditScreen() {
       {/* グループ選択Modal（ItemCreateModalの内部） */}
       {groupModalVisible && (
         <GroupSelectModal
-          toggleGroupModal={toggleGroupModal}
+          toggleGroupModal={() => setGroupModalVisible(false)}
           groups={groups}
           setSelectedGroup={setSelectedGroup}
         />
