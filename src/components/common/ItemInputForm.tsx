@@ -15,6 +15,7 @@ import { Group } from '@models/Group';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
+import { ITEM_TITLE_MAX_LENGTH, ITEM_CONTENT_MAX_LENGTH } from '@constants/validation';
 
 type ItemInputFormProps = {
   title: string;
@@ -100,6 +101,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           fontWeight={'$bold'}
           editable={true}
           autoFocus={autoFocus}
+          maxLength={ITEM_TITLE_MAX_LENGTH}
         />
       </Input>
       {/* グループ選択エリア */}
@@ -229,6 +231,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           fontSize={'$md'}
           multiline={true}
           textAlignVertical="top"
+          maxLength={ITEM_CONTENT_MAX_LENGTH}
         />
       </Textarea>
       {/* iOSのみキーボードの閉じるボタンを表示 */}

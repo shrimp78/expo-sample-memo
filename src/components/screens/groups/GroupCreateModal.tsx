@@ -12,7 +12,7 @@ import {
 import * as Crypto from 'expo-crypto';
 import { AntDesign } from '@expo/vector-icons';
 import { Input, InputField } from '@gluestack-ui/themed';
-
+import { GROUP_NAME_MAX_LENGTH } from '@constants/validation';
 import { saveGroup } from '@services/groupService';
 import { useAuthenticatedUser } from '@context/AuthContext';
 import GroupColorSelector from './GroupColorSelector';
@@ -24,48 +24,39 @@ type ItemCreateProps = {
   onSaved: () => void;
 };
 
-const ItemCreateModal: React.FC<ItemCreateProps> = ({
-  visible,
-  onClose,
-  onSaved
-}) => {
+const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved }) => {
   const user = useAuthenticatedUser();
   const [groupName, setGroupName] = useState('');
   const [groupColor, setGroupColor] = useState(colorOptions[0]);
 
   const handleSave = async () => {
-        // バリデーション
-        if (!groupName) {
-          Alert.alert('確認', 'グループ名を入力してください');
-          return;
-        }
-        if (!groupColor) {
-          Alert.alert('確認', 'グループの色を選択してください');
-          return;
-        }
-    
-        // 保存処理
-        try {
-          const groupId = Crypto.randomUUID();
-          await saveGroup(user.id, groupId, groupName, groupColor);
-          onClose();
-          onSaved();
-        } catch (e) {
-          Alert.alert('エラー', '保存に失敗しました');
-          console.error(e);
-        } finally {
-          setGroupName('');
-          setGroupColor('#2196f3');
-        }
-  }
+    // バリデーション
+    if (!groupName) {
+      Alert.alert('確認', 'グループ名を入力してください');
+      return;
+    }
+    if (!groupColor) {
+      Alert.alert('確認', 'グループの色を選択してください');
+      return;
+    }
+
+    // 保存処理
+    try {
+      const groupId = Crypto.randomUUID();
+      await saveGroup(user.id, groupId, groupName, groupColor);
+      onClose();
+      onSaved();
+    } catch (e) {
+      Alert.alert('エラー', '保存に失敗しました');
+      console.error(e);
+    } finally {
+      setGroupName('');
+      setGroupColor('#2196f3');
+    }
+  };
 
   return (
-    <Modal
-      animationType="slide"
-      transparent={true}
-      visible={visible}
-      onRequestClose={onClose}
-    >
+    <Modal animationType="slide" transparent={true} visible={visible} onRequestClose={onClose}>
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.createModalOverlay}>
           <TouchableWithoutFeedback
@@ -96,14 +87,12 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({
                       fontWeight={'$bold'}
                       editable={true}
                       autoFocus={true}
+                      maxLength={GROUP_NAME_MAX_LENGTH}
                     />
                   </Input>
 
                   {/* カラーオプション */}
-                  <GroupColorSelector
-                    groupColor={groupColor}
-                    onChangeGroupColor={setGroupColor}
-                  />
+                  <GroupColorSelector groupColor={groupColor} onChangeGroupColor={setGroupColor} />
                 </KeyboardAvoidingView>
               </View>
             </View>
