@@ -16,7 +16,7 @@ import { Entypo } from '@expo/vector-icons';
 // Contexts
 import { useGroups } from '@context/GroupContext';
 import { useItems } from '@context/ItemContext';
-import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
+import { useAuth } from '@context/AuthContext';
 
 // 新規作成モーダル用
 import ItemCreateModal from '@screens/home/ItemCreateModal';
@@ -95,6 +95,19 @@ export default function HomeIndexScreen() {
     }))
     .filter(section => section.data.length > 0); // アイテムが1つ以上あるセクションのみを表示
 
+  // Anniv からの経過年数を計算
+  const getElapsedYears = (annivDate: Date) => {
+    const now = new Date();
+    let years = now.getFullYear() - annivDate.getFullYear();
+    const hasHadAnniversaryThisYear =
+      now.getMonth() > annivDate.getMonth() ||
+      (now.getMonth() === annivDate.getMonth() && now.getDate() >= annivDate.getDate());
+    if (!hasHadAnniversaryThisYear) {
+      years -= 1;
+    }
+    return Math.max(0, years);
+  };
+
   // 認証状態のロード中
   if (isLoading) {
     return (
@@ -137,6 +150,10 @@ export default function HomeIndexScreen() {
                 {item.anniv.toDate().toLocaleDateString()}
               </ListItem.Subtitle>
             </ListItem.Content>
+            <View style={styles.yearsContainer}>
+              <Text style={styles.yearsNumber}>{getElapsedYears(item.anniv.toDate())}</Text>
+              <Text style={styles.yearsLabel}>years</Text>
+            </View>
             <ListItem.Chevron />
           </ListItem>
         )}
@@ -230,5 +247,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     padding: 4,
     maxHeight: 100
+  },
+  yearsContainer: {
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    minWidth: 64,
+    marginRight: 8
+  },
+  yearsNumber: {
+    color: '#4A5054',
+    fontWeight: 'bold',
+    fontSize: 24
+  },
+  yearsLabel: {
+    color: '#95A2AC',
+    fontSize: 12
   }
 });
