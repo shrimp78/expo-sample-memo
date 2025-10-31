@@ -96,7 +96,7 @@ export default function HomeIndexScreen() {
     .filter(section => section.data.length > 0); // アイテムが1つ以上あるセクションのみを表示
 
   // Anniv からの経過年数を計算
-  const getElapsedYears = (annivDate: Date) => {
+  const elapsedYears = (annivDate: Date) => {
     const now = new Date();
     let years = now.getFullYear() - annivDate.getFullYear();
     const hasHadAnniversaryThisYear =
@@ -106,6 +106,16 @@ export default function HomeIndexScreen() {
       years -= 1;
     }
     return Math.max(0, years);
+  };
+  const annivUnit = (elapsedYears: number) => {
+    switch (elapsedYears) {
+      case 0:
+        return 'months';
+      case 1:
+        return 'year';
+      default:
+        return 'years';
+    }
   };
 
   // 認証状態のロード中
@@ -151,8 +161,8 @@ export default function HomeIndexScreen() {
               </ListItem.Subtitle>
             </ListItem.Content>
             <View style={styles.yearsContainer}>
-              <Text style={styles.yearsNumber}>{getElapsedYears(item.anniv.toDate())}</Text>
-              <Text style={styles.yearsLabel}>years</Text>
+              <Text style={styles.yearsNumber}>{elapsedYears(item.anniv.toDate())}</Text>
+              <Text style={styles.yearsLabel}>{annivUnit(elapsedYears(item.anniv.toDate()))}</Text>
             </View>
             <ListItem.Chevron />
           </ListItem>
