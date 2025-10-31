@@ -249,15 +249,14 @@ const styles = StyleSheet.create({
     maxHeight: 100
   },
   yearsContainer: {
-    alignItems: 'flex-end',
+    alignItems: 'center',
     justifyContent: 'center',
-    minWidth: 64,
-    marginRight: 8
+    minWidth: 34,
+    marginRight: 0
   },
   yearsNumber: {
     color: '#4A5054',
-    fontWeight: 'bold',
-    fontSize: 24
+    fontSize: 20
   },
   yearsLabel: {
     color: '#95A2AC',
