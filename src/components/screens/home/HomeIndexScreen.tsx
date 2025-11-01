@@ -244,12 +244,12 @@ const styles = StyleSheet.create({
   yearsContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    minWidth: 34,
+    minWidth: 40,
     marginRight: 0
   },
   yearsNumber: {
     color: '#4A5054',
-    fontSize: 20
+    fontSize: 21
   },
   yearsLabel: {
     color: '#95A2AC',
