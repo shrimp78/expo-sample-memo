@@ -21,7 +21,8 @@ export function changeAnnivFormat(anniv: Date): { number: number; unit: string }
 
   // 経過年が0の場合は、経過月数を計算
   if (years === 0) {
-    const totalMonthsDiff = 12 + (now.getMonth() - anniv.getMonth());
+    const totalMonthsDiff =
+      (now.getFullYear() - anniv.getFullYear()) * 12 + (now.getMonth() - anniv.getMonth());
     months = totalMonthsDiff - (now.getDate() < anniv.getDate() ? 1 : 0);
   }
   returnNumber = years === 0 ? months : years;
