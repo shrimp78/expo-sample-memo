@@ -12,7 +12,8 @@
       "@context/*": ["src/context/*"],
       "@models/*": ["src/components/types/*"],
       "@constants/*": ["constants/*"],
-      "@assets/*": ["assets/*"]
+      "@assets/*": ["assets/*"],
+      "@utils/*": ["src/utils/*"]
     }
   },
   "files.exclude": {

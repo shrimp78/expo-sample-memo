@@ -24,7 +24,7 @@ import HomeMenuModal from '@screens/home/HomeMenuModal';
 import FloatingFolderButton from '@components/common/FloatingFolderButton';
 import FloatingPlusButton from '@components/common/FloatingPlusButton';
 
-import { changeAnnivFormat } from '../../../utils/annivFormatter';
+import { changeAnnivFormat } from '@utils/annivFormatter';
 
 export default function HomeIndexScreen() {
   const { isLoggedIn, isLoading } = useAuth();
