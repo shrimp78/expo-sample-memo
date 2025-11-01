@@ -24,6 +24,8 @@ import HomeMenuModal from '@screens/home/HomeMenuModal';
 import FloatingFolderButton from '@components/common/FloatingFolderButton';
 import FloatingPlusButton from '@components/common/FloatingPlusButton';
 
+import { changeAnnivFormat } from '../../../utils/annivFormatter';
+
 export default function HomeIndexScreen() {
   const { isLoggedIn, isLoading } = useAuth();
   const { groups, loadGroups, isHydratedFromCache: groupsHydrated } = useGroups();
@@ -95,29 +97,6 @@ export default function HomeIndexScreen() {
     }))
     .filter(section => section.data.length > 0); // アイテムが1つ以上あるセクションのみを表示
 
-  // Anniv からの経過年数を計算
-  const elapsedYears = (annivDate: Date) => {
-    const now = new Date();
-    let years = now.getFullYear() - annivDate.getFullYear();
-    const hasHadAnniversaryThisYear =
-      now.getMonth() > annivDate.getMonth() ||
-      (now.getMonth() === annivDate.getMonth() && now.getDate() >= annivDate.getDate());
-    if (!hasHadAnniversaryThisYear) {
-      years -= 1;
-    }
-    return Math.max(0, years);
-  };
-  const annivUnit = (elapsedYears: number) => {
-    switch (elapsedYears) {
-      case 0:
-        return 'months';
-      case 1:
-        return 'year';
-      default:
-        return 'years';
-    }
-  };
-
   // 認証状態のロード中
   if (isLoading) {
     return (
@@ -161,8 +140,10 @@ export default function HomeIndexScreen() {
               </ListItem.Subtitle>
             </ListItem.Content>
             <View style={styles.yearsContainer}>
-              <Text style={styles.yearsNumber}>{elapsedYears(item.anniv.toDate())}</Text>
-              <Text style={styles.yearsLabel}>{annivUnit(elapsedYears(item.anniv.toDate()))}</Text>
+              <Text style={styles.yearsNumber}>
+                {changeAnnivFormat(item.anniv.toDate()).number}
+              </Text>
+              <Text style={styles.yearsLabel}>{changeAnnivFormat(item.anniv.toDate()).unit}</Text>
             </View>
             <ListItem.Chevron />
           </ListItem>
