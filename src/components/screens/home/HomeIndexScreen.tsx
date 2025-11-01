@@ -131,23 +131,25 @@ export default function HomeIndexScreen() {
             <View style={[styles.sectionHeaderBorder, { backgroundColor: section.color }]} />
           </View>
         )}
-        renderItem={({ item }) => (
-          <ListItem bottomDivider onPress={() => handleItemPress(item.id)}>
-            <ListItem.Content>
-              <ListItem.Title style={styles.listItemTitle}>{item.title}</ListItem.Title>
-              <ListItem.Subtitle style={styles.ListItemSubtitle} numberOfLines={3}>
-                {item.anniv.toDate().toLocaleDateString()}
-              </ListItem.Subtitle>
-            </ListItem.Content>
-            <View style={styles.yearsContainer}>
-              <Text style={styles.yearsNumber}>
-                {changeAnnivFormat(item.anniv.toDate()).number}
-              </Text>
-              <Text style={styles.yearsLabel}>{changeAnnivFormat(item.anniv.toDate()).unit}</Text>
-            </View>
-            <ListItem.Chevron />
-          </ListItem>
-        )}
+        renderItem={({ item }) => {
+          const formattedAnniv = changeAnnivFormat(item.anniv.toDate());
+
+          return (
+            <ListItem bottomDivider onPress={() => handleItemPress(item.id)}>
+              <ListItem.Content>
+                <ListItem.Title style={styles.listItemTitle}>{item.title}</ListItem.Title>
+                <ListItem.Subtitle style={styles.ListItemSubtitle} numberOfLines={3}>
+                  {item.anniv.toDate().toLocaleDateString()}
+                </ListItem.Subtitle>
+              </ListItem.Content>
+              <View style={styles.yearsContainer}>
+                <Text style={styles.yearsNumber}>{formattedAnniv.number}</Text>
+                <Text style={styles.yearsLabel}>{formattedAnniv.unit}</Text>
+              </View>
+              <ListItem.Chevron />
+            </ListItem>
+          );
+        }}
         ListEmptyComponent={
           // キャッシュ未ハイドレートの間は空表示を出さない
           !(itemsHydrated && groupsHydrated) ? (
