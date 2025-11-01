@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   Modal,
   SafeAreaView,
-  StyleSheet
+  StyleSheet,
+  Text as RNText
 } from 'react-native';
 import KeyboardCloseButton from '../common/KeyboardCloseButton';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -31,6 +32,10 @@ type ItemInputFormProps = {
   setMonth: (month: number) => void;
   setDay: (day: number) => void;
   autoFocus: boolean;
+  titleAccessory?: {
+    number: number | string;
+    unit: string;
+  };
 };
 
 const inputAccessoryViewID1 = 'INPUT_ACCESSORY_VIEW_ID_1';
@@ -55,7 +60,8 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
     setYear,
     setMonth,
     setDay,
-    autoFocus
+    autoFocus,
+    titleAccessory
   } = props;
 
   // 日付選択エリアで使用するモノたち
@@ -91,19 +97,29 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
   return (
     <View style={{ flex: 1, paddingBottom: 20 }}>
       {/* タイトル入力 */}
-      <Input borderWidth={0} minWidth={'$full'} marginTop={'$8'} marginBottom={'$1'}>
-        <InputField
-          placeholder="タイトル"
-          value={title}
-          onChangeText={onChangeTitle}
-          inputAccessoryViewID={inputAccessoryViewID1}
-          fontSize={'$3xl'}
-          fontWeight={'$bold'}
-          editable={true}
-          autoFocus={autoFocus}
-          maxLength={ITEM_TITLE_MAX_LENGTH}
-        />
-      </Input>
+      <View style={styles.titleRow}>
+        <Input borderWidth={0} style={styles.titleInput}>
+          <InputField
+            placeholder="タイトル"
+            value={title}
+            onChangeText={onChangeTitle}
+            inputAccessoryViewID={inputAccessoryViewID1}
+            fontSize={'$3xl'}
+            fontWeight={'$bold'}
+            editable={true}
+            autoFocus={autoFocus}
+            maxLength={ITEM_TITLE_MAX_LENGTH}
+          />
+        </Input>
+        {titleAccessory ? (
+          <View style={styles.titleAccessoryWrapper}>
+            <View style={styles.titleAccessoryContainer}>
+              <RNText style={styles.titleAccessoryNumber}>{titleAccessory.number}</RNText>
+              <RNText style={styles.titleAccessoryUnit}>{titleAccessory.unit}</RNText>
+            </View>
+          </View>
+        ) : null}
+      </View>
       {/* グループ選択エリア */}
       <HStack
         alignItems="center"
@@ -250,6 +266,35 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
 };
 
 const styles = StyleSheet.create({
+  titleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 24,
+    marginBottom: 4
+  },
+  titleInput: {
+    flex: 1
+  },
+  titleAccessoryWrapper: {
+    marginLeft: 12
+  },
+  titleAccessoryContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+    backgroundColor: '#F2F4F5'
+  },
+  titleAccessoryNumber: {
+    color: '#4A5054',
+    fontSize: 24,
+    fontWeight: 'bold'
+  },
+  titleAccessoryUnit: {
+    color: '#95A2AC',
+    fontSize: 12
+  },
   datePickerOverlay: {
     flex: 1,
     justifyContent: 'flex-end',
