@@ -168,6 +168,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
             >
               {/* カレンダーのアイコン */}
               <Feather name="calendar" size={22} color="#4A5054" />
+              {/* 年月日を表示 */}
               <Text fontSize={'$lg'} fontWeight={'$medium'} color="#4A5054" marginLeft={'$2'}>
                 {formatSelectedDate(year, month, day) || '日付を選択'}
               </Text>
@@ -229,6 +230,14 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           </Picker>
         </View>
       )}
+
+      {/* 経過時間を表示 */}
+      <View>
+        <HStack>
+          <Text>aaa</Text>
+          <Text>bbb</Text>
+        </HStack>
+      </View>
       {/* 内容入力 */}
       <Textarea
         borderWidth={0}
@@ -283,8 +292,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 12,
     paddingVertical: 8,
-    borderRadius: 8,
-    backgroundColor: '#F2F4F5'
+    borderRadius: 8
   },
   titleAccessoryNumber: {
     color: '#4A5054',
