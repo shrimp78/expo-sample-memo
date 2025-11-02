@@ -81,7 +81,7 @@ export default function ItemEditScreen() {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => {
-        return <Button title="保存" onPress={handleSaveItemPress} />;
+        return <Button title="保存" type="clear" onPress={handleSaveItemPress} />;
       }
     });
   }, [handleSaveItemPress, navigation]);
