@@ -33,10 +33,6 @@ type ItemInputFormProps = {
   setMonth: (month: number) => void;
   setDay: (day: number) => void;
   autoFocus: boolean;
-  titleAccessory?: {
-    number: number | string;
-    unit: string;
-  };
 };
 
 const inputAccessoryViewID1 = 'INPUT_ACCESSORY_VIEW_ID_1';
@@ -61,8 +57,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
     setYear,
     setMonth,
     setDay,
-    autoFocus,
-    titleAccessory
+    autoFocus
   } = props;
 
   // 日付選択エリアで使用するモノたち
@@ -116,14 +111,6 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
             maxLength={ITEM_TITLE_MAX_LENGTH}
           />
         </Input>
-        {titleAccessory ? (
-          <View style={styles.titleAccessoryWrapper}>
-            <View style={styles.titleAccessoryContainer}>
-              <RNText style={styles.titleAccessoryNumber}>{titleAccessory.number}</RNText>
-              <RNText style={styles.titleAccessoryUnit}>{titleAccessory.unit}</RNText>
-            </View>
-          </View>
-        ) : null}
       </View>
       {/* グループ選択エリア */}
       <HStack
@@ -177,6 +164,10 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
               <Text fontSize={'$lg'} fontWeight={'$medium'} color="#4A5054" marginLeft={'$2'}>
                 {formatSelectedDate(year, month, day) || '日付を選択'}
               </Text>
+              <HStack>
+                <Text> {formattedAnniv.number}</Text>
+                <Text> {formattedAnniv.unit}</Text>
+              </HStack>
             </HStack>
           </TouchableOpacity>
 
@@ -238,10 +229,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
 
       {/* 経過時間を表示 */}
       <View>
-        <HStack>
-          <Text>{formattedAnniv.number}</Text>
-          <Text>{formattedAnniv.unit}</Text>
-        </HStack>
+        <HStack></HStack>
       </View>
       {/* 内容入力 */}
       <Textarea
@@ -288,25 +276,6 @@ const styles = StyleSheet.create({
   },
   titleInput: {
     flex: 1
-  },
-  titleAccessoryWrapper: {
-    marginLeft: 12
-  },
-  titleAccessoryContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8
-  },
-  titleAccessoryNumber: {
-    color: '#4A5054',
-    fontSize: 24,
-    fontWeight: 'bold'
-  },
-  titleAccessoryUnit: {
-    color: '#95A2AC',
-    fontSize: 12
   },
   datePickerOverlay: {
     flex: 1,

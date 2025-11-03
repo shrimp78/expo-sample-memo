@@ -12,7 +12,6 @@ import { useItems } from '@context/ItemContext';
 import { useGroups } from '@context/GroupContext';
 import { Timestamp } from 'firebase/firestore';
 import { deleteItemById } from '@services/itemService';
-import { changeAnnivFormat } from '@utils/annivFormatter';
 
 export default function ItemEditScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -32,9 +31,6 @@ export default function ItemEditScreen() {
 
   // グループ選択画面のModal用
   const [groupModalVisible, setGroupModalVisible] = useState(false);
-
-  const annivPreviewDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
-  const formattedAnniv = changeAnnivFormat(annivPreviewDate);
 
   useEffect(() => {
     if (!id) {
@@ -129,7 +125,6 @@ export default function ItemEditScreen() {
           setMonth={setMonth}
           setDay={setDay}
           autoFocus={false}
-          titleAccessory={{ number: formattedAnniv.number, unit: formattedAnniv.unit }}
         />
       </KeyboardAvoidingView>
       {/* 削除ボタン ※ここにあるのはキモいが、あとあとメニューを増やして下の方に押し込められるので一旦OK */}
