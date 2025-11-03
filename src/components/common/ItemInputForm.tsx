@@ -7,8 +7,7 @@ import {
   TouchableOpacity,
   Modal,
   SafeAreaView,
-  StyleSheet,
-  Text as RNText
+  StyleSheet
 } from 'react-native';
 import KeyboardCloseButton from '../common/KeyboardCloseButton';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
