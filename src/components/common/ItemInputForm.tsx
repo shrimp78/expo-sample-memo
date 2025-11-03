@@ -17,6 +17,7 @@ import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
 import { ITEM_TITLE_MAX_LENGTH, ITEM_CONTENT_MAX_LENGTH } from '@constants/validation';
+import { changeAnnivFormat } from '@utils/annivFormatter';
 
 type ItemInputFormProps = {
   title: string;
@@ -93,6 +94,10 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
     setDay(d);
     setDatePickerOpen(false);
   };
+
+  // 経過年数を表示
+  const annivPreviewDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
+  const formattedAnniv = changeAnnivFormat(annivPreviewDate);
 
   return (
     <View style={{ flex: 1, paddingBottom: 20 }}>
@@ -234,8 +239,8 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
       {/* 経過時間を表示 */}
       <View>
         <HStack>
-          <Text>aaa</Text>
-          <Text>bbb</Text>
+          <Text>{formattedAnniv.number}</Text>
+          <Text>{formattedAnniv.unit}</Text>
         </HStack>
       </View>
       {/* 内容入力 */}
