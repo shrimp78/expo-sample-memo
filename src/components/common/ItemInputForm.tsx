@@ -117,7 +117,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
         paddingHorizontal={'$2'}
         marginTop={'$2'}
         marginBottom={'$1'}
-        marginLeft={'$2'}
+        marginLeft={'$1'}
         height={'$10'}
       >
         <TouchableOpacity onPress={onSelectGroup}>
@@ -140,35 +140,45 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           </HStack>
         </TouchableOpacity>
       </HStack>
-      {/* 年月日入力　iOSの場合は、ネイティブのホイールを出現させる */}
+      {/* 年月日入力 iOSの場合は、ネイティブのホイールを出現させる */}
       {Platform.OS === 'ios' ? (
         <>
-          <TouchableOpacity
-            onPress={() => {
-              setTempDate(new Date(year, month - 1, day));
-              setDatePickerOpen(true);
-            }}
+          <HStack
+            alignItems="center"
+            paddingHorizontal={'$2'}
+            marginTop={'$2'}
+            marginBottom={'$1'}
+            marginLeft={'$0'}
+            height={'$10'}
           >
-            <HStack
-              alignItems="center"
-              paddingHorizontal={'$2'}
-              marginTop={'$2'}
-              marginBottom={'$1'}
-              marginLeft={'$2'}
-              height={'$10'}
+            {/* カレンダーのアイコン */}
+            <TouchableOpacity
+              onPress={() => {
+                setTempDate(new Date(year, month - 1, day));
+                setDatePickerOpen(true);
+              }}
+              style={styles.datePickerButton}
             >
-              {/* カレンダーのアイコン */}
-              <Feather name="calendar" size={22} color="#4A5054" />
-              {/* 年月日を表示 */}
-              <Text fontSize={'$lg'} fontWeight={'$medium'} color="#4A5054" marginLeft={'$2'}>
-                {formatSelectedDate(year, month, day) || '日付を選択'}
-              </Text>
-              <HStack>
-                <Text> {formattedAnniv.number}</Text>
-                <Text> {formattedAnniv.unit}</Text>
+              <HStack alignItems="center" space="sm">
+                <Feather name="calendar" size={22} color="#007AFF" />
+                {/* 年月日を表示 */}
+                <Text fontSize={'$lg'} fontWeight={'$medium'} color="#007AFF">
+                  {formatSelectedDate(year, month, day) || '日付を選択'}
+                </Text>
               </HStack>
-            </HStack>
-          </TouchableOpacity>
+            </TouchableOpacity>
+            {/* 経過年数を表示 CreateModal用にnumberが0の場合は非表示 */}
+            {formattedAnniv.number > 0 && (
+              <HStack alignItems="center" space="xs" marginLeft={'$4'}>
+                <Text fontSize={'$lg'} fontWeight={'$medium'} color="#4A5054">
+                  {formattedAnniv.number}
+                </Text>
+                <Text fontSize={'$lg'} fontWeight={'$medium'} color="#4A5054">
+                  {formattedAnniv.unit}
+                </Text>
+              </HStack>
+            )}
+          </HStack>
 
           {/* iOS用の日付Pickerモーダル */}
           <Modal
@@ -294,6 +304,10 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderBottomWidth: 1,
     borderBottomColor: '#eee'
+  },
+  datePickerButton: {
+    paddingVertical: 4,
+    paddingHorizontal: 4
   }
 });
 
