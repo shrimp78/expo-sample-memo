@@ -159,10 +159,18 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
               }}
               style={styles.datePickerButton}
             >
-              <HStack alignItems="center" space="sm">
-                <Feather name="calendar" size={22} color="#007AFF" />
+              <HStack
+                alignItems="center"
+                space="sm"
+                borderWidth={1}
+                borderColor="$gray300"
+                borderRadius="$md"
+                paddingHorizontal="$3"
+                paddingVertical="$2"
+              >
+                <Feather name="calendar" size={15} />
                 {/* 年月日を表示 */}
-                <Text fontSize={'$lg'} fontWeight={'$medium'} color="#007AFF">
+                <Text fontSize={'$sm'} fontWeight={'$medium'}>
                   {formatSelectedDate(year, month, day) || '日付を選択'}
                 </Text>
               </HStack>
