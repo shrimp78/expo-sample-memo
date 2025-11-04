@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Alert, Modal, View, TouchableOpacity, Text, StyleSheet, Dimensions } from 'react-native';
 import { deleteAllItems } from '@services/itemService';
 import { deleteAllGroups } from '@services/groupService';
@@ -25,6 +25,7 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
   const { logout } = useAuth();
   const [modalWidth, setModalWidth] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [animationType, setAnimationType] = useState<'fade' | 'none'>('fade');
   const screenWidth = Dimensions.get('window').width;
   const leftMargin = 20; // 画面端からの余白
   const rightMargin = 20; // 画面端からの余白
@@ -46,6 +47,13 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
     const { width } = event.nativeEvent.layout; // モーダルの幅だけ取得
     setModalWidth(width);
   };
+
+  // visibleがfalseになったら、次回のためにアニメーションタイプをfadeに戻す
+  useEffect(() => {
+    if (!visible) {
+      setAnimationType('fade');
+    }
+  }, [visible]);
 
   // 全削除処理
   const deleteExecute = async () => {
@@ -79,8 +87,13 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
   // アカウント設定ボタン
   const handleAccountSettingsPress = () => {
     console.log('アカウント設定が押されました');
-    router.push({ pathname: `/account` });
-    onRequestClose();
+    // 画面遷移を素早くするため、アニメーションなしで即座に閉じる
+    setAnimationType('none');
+    // 次のフレームで遷移と閉じる処理を実行（アニメーションタイプの変更を確実に反映）
+    requestAnimationFrame(() => {
+      router.push({ pathname: `/account` });
+      onRequestClose();
+    });
   };
 
   // フィードバックボタン
@@ -122,7 +135,7 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
       <Modal
         visible={visible}
         transparent={true}
-        animationType="fade"
+        animationType={animationType}
         onRequestClose={onRequestClose}
       >
         <TouchableOpacity style={styles.modalOverlay} activeOpacity={1} onPress={onRequestClose}>
