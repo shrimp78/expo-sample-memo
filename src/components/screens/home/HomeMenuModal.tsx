@@ -96,6 +96,16 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
     });
   };
 
+  // 設定ボタン
+  const handleSettingsPress = () => {
+    console.log('設定が押されました');
+    setAnimationType('none');
+    requestAnimationFrame(() => {
+      router.push({ pathname: `/home/settings` });
+      onRequestClose();
+    });
+  };
+
   // フィードバックボタン
   const handleFeedbackPress = () => {
     console.log('フィードバックが押されました');
@@ -152,6 +162,9 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
           >
             <TouchableOpacity style={styles.menuItem} onPress={handleAccountSettingsPress}>
               <Text style={styles.menuText}>アカウント設定</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.menuItem} onPress={handleSettingsPress}>
+              <Text style={styles.menuText}>設定</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={handleDeleteAllPress}>
               <Text style={styles.menuText}>全てのアイテムを削除する</Text>

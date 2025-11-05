@@ -55,6 +55,12 @@ export default function Layout() {
                     headerBackVisible: false
                   }}
                 />
+                <Stack.Screen
+                  name="home/settings"
+                  options={{
+                    headerTitle: '設定'
+                  }}
+                />
 
                 {/* アイテム */}
                 <Stack.Screen name="items/[id]" options={{ headerTitle: '' }} />
