@@ -52,7 +52,7 @@ export default function Layout() {
                   name="home/index"
                   options={{
                     headerTitle: '',
-                    headerBackVisible: false
+                    headerBackVisible: false // ホーム画面に戻るボタンを非表示
                   }}
                 />
                 <Stack.Screen
