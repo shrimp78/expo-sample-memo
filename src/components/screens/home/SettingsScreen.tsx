@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, View, Text, StyleSheet, Pressable } from 'react-native';
-import { router, useNavigation } from 'expo-router';
+import { router } from 'expo-router';
 import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
 
 type SortOption = {
@@ -33,22 +33,9 @@ const sortOptions: SortOption[] = [
 ];
 
 export default function SettingsScreen() {
-  const navigation = useNavigation();
   const { isLoggedIn } = useAuth();
   const user = useAuthenticatedUser();
   const [selectedSortOption, setSelectedSortOption] = useState<string>('title-asc');
-
-  useEffect(() => {
-    navigation.setOptions({
-      headerTitle: '設定',
-      headerBackTitle: '戻る',
-      headerLeft: () => (
-        <Pressable style={styles.headerBackButton} onPress={() => router.back()}>
-          <Text style={styles.headerBackText}>戻る</Text>
-        </Pressable>
-      )
-    });
-  }, [navigation]);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -217,16 +204,5 @@ const styles = StyleSheet.create({
   optionIndicatorSelected: {
     borderColor: '#2563EB',
     backgroundColor: '#2563EB'
-  },
-  headerBackButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-    backgroundColor: '#EEF2FF'
-  },
-  headerBackText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#1D4ED8'
   }
 });
