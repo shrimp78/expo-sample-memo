@@ -29,7 +29,8 @@ export default function Layout() {
             <ItemProviderGate>
               <Stack
                 screenOptions={{
-                  headerTintColor: '#000000',
+                  headerBackTitle: '',
+                  headerTintColor: 'gray',
                   headerStyle: { backgroundColor: '#F9F9F9' }
                 }}
               >
