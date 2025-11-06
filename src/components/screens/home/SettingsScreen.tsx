@@ -34,7 +34,6 @@ const sortOptions: SortOption[] = [
 
 export default function SettingsScreen() {
   const { isLoggedIn } = useAuth();
-  const user = useAuthenticatedUser();
   const [selectedSortOption, setSelectedSortOption] = useState<string>('title-asc');
 
   useEffect(() => {
@@ -50,14 +49,6 @@ export default function SettingsScreen() {
   return (
     <SafeAreaView style={styles.safeArea}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.greetingCard}>
-          <Text style={styles.greetingTitle}>こんにちは</Text>
-          <Text style={styles.greetingName}>{user.name} さん</Text>
-          <Text style={styles.greetingDescription}>
-            ホーム画面の表示に関する設定をこちらから管理できます。
-          </Text>
-        </View>
-
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>ホーム画面の並び順</Text>
           <Text style={styles.sectionSubtitle}>好みの表示順を選択してください。</Text>
@@ -101,36 +92,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: 24,
     paddingBottom: 32
-  },
-  greetingCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    paddingVertical: 24,
-    paddingHorizontal: 20,
-    marginBottom: 24,
-    shadowColor: '#0F172A',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.08,
-    shadowRadius: 16,
-    elevation: 4
-  },
-  greetingTitle: {
-    fontSize: 14,
-    color: '#64748B',
-    letterSpacing: 1.2,
-    textTransform: 'uppercase'
-  },
-  greetingName: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#0F172A',
-    marginTop: 6
-  },
-  greetingDescription: {
-    fontSize: 15,
-    color: '#475569',
-    marginTop: 12,
-    lineHeight: 22
   },
   section: {
     backgroundColor: '#FFFFFF',
