@@ -12,37 +12,37 @@ export default function InitialScreen() {
   const { isLoggedIn, isLoading, user } = useAuth();
 
   useEffect(() => {
+    /**
+     * アプリ起動時処理（ログイン済みの場合のみ）
+     */
+    const initApp = async () => {
+      try {
+        if (!user?.id) return;
+        const currentVersion = user?.onboardingVersion ?? 0;
+        console.log('currentVersion', user?.onboardingVersion);
+        console.log('ONBOARDING_VERSION', ONBOARDING_VERSION);
+        if (currentVersion < ONBOARDING_VERSION) {
+          // オンボーディングが必要な場合はオンボ画面に遷移
+          router.replace('/onboarding');
+        } else {
+          // Home表示前にキャッシュをウォームアップ
+          try {
+            await Promise.all([getCachedItems(user.id), getCachedGroups(user.id)]);
+          } catch (e) {
+            console.log('ウォームアップ時にErrorが発生しました:', e);
+          }
+          router.replace('/home');
+        }
+      } catch (e) {
+        console.log('初期化エラー', e);
+      }
+    };
+
     // ログイン状態が確定したら処理を開始
     if (!isLoading && isLoggedIn) {
       initApp();
     }
-  }, [isLoggedIn, isLoading]);
-
-  /**
-   * アプリ起動時処理（ログイン済みの場合のみ）
-   */
-  const initApp = async () => {
-    try {
-      if (!user?.id) return;
-      const currentVersion = user?.onboardingVersion ?? 0;
-      console.log('currentVersion', user?.onboardingVersion);
-      console.log('ONBOARDING_VERSION', ONBOARDING_VERSION);
-      if (currentVersion < ONBOARDING_VERSION) {
-        // オンボーディングが必要な場合はオンボ画面に遷移
-        router.replace('/onboarding');
-      } else {
-        // Home表示前にキャッシュをウォームアップ
-        try {
-          await Promise.all([getCachedItems(user.id), getCachedGroups(user.id)]);
-        } catch (e) {
-          console.log('ウォームアップ時にErrorが発生しました:', e);
-        }
-        router.replace('/home');
-      }
-    } catch (e) {
-      console.log('初期化エラー', e);
-    }
-  };
+  }, [isLoggedIn, isLoading, user]);
 
   // 認証状態のロード中
   if (isLoading) {
