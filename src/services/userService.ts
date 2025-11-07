@@ -11,6 +11,7 @@ import {
 import { db } from '@root/firebaseConfig';
 import { User } from '@models/User';
 import { COLLECTION } from '@constants/firebaseCollectionName';
+import { DEFAULT_SORT_OPTION } from '@constants/sortOptions';
 
 /**
  * Firestoreからユーザー情報を取得
@@ -23,12 +24,17 @@ export const getUserByUid = async (uid: string): Promise<User | null> => {
 
     if (userDoc.exists()) {
       const userData = userDoc.data();
+
+      // Firestoreにデータが無い/空の時でもアプリは常にitemSortOptionを保持
+      const itemSortOption = userData?.preferences?.itemSortOption ?? DEFAULT_SORT_OPTION;
+
       return {
         id: uid,
         email: userData?.email || '',
         name: userData?.name || '',
         picture: userData?.picture || undefined,
-        onboardingVersion: userData?.onboardingVersion || 0
+        onboardingVersion: userData?.onboardingVersion || 0,
+        preferences: { itemSortOption }
       };
     }
     return null;
@@ -50,6 +56,9 @@ export const saveUser = async (user: User): Promise<void> => {
       name: user.name,
       picture: user.picture || null,
       onboardingVersion: user.onboardingVersion || 0,
+      preferences: {
+        itemSortOption: user.preferences?.itemSortOption ?? DEFAULT_SORT_OPTION
+      },
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     });
@@ -72,10 +81,17 @@ export const updateUserById = async (
 ): Promise<void> => {
   try {
     const userDocRef = doc(db, COLLECTION.USERS, uid);
-    await updateDoc(userDocRef, {
+
+    const payload: Record<string, unknown> = {
       ...updates,
       updatedAt: serverTimestamp()
-    });
+    };
+    if (updates.preferences?.itemSortOption) {
+      payload.preferences = {
+        itemSortOption: updates.preferences.itemSortOption
+      };
+    }
+    await updateDoc(userDocRef, payload);
 
     console.log('User updated in Firestore:', uid);
   } catch (error) {
