@@ -1,3 +1,4 @@
+import type { SortOptionId } from '@constants/sortOptions';
 /**
  *  ユーザーの型
  */
@@ -7,6 +8,7 @@ type User = {
   name: string;
   picture?: string;
   onboardingVersion: number;
+  preferences?: { itemSortOption: SortOptionId };
 };
 
 export type { User };
