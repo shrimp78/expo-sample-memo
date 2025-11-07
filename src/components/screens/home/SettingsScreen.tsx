@@ -1,40 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, View, Text, StyleSheet, Pressable } from 'react-native';
 import { router } from 'expo-router';
-import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
-
-type SortOption = {
-  id: string;
-  label: string;
-  description: string;
-};
-
-const sortOptions: SortOption[] = [
-  {
-    id: 'title-asc',
-    label: 'タイトル A → Z',
-    description: 'タイトルをアルファベット順（昇順）で表示します。'
-  },
-  {
-    id: 'title-desc',
-    label: 'タイトル Z → A',
-    description: 'タイトルをアルファベット順（降順）で表示します。'
-  },
-  {
-    id: 'anniv-asc',
-    label: '日付 昇順',
-    description: '日付が早いものから順番に表示します。'
-  },
-  {
-    id: 'anniv-desc',
-    label: '日付 降順',
-    description: '日付が遅いものから順番に表示します。'
-  }
-];
+import { useAuth } from '@context/AuthContext';
+import { sortOptions, SortOptionId, DEFAULT_SORT_OPTION } from '@constants/sortOptions';
 
 export default function SettingsScreen() {
   const { isLoggedIn } = useAuth();
-  const [selectedSortOption, setSelectedSortOption] = useState<string>('title-asc');
+  const [selectedSortOption, setSelectedSortOption] = useState<SortOptionId>(DEFAULT_SORT_OPTION);
 
   useEffect(() => {
     if (!isLoggedIn) {
