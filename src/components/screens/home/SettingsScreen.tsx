@@ -22,13 +22,13 @@ const sortOptions: SortOption[] = [
   },
   {
     id: 'anniv-asc',
-    label: 'Anniv 昇順',
-    description: 'Anniv が早いものから順番に表示します。'
+    label: '日付 昇順',
+    description: '日付が早いものから順番に表示します。'
   },
   {
     id: 'anniv-desc',
-    label: 'Anniv 降順',
-    description: 'Anniv が遅いものから順番に表示します。'
+    label: '日付 降順',
+    description: '日付が遅いものから順番に表示します。'
   }
 ];
 
