@@ -164,7 +164,7 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
               <Text style={styles.menuText}>アカウント設定</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={handleSettingsPress}>
-              <Text style={styles.menuText}>設定</Text>
+              <Text style={styles.menuText}>アプリ設定</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={handleDeleteAllPress}>
               <Text style={styles.menuText}>全てのアイテムを削除する</Text>
