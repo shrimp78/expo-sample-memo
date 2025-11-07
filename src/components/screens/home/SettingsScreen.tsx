@@ -51,7 +51,10 @@ export default function SettingsScreen() {
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>ホーム画面の並び順</Text>
-          <Text style={styles.sectionSubtitle}>好みの表示順を選択してください。</Text>
+          <Text style={styles.sectionSubtitle}>
+            グループの中のアイテムの並び順を選択してください。
+            グループ自体の並び順は、グループ設定画面で自由に並び替える事ができます。
+          </Text>
           <View style={styles.optionList}>
             {sortOptions.map(option => {
               const isSelected = selectedSortOption === option.id;
