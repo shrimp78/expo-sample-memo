@@ -3,7 +3,6 @@ import { StyleSheet, View } from 'react-native';
 import { useEffect } from 'react';
 
 import { useAuth } from '../src/context/AuthContext';
-import { getCachedItems, getCachedGroups, getCachedUserPreferences } from '@services/cache';
 import { ONBOARDING_VERSION } from '@constants/onboarding';
 import LoginScreen from '../src/components/screens/auth/LoginScreen';
 import ActivityIndicatorModal from '@components/common/ActivityIndicatorModal';
@@ -25,16 +24,6 @@ export default function InitialScreen() {
           // オンボーディングが必要な場合はオンボ画面に遷移
           router.replace('/onboarding');
         } else {
-          // Home表示前にキャッシュをウォームアップ
-          try {
-            await Promise.all([
-              getCachedItems(user.id),
-              getCachedGroups(user.id),
-              getCachedUserPreferences(user.id)
-            ]);
-          } catch (e) {
-            console.log('ウォームアップ時にErrorが発生しました:', e);
-          }
           router.replace('/home');
         }
       } catch (e) {
