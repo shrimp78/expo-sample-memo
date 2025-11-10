@@ -2,9 +2,9 @@ import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { useEffect } from 'react';
 
-import { useAuth } from '../src/context/AuthContext'; // ここpath変えられるやんけ
+import { useAuth } from '@src/context/AuthContext';
 import { ONBOARDING_VERSION } from '@constants/onboarding';
-import LoginScreen from '../src/components/screens/auth/LoginScreen'; // ここpath変えられるやんけ
+import LoginScreen from '@src/components/screens/auth/LoginScreen';
 import ActivityIndicatorModal from '@components/common/ActivityIndicatorModal';
 import { useUserPreferencesStore } from '@src/store/userPreferencesStore';
 
