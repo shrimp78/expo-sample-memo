@@ -2,10 +2,11 @@ import { router } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
 import { useEffect } from 'react';
 
-import { useAuth } from '../src/context/AuthContext';
+import { useAuth } from '../src/context/AuthContext'; // ここpath変えられるやんけ
 import { ONBOARDING_VERSION } from '@constants/onboarding';
-import LoginScreen from '../src/components/screens/auth/LoginScreen';
+import LoginScreen from '../src/components/screens/auth/LoginScreen'; // ここpath変えられるやんけ
 import ActivityIndicatorModal from '@components/common/ActivityIndicatorModal';
+import { useUserPreferencesStore } from '@src/store/userPreferencesStore';
 
 export default function InitialScreen() {
   const { isLoggedIn, isLoading, user } = useAuth();
@@ -15,15 +16,19 @@ export default function InitialScreen() {
      * アプリ起動時処理（ログイン済みの場合のみ）
      */
     const initApp = async () => {
+      if (!user?.id) return;
+
       try {
-        if (!user?.id) return;
         const currentVersion = user?.onboardingVersion ?? 0;
         console.log('currentVersion', user?.onboardingVersion);
         console.log('ONBOARDING_VERSION', ONBOARDING_VERSION);
         if (currentVersion < ONBOARDING_VERSION) {
           // オンボーディングが必要な場合はオンボ画面に遷移
           router.replace('/onboarding');
+
+          // キャッシュを呼び出してホームに遷移
         } else {
+          await useUserPreferencesStore.getState().hydrateFromCache(user.id);
           router.replace('/home');
         }
       } catch (e) {
