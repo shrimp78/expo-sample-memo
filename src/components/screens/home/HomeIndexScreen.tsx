@@ -17,6 +17,8 @@ import { Entypo } from '@expo/vector-icons';
 import { useGroups } from '@context/GroupContext';
 import { useItems } from '@context/ItemContext';
 import { useAuth } from '@context/AuthContext';
+import { useUserPreferencesStore } from '@src/store/userPreferencesStore';
+import { DEFAULT_SORT_OPTION } from '@constants/sortOptions';
 
 // 新規作成モーダル用
 import ItemCreateModal from '@screens/home/ItemCreateModal';
@@ -30,6 +32,9 @@ export default function HomeIndexScreen() {
   const { isLoggedIn, isLoading } = useAuth();
   const { groups, loadGroups, isHydratedFromCache: groupsHydrated } = useGroups();
   const { items, loadItems, isHydratedFromCache: itemsHydrated } = useItems();
+  const itemSortOption =
+    useUserPreferencesStore(state => state.itemSortOption) ?? DEFAULT_SORT_OPTION; // もしnullならデフォルト値を設定
+  console.log('itemSortOption', itemSortOption);
 
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const toggleCreateModal = () => {
