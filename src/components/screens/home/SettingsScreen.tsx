@@ -1,18 +1,40 @@
-import React, { useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, View, Text, StyleSheet, Pressable } from 'react-native';
+import React, { useEffect } from 'react';
+import { SafeAreaView, ScrollView, View, Text, StyleSheet, Pressable, Alert } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from '@context/AuthContext';
 import { sortOptions, SortOptionId, DEFAULT_SORT_OPTION } from '@constants/sortOptions';
+import { useUserPreferencesStore } from '@src/store/userPreferencesStore';
 
 export default function SettingsScreen() {
-  const { isLoggedIn } = useAuth();
-  const [selectedSortOption, setSelectedSortOption] = useState<SortOptionId>(DEFAULT_SORT_OPTION);
+  const { isLoggedIn, user } = useAuth();
+  const itemSortOption = useUserPreferencesStore(state => state.itemSortOption);
+  const isHydrated = useUserPreferencesStore(state => state.isHydrated);
+  const isSaving = useUserPreferencesStore(state => state.isSaving);
+  const hydrateFromCache = useUserPreferencesStore(state => state.hydrateFromCache);
+  const updateItemSortOption = useUserPreferencesStore(state => state.updateItemSortOption);
+  const currentSortOption = itemSortOption ?? DEFAULT_SORT_OPTION;
 
   useEffect(() => {
     if (!isLoggedIn) {
       router.replace('/');
     }
   }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (user?.id && !isHydrated) {
+      void hydrateFromCache(user.id);
+    }
+  }, [user?.id, isHydrated, hydrateFromCache]);
+
+  const handleSelectOption = (optionId: SortOptionId) => {
+    if (!user?.id || isSaving || optionId === currentSortOption) {
+      return;
+    }
+
+    updateItemSortOption(user.id, optionId).catch(() => {
+      Alert.alert('エラー', '並び順の保存に失敗しました。時間をおいて再度お試しください。');
+    });
+  };
 
   if (!isLoggedIn) {
     return null;
@@ -29,11 +51,12 @@ export default function SettingsScreen() {
           </Text>
           <View style={styles.optionList}>
             {sortOptions.map(option => {
-              const isSelected = selectedSortOption === option.id;
+              const isSelected = currentSortOption === option.id;
               return (
                 <Pressable
                   key={option.id}
-                  onPress={() => setSelectedSortOption(option.id)}
+                  onPress={() => handleSelectOption(option.id)}
+                  disabled={isSaving && !isSelected}
                   style={({ pressed }) => [
                     styles.optionItem,
                     isSelected && styles.optionItemSelected,
