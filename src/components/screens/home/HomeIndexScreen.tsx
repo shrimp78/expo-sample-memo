@@ -9,7 +9,7 @@ import {
   GestureResponderEvent,
   Dimensions
 } from 'react-native';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useMemo } from 'react';
 import { ListItem } from '@rneui/base';
 import { Entypo } from '@expo/vector-icons';
 
@@ -27,6 +27,8 @@ import FloatingFolderButton from '@components/common/FloatingFolderButton';
 import FloatingPlusButton from '@components/common/FloatingPlusButton';
 
 import { changeAnnivFormat } from '@utils/annivFormatter';
+import { type Item } from '@models/Item';
+import { SortOptionId } from '@constants/sortOptions';
 
 export default function HomeIndexScreen() {
   const { isLoggedIn, isLoading } = useAuth();
@@ -93,14 +95,33 @@ export default function HomeIndexScreen() {
     router.push({ pathname: `/items/${itemId}` });
   };
 
+  // セクション内のアイテム並び替え
+  const sortItems = (list: Item[], option: SortOptionId) => {
+    const sorted = [...list];
+    switch (option) {
+      case 'title-asc':
+        return sorted.sort((a, b) => a.title.localeCompare(b.title));
+      case 'title-desc':
+        return sorted.sort((a, b) => b.title.localeCompare(a.title));
+      case 'anniv-asc':
+        return sorted.sort((a, b) => a.anniv.toDate().getTime() - b.anniv.toDate().getTime());
+      case 'anniv-desc':
+        return sorted.sort((a, b) => b.anniv.toDate().getTime() - a.anniv.toDate().getTime());
+      default:
+        return sorted;
+    }
+  };
+
   // グループセクション用のデータ整形
-  const sections = groups
-    .map(group => ({
-      title: group.name,
-      color: group.color,
-      data: items.filter(item => item.group_id === group.id)
-    }))
-    .filter(section => section.data.length > 0); // アイテムが1つ以上あるセクションのみを表示
+  const sections = useMemo(
+    () =>
+      groups.map(group => {
+        const groupItems = items.filter(item => item.group_id === group.id);
+        const sortedItems = sortItems(groupItems, itemSortOption);
+        return { title: group.name, color: group.color, data: sortedItems };
+      }),
+    [groups, items, itemSortOption]
+  );
 
   // 認証状態のロード中
   if (isLoading) {
