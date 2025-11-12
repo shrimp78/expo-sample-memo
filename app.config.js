@@ -20,7 +20,7 @@ export default ({ config }) => {
       ios: {
         supportsTablet: true,
         bundleIdentifier: 'com.shrimp78.spd-app',
-        googleServicesFile: './GoogleService-Info.plist',
+        googleServicesFile: process.env.GOOGLE_SERVICE_INFO_PLIST ?? './GoogleService-Info.plist',
         usesAppleSignIn: true
       },
       android: {
@@ -51,7 +51,7 @@ export default ({ config }) => {
           appIdIos: process.env.FIREBASE_APP_ID_IOS,
           appIdAndroid: process.env.FIREBASE_APP_ID_ANDROID
         },
-        eas: {}
+        eas: { projectId: '6be47e36-1646-485e-8975-68daf92001cf' }
       }
     }
   };
