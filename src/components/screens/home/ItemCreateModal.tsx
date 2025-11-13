@@ -116,7 +116,7 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
                     setYear={setYear}
                     setMonth={setMonth}
                     setDay={setDay}
-                    autoFocus={true} // TODO:　これ、動いていないんで後で修正する
+                    autoFocus={true}
                   />
                 </KeyboardAvoidingView>
               </View>
