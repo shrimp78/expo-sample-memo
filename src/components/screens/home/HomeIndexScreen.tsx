@@ -113,15 +113,29 @@ export default function HomeIndexScreen() {
   };
 
   // グループセクション用のデータ整形
-  const sections = useMemo(
-    () =>
-      groups.map(group => {
-        const groupItems = items.filter(item => item.group_id === group.id);
-        const sortedItems = sortItems(groupItems, itemSortOption);
-        return { title: group.name, color: group.color, data: sortedItems };
-      }),
-    [groups, items, itemSortOption]
-  );
+  const sections = useMemo(() => {
+    // グループごとのセクションを作成
+    const groupSections = groups.map(group => {
+      const groupItems = items.filter(item => item.group_id === group.id);
+      const sortedItems = sortItems(groupItems, itemSortOption);
+      return { title: group.name, color: group.color, data: sortedItems };
+    });
+
+    // グループIDがないItemsを抽出
+    const ungroupedItems = items.filter(item => item.group_id === null);
+    const sortedUngroupedItems = sortItems(ungroupedItems, itemSortOption);
+
+    // グループなしセクションを追加（アイテムがある場合のみ）
+    if (sortedUngroupedItems.length > 0) {
+      groupSections.push({
+        title: 'グループなし',
+        color: 'white',
+        data: sortedUngroupedItems
+      });
+    }
+
+    return groupSections;
+  }, [groups, items, itemSortOption]);
 
   // 認証状態のロード中
   if (isLoading) {
