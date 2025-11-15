@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
   },
   createModalContent: {
     position: 'absolute',
-    top: 80, // TODO: これ、デバイスによって違うので、デバイスの高さによって変える必要がある
+    top: 80,
     width: '96%',
     bottom: 0,
     backgroundColor: '#ffffff',
