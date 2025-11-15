@@ -31,13 +31,16 @@ export default function ItemEditScreen() {
 
   // グループ選択画面のModal用
   const [groupModalVisible, setGroupModalVisible] = useState(false);
+  // キャッシュに存在しない場合にFirestoreへ単体取得する際のローディング状態
   const [isRemoteFetching, setIsRemoteFetching] = useState(false);
+  // 同じアイテムIDに対して複数回リクエストを送らないためのフラグ
   const hasFetchedFromRemote = useRef(false);
 
   useEffect(() => {
     hasFetchedFromRemote.current = false;
   }, [id]);
 
+  // Itemデータを入力フォームへ反映する共通処理
   const applyItemToForm = useCallback(
     (item: (typeof items)[number]) => {
       setTitle(item.title);
@@ -50,20 +53,27 @@ export default function ItemEditScreen() {
     [groups]
   );
 
+  // 編集対象アイテムをキャッシュ→Firestoreの順で解決する
   useEffect(() => {
+    // URLパラメータにIDが無い場合はなにもできないので早期リターン
     if (!id) {
       return;
     }
+
+    // まだキャッシュに残っている場合はそれをフォームへ適用するだけでOK
     const cachedItem = items.find(item => item.id === id);
     if (cachedItem) {
       applyItemToForm(cachedItem);
       return;
     }
 
+    // キャッシュがまだ復元されていない段階ではremote fetchしない。
+    // また、既に試行済みであれば再実行を避けて無限ループを防ぐ。
     if (!isHydratedFromCache || hasFetchedFromRemote.current) {
       return;
     }
 
+    // ここまで来たらFirestoreへフォールバックする準備
     hasFetchedFromRemote.current = true;
     setIsRemoteFetching(true);
 
@@ -72,20 +82,25 @@ export default function ItemEditScreen() {
         const fetchedItem = await getItemById(user.id, id);
 
         if (fetchedItem) {
+          // Firestoreから取得できたデータをコンテキスト／キャッシュにも反映
+          // 次回以降の画面表示でも使えるようにする
           const exists = items.some(item => item.id === fetchedItem.id);
           const nextItems = exists
             ? items.map(item => (item.id === fetchedItem.id ? fetchedItem : item))
             : [...items, fetchedItem];
 
+          // setItemsはキャッシュとコンテキストを同時に更新してくれる
           await setItems(nextItems);
           applyItemToForm(fetchedItem);
         } else {
+          // Firestoreに存在しない場合は削除済み等の可能性が高いため通知して戻る
           Alert.alert('確認', '対象のアイテムが見つかりませんでした', [
             { text: 'OK', onPress: () => router.back() }
           ]);
         }
       } catch (error) {
         console.error('Failed to fetch item from Firestore', error);
+        // 通信失敗時はエラーメッセージのみ表示し、次回マウント時に再試行できるようフラグを戻す
         Alert.alert('エラー', 'アイテムの取得に失敗しました');
         hasFetchedFromRemote.current = false;
       } finally {
