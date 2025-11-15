@@ -1,9 +1,9 @@
-import { StyleSheet, Alert, View } from 'react-native';
+import { StyleSheet, Alert, View, ActivityIndicator } from 'react-native';
 import { Button } from '@rneui/base';
 import { useLocalSearchParams, useNavigation, router } from 'expo-router';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { KeyboardAvoidingView } from '@gluestack-ui/themed';
-import { updateItemById } from '@services/itemService';
+import { updateItemById, getItemById } from '@services/itemService';
 import { type Group } from '@models/Group';
 import ItemInputForm from '@components/common/ItemInputForm';
 import GroupSelectModal from '@components/common/GroupSelectModal';
@@ -21,7 +21,7 @@ export default function ItemEditScreen() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
-  const { items, setItems } = useItems();
+  const { items, setItems, isHydratedFromCache } = useItems();
   const { groups } = useGroups();
 
   // Annivの状態と選択肢
@@ -31,6 +31,24 @@ export default function ItemEditScreen() {
 
   // グループ選択画面のModal用
   const [groupModalVisible, setGroupModalVisible] = useState(false);
+  const [isRemoteFetching, setIsRemoteFetching] = useState(false);
+  const hasFetchedFromRemote = useRef(false);
+
+  useEffect(() => {
+    hasFetchedFromRemote.current = false;
+  }, [id]);
+
+  const applyItemToForm = useCallback(
+    (item: (typeof items)[number]) => {
+      setTitle(item.title);
+      setContent(item.content ?? '');
+      setSelectedGroup(groups.find(group => group.id === item.group_id) ?? null);
+      setYear(item.anniv.toDate().getFullYear());
+      setMonth(item.anniv.toDate().getMonth() + 1);
+      setDay(item.anniv.toDate().getDate());
+    },
+    [groups]
+  );
 
   useEffect(() => {
     if (!id) {
@@ -38,16 +56,50 @@ export default function ItemEditScreen() {
     }
     const cachedItem = items.find(item => item.id === id);
     if (cachedItem) {
-      setTitle(cachedItem.title);
-      setContent(cachedItem.content ?? '');
-      setSelectedGroup(groups.find(group => group.id === cachedItem.group_id) ?? null);
-      setYear(cachedItem.anniv.toDate().getFullYear());
-      setMonth(cachedItem.anniv.toDate().getMonth() + 1);
-      setDay(cachedItem.anniv.toDate().getDate());
-    } else {
-      // TODO : キャッシュにない場合の処理を追加する
+      applyItemToForm(cachedItem);
+      return;
     }
-  }, [id, items]);
+
+    if (!isHydratedFromCache || hasFetchedFromRemote.current) {
+      return;
+    }
+
+    hasFetchedFromRemote.current = true;
+    setIsRemoteFetching(true);
+
+    (async () => {
+      try {
+        const fetchedItem = await getItemById(user.id, id);
+
+        if (fetchedItem) {
+          const exists = items.some(item => item.id === fetchedItem.id);
+          const nextItems = exists
+            ? items.map(item => (item.id === fetchedItem.id ? fetchedItem : item))
+            : [...items, fetchedItem];
+
+          await setItems(nextItems);
+          applyItemToForm(fetchedItem);
+        } else {
+          Alert.alert('確認', '対象のアイテムが見つかりませんでした', [
+            { text: 'OK', onPress: () => router.back() }
+          ]);
+        }
+      } catch (error) {
+        console.error('Failed to fetch item from Firestore', error);
+        Alert.alert('エラー', 'アイテムの取得に失敗しました');
+        hasFetchedFromRemote.current = false;
+      } finally {
+        setIsRemoteFetching(false);
+      }
+    })();
+  }, [
+    id,
+    items,
+    applyItemToForm,
+    isHydratedFromCache,
+    setItems,
+    user.id
+  ]);
 
   // 保存ボタン押下時の処理
   const handleSaveItemPress = useCallback(async () => {
@@ -108,6 +160,14 @@ export default function ItemEditScreen() {
     }
   };
 
+  if (!isHydratedFromCache || isRemoteFetching) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100} style={{ flex: 1 }}>
@@ -164,6 +224,12 @@ const styles = StyleSheet.create({
     color: '#ff0000'
   },
   deleteButton: {
+    backgroundColor: '#ffffff'
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#ffffff'
   }
 });
