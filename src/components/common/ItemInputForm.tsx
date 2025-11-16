@@ -256,6 +256,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
         minHeight={300}
         marginTop={'$2'}
         paddingHorizontal={'$2'}
+        bg="$gray50"
       >
         <TextareaInput
           placeholder="メモ"
