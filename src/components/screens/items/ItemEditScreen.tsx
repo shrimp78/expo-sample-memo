@@ -12,6 +12,7 @@ import { useItems } from '@context/ItemContext';
 import { useGroups } from '@context/GroupContext';
 import { Timestamp } from 'firebase/firestore';
 import { deleteItemById } from '@services/itemService';
+import { Feather } from '@expo/vector-icons';
 
 export default function ItemEditScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -107,14 +108,7 @@ export default function ItemEditScreen() {
         setIsRemoteFetching(false);
       }
     })();
-  }, [
-    id,
-    items,
-    applyItemToForm,
-    isHydratedFromCache,
-    setItems,
-    user.id
-  ]);
+  }, [id, items, applyItemToForm, isHydratedFromCache, setItems, user.id]);
 
   // 保存ボタン押下時の処理
   const handleSaveItemPress = useCallback(async () => {
@@ -144,7 +138,7 @@ export default function ItemEditScreen() {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => {
-        return <Button title="保存" type="clear" onPress={handleSaveItemPress} />;
+        return <Button title="保存" onPress={handleSaveItemPress} />;
       }
     });
   }, [handleSaveItemPress, navigation]);
