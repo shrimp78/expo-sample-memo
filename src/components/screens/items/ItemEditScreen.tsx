@@ -1,5 +1,4 @@
 import { StyleSheet, Alert, View, ActivityIndicator, TouchableOpacity, Text } from 'react-native';
-import { Button } from '@rneui/base';
 import { useLocalSearchParams, useNavigation, router } from 'expo-router';
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { KeyboardAvoidingView } from '@gluestack-ui/themed';
@@ -12,6 +11,7 @@ import { useItems } from '@context/ItemContext';
 import { useGroups } from '@context/GroupContext';
 import { Timestamp } from 'firebase/firestore';
 import { deleteItemById } from '@services/itemService';
+import { Feather } from '@expo/vector-icons';
 
 export default function ItemEditScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -206,12 +206,16 @@ export default function ItemEditScreen() {
       </KeyboardAvoidingView>
       {/* 削除ボタン ※ここにあるのはキモいが、あとあとメニューを増やして下の方に押し込められるので一旦OK */}
       <View style={styles.deleteButtonContainer}>
-        <Button
-          title="削除"
-          titleStyle={styles.deleteButtonText}
-          buttonStyle={styles.deleteButton}
+        <TouchableOpacity
+          accessibilityLabel="アイテムを削除する"
+          accessibilityRole="button"
+          activeOpacity={0.8}
           onPress={handleDeleteItemPress}
-        />
+          style={styles.deleteButton}
+        >
+          <Feather name="trash-2" size={18} color="#ff453a" style={styles.deleteButtonIcon} />
+          <Text style={styles.deleteButtonText}>削除</Text>
+        </TouchableOpacity>
       </View>
 
       {/* グループ選択Modal（ItemCreateModalの内部） */}
@@ -234,14 +238,32 @@ const styles = StyleSheet.create({
     marginBottom: 16
   },
   deleteButtonContainer: {
-    marginTop: 16,
+    marginTop: 32,
     alignItems: 'center'
   },
   deleteButtonText: {
-    color: '#ff0000'
+    color: '#ff453a',
+    fontSize: 16,
+    fontWeight: '600',
+    letterSpacing: 0.2
   },
   deleteButton: {
-    backgroundColor: '#ffffff'
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(255, 69, 58, 0.08)',
+    paddingVertical: 14,
+    borderRadius: 999,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 69, 58, 0.3)',
+    shadowColor: '#ff453a',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.12,
+    shadowRadius: 12
+  },
+  deleteButtonIcon: {
+    marginRight: 8
   },
   loadingContainer: {
     flex: 1,
