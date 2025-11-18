@@ -1,4 +1,4 @@
-import { StyleSheet, Alert, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, Alert, View, ActivityIndicator, TouchableOpacity, Text } from 'react-native';
 import { Button } from '@rneui/base';
 import { useLocalSearchParams, useNavigation, router } from 'expo-router';
 import { useEffect, useState, useCallback, useRef } from 'react';
@@ -12,7 +12,6 @@ import { useItems } from '@context/ItemContext';
 import { useGroups } from '@context/GroupContext';
 import { Timestamp } from 'firebase/firestore';
 import { deleteItemById } from '@services/itemService';
-import { Feather } from '@expo/vector-icons';
 
 export default function ItemEditScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -138,7 +137,16 @@ export default function ItemEditScreen() {
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => {
-        return <Button title="保存" onPress={handleSaveItemPress} />;
+        return (
+          <TouchableOpacity
+            accessibilityLabel="アイテムを保存する"
+            onPress={handleSaveItemPress}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            style={styles.headerSaveButton}
+          >
+            <Text style={styles.headerSaveButtonText}>保存</Text>
+          </TouchableOpacity>
+        );
       }
     });
   }, [handleSaveItemPress, navigation]);
@@ -240,5 +248,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#ffffff'
+  },
+  headerSaveButton: {
+    paddingHorizontal: 8,
+    paddingVertical: 4
+  },
+  headerSaveButtonText: {
+    color: '#007aff',
+    fontSize: 16,
+    fontWeight: '600'
   }
 });
