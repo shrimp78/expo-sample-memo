@@ -94,7 +94,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
   const formattedAnniv = changeAnnivFormat(annivPreviewDate);
 
   return (
-    <View style={{ flex: 1, paddingBottom: 20 }}>
+    <View>
       {/* タイトル入力 */}
       <View style={styles.titleRow}>
         <Input borderWidth={0} style={styles.titleInput}>

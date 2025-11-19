@@ -187,7 +187,7 @@ export default function ItemEditScreen() {
 
   return (
     <View style={styles.container}>
-      <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100} style={{ flex: 1 }}>
+      <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}>
         <ItemInputForm
           title={title}
           content={content}
@@ -203,20 +203,20 @@ export default function ItemEditScreen() {
           setDay={setDay}
           autoFocus={false}
         />
+        {/* 削除ボタン */}
+        <View style={styles.deleteButtonContainer}>
+          <TouchableOpacity
+            accessibilityLabel="アイテムを削除する"
+            accessibilityRole="button"
+            activeOpacity={0.8}
+            onPress={handleDeleteItemPress}
+            style={styles.deleteButton}
+          >
+            <Feather name="trash-2" size={18} color="#ff453a" style={styles.deleteButtonIcon} />
+            <Text style={styles.deleteButtonText}>削除</Text>
+          </TouchableOpacity>
+        </View>
       </KeyboardAvoidingView>
-      {/* 削除ボタン ※ここにあるのはキモいが、あとあとメニューを増やして下の方に押し込められるので一旦OK */}
-      <View style={styles.deleteButtonContainer}>
-        <TouchableOpacity
-          accessibilityLabel="アイテムを削除する"
-          accessibilityRole="button"
-          activeOpacity={0.8}
-          onPress={handleDeleteItemPress}
-          style={styles.deleteButton}
-        >
-          <Feather name="trash-2" size={18} color="#ff453a" style={styles.deleteButtonIcon} />
-          <Text style={styles.deleteButtonText}>削除</Text>
-        </TouchableOpacity>
-      </View>
 
       {/* グループ選択Modal（ItemCreateModalの内部） */}
       {groupModalVisible && (
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     marginBottom: 16
   },
   deleteButtonContainer: {
-    marginTop: 32,
+    marginTop: 8,
     alignItems: 'center'
   },
   deleteButtonText: {
