@@ -244,10 +244,6 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
         </View>
       )}
 
-      {/* 経過時間を表示 */}
-      <View>
-        <HStack></HStack>
-      </View>
       {/* 内容入力 */}
       <Textarea
         borderWidth={0}
