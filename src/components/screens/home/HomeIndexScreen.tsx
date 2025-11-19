@@ -156,7 +156,7 @@ export default function HomeIndexScreen() {
       <Stack.Screen
         options={{
           headerRight: () => (
-            <TouchableOpacity onPress={handleMenuPress} style={{ marginRight: 16 }}>
+            <TouchableOpacity onPress={handleMenuPress} style={styles.headerMenuButton}>
               <Entypo name="dots-three-horizontal" size={24} color="#808080" />
             </TouchableOpacity>
           )
@@ -294,5 +294,13 @@ const styles = StyleSheet.create({
   yearsLabel: {
     color: '#95A2AC',
     fontSize: 12
+  },
+  headerMenuButton: {
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 999,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minWidth: 44
   }
 });
