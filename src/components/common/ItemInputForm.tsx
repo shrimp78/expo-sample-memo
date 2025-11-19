@@ -163,7 +163,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
                 alignItems="center"
                 space="sm"
                 borderWidth={1}
-                borderColor="$gray300"
+                borderColor="#007aff"
                 borderRadius="$md"
                 paddingHorizontal="$3"
                 paddingVertical="$2"
