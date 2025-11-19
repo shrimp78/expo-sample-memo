@@ -256,7 +256,6 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
         minHeight={300}
         marginTop={'$2'}
         paddingHorizontal={'$2'}
-        bg="$gray50"
       >
         <TextareaInput
           placeholder="メモ"
@@ -268,6 +267,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           multiline={true}
           textAlignVertical="top"
           maxLength={ITEM_CONTENT_MAX_LENGTH}
+          style={styles.textAreaInput}
         />
       </Textarea>
       {/* iOSのみキーボードの閉じるボタンを表示 */}
@@ -317,6 +317,10 @@ const styles = StyleSheet.create({
   datePickerButton: {
     paddingVertical: 4,
     paddingHorizontal: 4
+  },
+  textAreaInput: {
+    backgroundColor: '#F9FAFB',
+    borderRadius: 12
   }
 });
 
