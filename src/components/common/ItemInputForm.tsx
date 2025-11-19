@@ -247,10 +247,10 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
       {/* 内容入力 */}
       <Textarea
         borderWidth={0}
-        flex={1}
         minWidth={'$full'}
-        minHeight={300}
-        marginTop={'$2'}
+        height={150}
+        maxHeight={200}
+        marginTop={'$1'}
         paddingHorizontal={'$2'}
       >
         <TextareaInput
