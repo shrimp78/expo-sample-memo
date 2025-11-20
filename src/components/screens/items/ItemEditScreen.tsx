@@ -11,7 +11,6 @@ import { useItems } from '@context/ItemContext';
 import { useGroups } from '@context/GroupContext';
 import { Timestamp } from 'firebase/firestore';
 import { deleteItemById } from '@services/itemService';
-import { Feather } from '@expo/vector-icons';
 
 export default function ItemEditScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -141,7 +140,7 @@ export default function ItemEditScreen() {
           <TouchableOpacity
             accessibilityLabel="アイテムを保存する"
             onPress={handleSaveItemPress}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
             style={styles.headerSaveButton}
           >
             <Text style={styles.headerSaveButtonText}>保存</Text>
@@ -153,12 +152,12 @@ export default function ItemEditScreen() {
 
   // 削除ボタン押下時の処理
   const handleDeleteItemPress = () => {
-    Alert.alert('確認', '削除しますが、よろしいですか？', [
+    Alert.alert('アイテムを削除', 'この操作は取り消せません。本当に削除しますか？', [
       {
         text: 'キャンセル',
         style: 'cancel'
       },
-      { text: '削除', onPress: () => deleteItem() }
+      { text: '削除', style: 'destructive', onPress: () => deleteItem() }
     ]);
   };
 
@@ -203,17 +202,18 @@ export default function ItemEditScreen() {
           setDay={setDay}
           autoFocus={false}
         />
-        {/* 削除ボタン */}
-        <View style={styles.deleteButtonContainer}>
+
+        {/* 削除エリア - Instagram/iOS設定画面風 */}
+        <View style={styles.deleteSection}>
+          <View style={styles.separator} />
           <TouchableOpacity
             accessibilityLabel="アイテムを削除する"
             accessibilityRole="button"
-            activeOpacity={0.8}
+            activeOpacity={0.7}
             onPress={handleDeleteItemPress}
             style={styles.deleteButton}
           >
-            <Feather name="trash-2" size={18} color="#ff453a" style={styles.deleteButtonIcon} />
-            <Text style={styles.deleteButtonText}>削除</Text>
+            <Text style={styles.deleteButtonText}>アイテムを削除</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -234,36 +234,27 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ffffff',
-    padding: 16,
+    paddingHorizontal: 16
+  },
+  deleteSection: {
+    marginTop: 40,
+    marginBottom: 40
+  },
+  separator: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: '#E5E5EA',
     marginBottom: 16
   },
-  deleteButtonContainer: {
-    marginTop: 24,
-    alignItems: 'center'
-  },
-  deleteButtonText: {
-    color: '#ff453a',
-    fontSize: 16,
-    fontWeight: '500',
-    letterSpacing: 0.2
-  },
   deleteButton: {
-    width: '40%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(255, 69, 58, 0.08)',
-    paddingVertical: 10,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 69, 58, 0.3)',
-    shadowColor: '#ff453a',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.12,
-    shadowRadius: 12
+    paddingVertical: 12
   },
-  deleteButtonIcon: {
-    marginRight: 8
+  deleteButtonText: {
+    color: '#FF3B30', // iOS System Red
+    fontSize: 17,
+    fontWeight: '500'
   },
   loadingContainer: {
     flex: 1,
@@ -276,8 +267,8 @@ const styles = StyleSheet.create({
     paddingVertical: 4
   },
   headerSaveButtonText: {
-    color: '#007aff',
-    fontSize: 16,
+    color: '#007AFF', // iOS System Blue
+    fontSize: 17,
     fontWeight: '600'
   }
 });
