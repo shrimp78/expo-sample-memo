@@ -238,23 +238,23 @@ const styles = StyleSheet.create({
     marginBottom: 16
   },
   deleteButtonContainer: {
-    marginTop: 8,
+    marginTop: 24,
     alignItems: 'center'
   },
   deleteButtonText: {
     color: '#ff453a',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
     letterSpacing: 0.2
   },
   deleteButton: {
-    width: '100%',
+    width: '40%',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'rgba(255, 69, 58, 0.08)',
-    paddingVertical: 14,
-    borderRadius: 999,
+    paddingVertical: 10,
+    borderRadius: 12,
     borderWidth: 1,
     borderColor: 'rgba(255, 69, 58, 0.3)',
     shadowColor: '#ff453a',
