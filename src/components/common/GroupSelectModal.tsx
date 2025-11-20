@@ -41,7 +41,6 @@ const GroupSelectModal: React.FC<GroupSelectModalProps> = props => {
                         setSelectedGroup(group);
                       }}
                     >
-                      <FontAwesome name="circle" size={28} color={group.color} />
                       <Text style={[styles.groupItemText, { color: group.color }]}>
                         {group.name}
                       </Text>

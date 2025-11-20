@@ -10,7 +10,6 @@ import {
   StyleSheet
 } from 'react-native';
 import KeyboardCloseButton from '../common/KeyboardCloseButton';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Group } from '@models/Group';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -124,14 +123,13 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           <HStack alignItems="center" space="sm">
             {selectedGroup ? (
               <>
-                <FontAwesome name="circle" size={24} color={selectedGroup.color} />
                 <Text fontSize={'$lg'} fontWeight={'$medium'} color={selectedGroup.color}>
                   {selectedGroup.name}
                 </Text>
               </>
             ) : (
               <>
-                <FontAwesome name="circle" size={24} color="#808080" />
+                {/* グループ未選択時の表示 */}
                 <Text fontSize={'$lg'} fontWeight={'$medium'} color="$gray">
                   グループ
                 </Text>

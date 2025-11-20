@@ -203,7 +203,7 @@ export default function ItemEditScreen() {
           autoFocus={false}
         />
 
-        {/* 削除エリア - Instagram/iOS設定画面風 */}
+        {/* 削除エリア  */}
         <View style={styles.deleteSection}>
           <View style={styles.separator} />
           <TouchableOpacity
