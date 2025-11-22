@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   StyleSheet,
   View,
@@ -5,10 +6,12 @@ import {
   Image,
   SafeAreaView,
   ScrollView,
-  Button,
-  Alert
+  TouchableOpacity,
+  Alert,
+  Platform
 } from 'react-native';
 import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
+import { Feather } from '@expo/vector-icons';
 
 export default function AccountIndexScreen() {
   const { logout, deleteAccount } = useAuth();
@@ -39,82 +42,197 @@ export default function AccountIndexScreen() {
     }
   };
 
+  const MenuRow = ({ 
+    icon, 
+    label, 
+    onPress, 
+    color = '#1F2937', 
+    iconColor = '#4B5563',
+    isDestructive = false,
+    showChevron = true
+  }: { 
+    icon: keyof typeof Feather.glyphMap; 
+    label: string; 
+    onPress: () => void; 
+    color?: string;
+    iconColor?: string;
+    isDestructive?: boolean;
+    showChevron?: boolean;
+  }) => (
+    <TouchableOpacity 
+      style={styles.menuRow} 
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
+      <View style={[
+        styles.iconContainer, 
+        isDestructive && styles.destructiveIconContainer
+      ]}>
+        <Feather name={icon} size={20} color={isDestructive ? '#EF4444' : iconColor} />
+      </View>
+      <Text style={[
+        styles.menuLabel, 
+        { color: isDestructive ? '#EF4444' : color }
+      ]}>
+        {label}
+      </Text>
+      {showChevron && !isDestructive && (
+        <Feather name="chevron-right" size={20} color="#D1D5DB" style={styles.chevron} />
+      )}
+    </TouchableOpacity>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* プロフィールヘッダー */}
         <View style={styles.header}>
-          {user.picture ? (
-            <Image source={{ uri: user.picture }} style={styles.avatarImage} />
-          ) : (
-            <View style={styles.avatarPlaceholder} />
-          )}
+          <View style={styles.avatarContainer}>
+            {user.picture ? (
+              <Image source={{ uri: user.picture }} style={styles.avatarImage} />
+            ) : (
+              <View style={styles.avatarPlaceholder}>
+                <Text style={styles.avatarPlaceholderText}>
+                  {user.name ? user.name.charAt(0).toUpperCase() : 'A'}
+                </Text>
+              </View>
+            )}
+          </View>
           <Text style={styles.name}>{user.name}</Text>
           <Text style={styles.email}>{user.email}</Text>
         </View>
 
-        <View style={styles.actionsGroup}>
-          <Button title="ログアウト" onPress={logout} color="#007AFF" />
-          <Button title="アカウント削除" onPress={handleDeleteAccount} color="#FF3B30" />
+        {/* アクションメニュー */}
+        <View style={styles.section}>
+          <View style={styles.menuGroup}>
+            <MenuRow 
+              icon="log-out" 
+              label="ログアウト" 
+              onPress={logout} 
+            />
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <View style={styles.menuGroup}>
+            <MenuRow 
+              icon="trash-2" 
+              label="アカウント削除" 
+              onPress={handleDeleteAccount} 
+              isDestructive={true}
+              showChevron={false}
+            />
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
   );
 }
 
-// 黄金比に基づいたデザイン定数
-const PHI = 1.618; // 黄金比
-const BASE_UNIT = 16; // 基本単位（16px）
-
-// 黄金比を使った計算値
-const AVATAR_SIZE = BASE_UNIT * PHI * PHI * PHI; // ≈ 67.5 → 68
-const NAME_FONT_SIZE = BASE_UNIT * PHI; // ≈ 25.9 → 26
-const EMAIL_FONT_SIZE = BASE_UNIT; // 16
-const LARGE_SPACING = BASE_UNIT * PHI * PHI; // ≈ 41.9 → 42
-const MEDIUM_SPACING = BASE_UNIT * PHI; // ≈ 25.9 → 26
-const SMALL_SPACING = BASE_UNIT; // 16
-const CONTAINER_PADDING = BASE_UNIT * PHI; // ≈ 25.9 → 26
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF'
+    backgroundColor: '#F3F4F6', // 明るいグレー背景
   },
   scrollContent: {
-    paddingVertical: CONTAINER_PADDING
+    paddingBottom: 40,
   },
   header: {
     alignItems: 'center',
-    paddingTop: LARGE_SPACING * PHI, // ≈ 67.9 → 68
-    paddingHorizontal: CONTAINER_PADDING
+    paddingVertical: 40,
+    paddingHorizontal: 20,
+    backgroundColor: '#F3F4F6',
+  },
+  avatarContainer: {
+    marginBottom: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
   },
   avatarImage: {
-    width: AVATAR_SIZE * PHI, // ≈ 110
-    height: AVATAR_SIZE * PHI,
-    borderRadius: (AVATAR_SIZE * PHI) / 2
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderWidth: 3,
+    borderColor: '#FFFFFF',
   },
   avatarPlaceholder: {
-    width: AVATAR_SIZE * PHI,
-    height: AVATAR_SIZE * PHI,
-    borderRadius: (AVATAR_SIZE * PHI) / 2,
-    backgroundColor: '#E5E7EB'
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: '#E5E7EB',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: '#FFFFFF',
+  },
+  avatarPlaceholderText: {
+    fontSize: 40,
+    fontWeight: '600',
+    color: '#9CA3AF',
   },
   name: {
-    marginTop: LARGE_SPACING,
-    fontSize: NAME_FONT_SIZE,
-    fontWeight: '600',
+    fontSize: 24,
+    fontWeight: '700',
     color: '#111827',
-    textAlign: 'center'
+    marginBottom: 4,
+    textAlign: 'center',
   },
   email: {
-    marginTop: SMALL_SPACING,
-    fontSize: EMAIL_FONT_SIZE,
+    fontSize: 15,
     color: '#6B7280',
-    textAlign: 'center'
+    textAlign: 'center',
   },
-  actionsGroup: {
-    marginTop: LARGE_SPACING * PHI, // ≈ 67.9 → 68
-    paddingHorizontal: CONTAINER_PADDING,
+  section: {
+    paddingHorizontal: 20,
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#6B7280',
+    marginBottom: 8,
+    marginLeft: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  menuGroup: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  menuRow: {
+    flexDirection: 'row',
     alignItems: 'center',
-    gap: MEDIUM_SPACING
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+  },
+  iconContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: '#F3F4F6',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  destructiveIconContainer: {
+    backgroundColor: '#FEE2E2',
+  },
+  menuLabel: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#1F2937',
+  },
+  chevron: {
+    opacity: 0.5,
   }
 });
