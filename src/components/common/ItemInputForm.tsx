@@ -149,7 +149,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
             marginLeft={'$0'}
             height={'$10'}
           >
-            {/* カレンダーのアイコン */}
+            {/* 日付選択ボタン領域 */}
             <TouchableOpacity
               onPress={() => {
                 setTempDate(new Date(year, month - 1, day));
@@ -160,17 +160,18 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
               <HStack
                 alignItems="center"
                 space="sm"
-                borderWidth={1}
-                borderColor="#007aff"
-                borderRadius="$md"
-                paddingHorizontal="$3"
-                paddingVertical="$2"
+                style={{
+                  backgroundColor: '#F2F2F7',
+                  borderRadius: 100,
+                  paddingVertical: 8,
+                  paddingHorizontal: 12,
+                }}
               >
-                <Feather name="calendar" size={15} />
-                {/* 年月日を表示 */}
-                <Text fontSize={'$sm'} fontWeight={'$medium'}>
+                <Feather name="calendar" size={14} color="#8E8E93" />
+                <Text fontSize={'$sm'} fontWeight={'$medium'} color="#1C1C1E">
                   {formatSelectedDate(year, month, day) || '日付を選択'}
                 </Text>
+                <Feather name="chevron-down" size={14} color="#8E8E93" />
               </HStack>
             </TouchableOpacity>
             {/* 経過年数を表示 CreateModal用にnumberが0の場合は非表示 */}
