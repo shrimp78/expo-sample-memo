@@ -108,7 +108,23 @@ export default function AccountIndexScreen() {
             <MenuRow 
               icon="log-out" 
               label="ログアウト" 
-              onPress={logout} 
+              onPress={() => {
+                Alert.alert(
+                  'ログアウト',
+                  'ログアウトしてもよろしいですか？',
+                  [
+                    {
+                      text: 'キャンセル',
+                      style: 'cancel'
+                    },
+                    {
+                      text: 'ログアウト',
+                      style: 'destructive',
+                      onPress: logout
+                    }
+                  ]
+                );
+              }} 
             />
           </View>
         </View>
