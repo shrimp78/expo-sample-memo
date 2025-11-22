@@ -167,10 +167,13 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
                   paddingHorizontal: 12,
                 }}
               >
+                {/* カレンダーアイコン */}
                 <Feather name="calendar" size={14} color="#8E8E93" />
+                {/* 年月日 */}
                 <Text fontSize={'$sm'} fontWeight={'$medium'} color="#1C1C1E">
                   {formatSelectedDate(year, month, day) || '日付を選択'}
                 </Text>
+                {/* 下矢印 */}
                 <Feather name="chevron-down" size={14} color="#8E8E93" />
               </HStack>
             </TouchableOpacity>
