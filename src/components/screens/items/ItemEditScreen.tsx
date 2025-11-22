@@ -152,7 +152,7 @@ export default function ItemEditScreen() {
 
   // 削除ボタン押下時の処理
   const handleDeleteItemPress = () => {
-    Alert.alert('アイテムを削除', 'この操作は取り消せません。本当に削除しますか？', [
+    Alert.alert('アイテムを削除', '本当に削除しますか？', [
       {
         text: 'キャンセル',
         style: 'cancel'
