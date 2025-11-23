@@ -222,7 +222,7 @@ export default function HomeIndexScreen() {
         anchor={menuAnchor}
         onRequestClose={() => setMenuVisible(false)}
         onDeletedAllItems={async () => {
-          await loadItems();
+          await Promise.all([loadItems(), loadGroups()]);
         }}
       />
     </View>
