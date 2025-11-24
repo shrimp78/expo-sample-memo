@@ -125,20 +125,22 @@ const styles = StyleSheet.create({
   signUpButton: {
     width: '100%',
     maxWidth: 320,
+    height: 56,
     alignSelf: 'center',
     marginTop: 24,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderWidth: 1,
-    borderColor: '#03a9f4',
     borderRadius: 12,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#007AFF',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    shadowColor: '#007AFF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4
   },
   signUpButtonText: {
-    fontSize: 15,
-    color: '#262626',
-    fontWeight: '600'
+    fontSize: 16,
+    color: '#FFFFFF',
+    fontWeight: 'bold'
   }
 });
