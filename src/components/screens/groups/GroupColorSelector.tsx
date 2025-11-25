@@ -12,7 +12,7 @@ const GroupColorSelector: React.FC<GroupColorSelectorProps> = props => {
   const { groupColor, onChangeGroupColor } = props;
   return (
     <View style={styles.colorOptionsContainer}>
-      <HStack flexWrap="wrap" space="md" paddingHorizontal={'$2'} marginLeft={'$2'}>
+      <HStack flexWrap="wrap" paddingHorizontal={'$2'} marginLeft={'$2'}>
         {colorOptions.map(color => (
           <TouchableOpacity
             key={color}
@@ -35,6 +35,7 @@ const styles = StyleSheet.create({
   colorOption: {
     padding: 8,
     borderRadius: 20,
+    marginRight: 8,
     marginBottom: 8
   },
   selectedColorOption: {
