@@ -114,12 +114,14 @@ export default function HomeIndexScreen() {
 
   // グループセクション用のデータ整形
   const sections = useMemo(() => {
-    // グループごとのセクションを作成
-    const groupSections = groups.map(group => {
-      const groupItems = items.filter(item => item.group_id === group.id);
-      const sortedItems = sortItems(groupItems, itemSortOption);
-      return { title: group.name, color: group.color, data: sortedItems };
-    });
+    // グループごとのセクションを作成（アイテムがあるグループのみ）
+    const groupSections = groups
+      .map(group => {
+        const groupItems = items.filter(item => item.group_id === group.id);
+        const sortedItems = sortItems(groupItems, itemSortOption);
+        return { title: group.name, color: group.color, data: sortedItems };
+      })
+      .filter(section => section.data.length > 0); // アイテムが0件のグループを除外
 
     // グループIDがないItemsを抽出
     const ungroupedItems = items.filter(item => item.group_id === null);
