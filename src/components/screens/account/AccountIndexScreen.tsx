@@ -85,7 +85,6 @@ export default function AccountIndexScreen() {
                 <Feather name="log-out" size={20} color="#4B5563" />
               </View>
               <Text style={styles.menuLabel}>ログアウト</Text>
-              <Feather name="chevron-right" size={20} color="#D1D5DB" style={styles.chevron} />
             </TouchableOpacity>
           </View>
         </View>
