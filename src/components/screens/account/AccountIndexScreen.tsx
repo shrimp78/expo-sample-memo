@@ -41,34 +41,6 @@ export default function AccountIndexScreen() {
     }
   };
 
-  const MenuRow = ({
-    icon,
-    label,
-    onPress,
-    color = '#1F2937',
-    iconColor = '#4B5563',
-    isDestructive = false,
-    showChevron = true
-  }: {
-    icon: keyof typeof Feather.glyphMap;
-    label: string;
-    onPress: () => void;
-    color?: string;
-    iconColor?: string;
-    isDestructive?: boolean;
-    showChevron?: boolean;
-  }) => (
-    <TouchableOpacity style={styles.menuRow} onPress={onPress} activeOpacity={0.7}>
-      <View style={[styles.iconContainer, isDestructive && styles.destructiveIconContainer]}>
-        <Feather name={icon} size={20} color={isDestructive ? '#EF4444' : iconColor} />
-      </View>
-      <Text style={[styles.menuLabel, { color: isDestructive ? '#EF4444' : color }]}>{label}</Text>
-      {showChevron && !isDestructive && (
-        <Feather name="chevron-right" size={20} color="#D1D5DB" style={styles.chevron} />
-      )}
-    </TouchableOpacity>
-  );
-
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -92,9 +64,8 @@ export default function AccountIndexScreen() {
         {/* アクションメニュー */}
         <View style={styles.section}>
           <View style={styles.menuGroup}>
-            <MenuRow
-              icon="log-out"
-              label="ログアウト"
+            <TouchableOpacity
+              style={styles.menuRow}
               onPress={() => {
                 Alert.alert('ログアウト', 'ログアウトしてもよろしいですか？', [
                   {
@@ -108,19 +79,29 @@ export default function AccountIndexScreen() {
                   }
                 ]);
               }}
-            />
+              activeOpacity={0.7}
+            >
+              <View style={styles.iconContainer}>
+                <Feather name="log-out" size={20} color="#4B5563" />
+              </View>
+              <Text style={styles.menuLabel}>ログアウト</Text>
+              <Feather name="chevron-right" size={20} color="#D1D5DB" style={styles.chevron} />
+            </TouchableOpacity>
           </View>
         </View>
 
         <View style={styles.section}>
           <View style={styles.menuGroup}>
-            <MenuRow
-              icon="trash-2"
-              label="アカウント削除"
+            <TouchableOpacity
+              style={styles.menuRow}
               onPress={handleDeleteAccount}
-              isDestructive={true}
-              showChevron={false}
-            />
+              activeOpacity={0.7}
+            >
+              <View style={[styles.iconContainer, styles.destructiveIconContainer]}>
+                <Feather name="trash-2" size={20} color="#EF4444" />
+              </View>
+              <Text style={[styles.menuLabel, { color: '#EF4444' }]}>アカウント削除</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
