@@ -143,6 +143,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3F4F6'
   },
   avatarContainer: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    overflow: 'hidden',
     marginBottom: 16,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -151,21 +155,16 @@ const styles = StyleSheet.create({
     elevation: 5
   },
   avatarImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    borderWidth: 3,
-    borderColor: '#FFFFFF'
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover'
   },
   avatarPlaceholder: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: '100%',
+    height: '100%',
     backgroundColor: '#E5E7EB',
     justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 3,
-    borderColor: '#FFFFFF'
+    alignItems: 'center'
   },
   avatarPlaceholderText: {
     fontSize: 40,
