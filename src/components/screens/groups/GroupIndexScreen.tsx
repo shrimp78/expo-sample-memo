@@ -26,7 +26,7 @@ export default function GroupIndexScreen() {
   useFocusEffect(
     useCallback(() => {
       loadGroups();
-    }, [])
+    }, [loadGroups])
   );
 
   // ドラッグ操作時の処理
@@ -109,7 +109,7 @@ export default function GroupIndexScreen() {
       await deleteGroupByIdWithItems(user.id, groupId); // Firestoreのグループを削除
       // Revalidate in background
       // └ 再取得してローカルとキャッシュを同期（SWRの再検証）。他端末からの変更や、サーバー側で発生する副作用を検知
-      loadGroups(); 
+      loadGroups();
     } catch (error) {
       console.error('Error deleting group:', error);
       Alert.alert('エラー', '削除に失敗しました。元に戻します。');
