@@ -113,18 +113,17 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
       {/* グループ選択エリア */}
       <HStack
         alignItems="center"
-        paddingHorizontal={'$2'}
         marginTop={'$2'}
         marginBottom={'$1'}
-        marginLeft={'$0'}
+        marginHorizontal={'$2'}
         height={'$10'}
       >
         <TouchableOpacity
           onPress={onSelectGroup}
-          style={styles.groupPickerTouchable}
+          style={styles.selectionTouchable}
           activeOpacity={0.8}
         >
-          <View style={styles.groupPickerButton}>
+          <View style={styles.selectionSurface}>
             <HStack alignItems="center" space="sm">
               <Feather name="users" size={14} color="#8E8E93" />
               {selectedGroup ? (
@@ -149,10 +148,9 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
         <>
           <HStack
             alignItems="center"
-            paddingHorizontal={'$2'}
             marginTop={'$2'}
-            marginBottom={'$1'}
-            marginLeft={'$0'}
+            marginBottom={'$2'}
+            marginHorizontal={'$2'}
             height={'$10'}
           >
             {/* 日付選択ボタン領域 */}
@@ -161,27 +159,21 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
                 setTempDate(new Date(year, month - 1, day));
                 setDatePickerOpen(true);
               }}
-              style={styles.datePickerButton}
+              style={styles.selectionTouchable}
+              activeOpacity={0.8}
             >
-              <HStack
-                alignItems="center"
-                space="sm"
-                style={{
-                  backgroundColor: '#F2F2F7',
-                  borderRadius: 100,
-                  paddingVertical: 8,
-                  paddingHorizontal: 12
-                }}
-              >
-                {/* カレンダーアイコン */}
-                <Feather name="calendar" size={14} color="#8E8E93" />
-                {/* 年月日 */}
-                <Text fontSize={'$sm'} fontWeight={'$medium'} color="#1C1C1E">
-                  {formatSelectedDate(year, month, day) || '日付を選択'}
-                </Text>
+              <View style={styles.selectionSurface}>
+                <HStack alignItems="center" space="sm">
+                  {/* カレンダーアイコン */}
+                  <Feather name="calendar" size={14} color="#8E8E93" />
+                  {/* 年月日 */}
+                  <Text fontSize={'$sm'} fontWeight={'$medium'} color="#1C1C1E">
+                    {formatSelectedDate(year, month, day) || '日付を選択'}
+                  </Text>
+                </HStack>
                 {/* 下矢印 */}
                 <Feather name="chevron-down" size={14} color="#8E8E93" />
-              </HStack>
+              </View>
             </TouchableOpacity>
             {/* 経過年数を表示 CreateModal用にnumberが0の場合は非表示 */}
             {formattedAnniv.number > 0 && (
@@ -255,11 +247,12 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
       {/* 内容入力 */}
       <Textarea
         borderWidth={0}
-        minWidth={'$full'}
+        width={'$full'}
         height={150}
         maxHeight={200}
-        marginTop={'$1'}
-        paddingHorizontal={'$2'}
+        marginTop={'$3'}
+        marginHorizontal={'$2'}
+        style={styles.textAreaSurface}
       >
         <TextareaInput
           placeholder="メモ"
@@ -318,24 +311,27 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#eee'
   },
-  datePickerButton: {
-    paddingVertical: 4,
-    paddingHorizontal: 4
+  textAreaSurface: {
+    backgroundColor: '#F2F2F7',
+    borderRadius: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 12
   },
   textAreaInput: {
-    backgroundColor: '#F9FAFB',
-    borderRadius: 12
+    backgroundColor: 'transparent',
+    paddingVertical: 0,
+    paddingHorizontal: 0
   },
-  groupPickerTouchable: {
+  selectionTouchable: {
     flex: 1
   },
-  groupPickerButton: {
+  selectionSurface: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: '#F2F2F7',
-    borderRadius: 100,
-    paddingVertical: 8,
+    borderRadius: 12,
+    paddingVertical: 10,
     paddingHorizontal: 12,
     width: '100%'
   },
