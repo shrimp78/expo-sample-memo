@@ -116,26 +116,32 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
         paddingHorizontal={'$2'}
         marginTop={'$2'}
         marginBottom={'$1'}
-        marginLeft={'$1'}
+        marginLeft={'$0'}
         height={'$10'}
       >
-        <TouchableOpacity onPress={onSelectGroup}>
-          <HStack alignItems="center" space="sm">
-            {selectedGroup ? (
-              <>
-                <Text fontSize={'$lg'} fontWeight={'$medium'} color={selectedGroup.color}>
-                  {selectedGroup.name}
+        <TouchableOpacity
+          onPress={onSelectGroup}
+          style={styles.groupPickerTouchable}
+          activeOpacity={0.8}
+        >
+          <View style={styles.groupPickerButton}>
+            <HStack alignItems="center" space="sm">
+              <Feather name="users" size={14} color="#8E8E93" />
+              {selectedGroup ? (
+                <>
+                  <View style={[styles.groupColorDot, { backgroundColor: selectedGroup.color }]} />
+                  <Text fontSize={'$sm'} fontWeight={'$medium'} color="#1C1C1E">
+                    {selectedGroup.name}
+                  </Text>
+                </>
+              ) : (
+                <Text fontSize={'$sm'} fontWeight={'$medium'} color="#8E8E93">
+                  グループを選択
                 </Text>
-              </>
-            ) : (
-              <>
-                {/* グループ未選択時の表示 */}
-                <Text fontSize={'$lg'} fontWeight={'$medium'} color="$gray">
-                  グループ
-                </Text>
-              </>
-            )}
-          </HStack>
+              )}
+            </HStack>
+            <Feather name="chevron-down" size={14} color="#8E8E93" />
+          </View>
         </TouchableOpacity>
       </HStack>
       {/* 年月日入力 iOSの場合は、ネイティブのホイールを出現させる */}
@@ -164,7 +170,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
                   backgroundColor: '#F2F2F7',
                   borderRadius: 100,
                   paddingVertical: 8,
-                  paddingHorizontal: 12,
+                  paddingHorizontal: 12
                 }}
               >
                 {/* カレンダーアイコン */}
@@ -319,6 +325,24 @@ const styles = StyleSheet.create({
   textAreaInput: {
     backgroundColor: '#F9FAFB',
     borderRadius: 12
+  },
+  groupPickerTouchable: {
+    flex: 1
+  },
+  groupPickerButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: '#F2F2F7',
+    borderRadius: 100,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    width: '100%'
+  },
+  groupColorDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5
   }
 });
 
