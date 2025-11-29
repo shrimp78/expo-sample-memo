@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Input, InputField, Textarea, TextareaInput, Text, HStack } from '@gluestack-ui/themed';
+import { Input, InputField, Textarea, TextareaInput, Text, HStack, Box } from '@gluestack-ui/themed';
 import {
   InputAccessoryView,
   View,
@@ -245,28 +245,28 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
       )}
 
       {/* 内容入力 */}
-      <Textarea
-        borderWidth={0}
-        width={'$full'}
-        height={150}
-        maxHeight={200}
-        marginTop={'$3'}
-        marginHorizontal={'$2'}
-        style={styles.textAreaSurface}
-      >
-        <TextareaInput
-          placeholder="メモ"
-          value={content}
-          scrollEnabled={true}
-          onChangeText={onChangeContent}
-          inputAccessoryViewID={inputAccessoryViewID2}
-          fontSize={'$md'}
-          multiline={true}
-          textAlignVertical="top"
-          maxLength={ITEM_CONTENT_MAX_LENGTH}
-          style={styles.textAreaInput}
-        />
-      </Textarea>
+      <Box marginTop={'$3'} marginHorizontal={'$2'}>
+        <Textarea
+          borderWidth={0}
+          width={'$full'}
+          height={150}
+          maxHeight={200}
+          style={styles.textAreaSurface}
+        >
+          <TextareaInput
+            placeholder="メモ"
+            value={content}
+            scrollEnabled={true}
+            onChangeText={onChangeContent}
+            inputAccessoryViewID={inputAccessoryViewID2}
+            fontSize={'$md'}
+            multiline={true}
+            textAlignVertical="top"
+            maxLength={ITEM_CONTENT_MAX_LENGTH}
+            style={styles.textAreaInput}
+          />
+        </Textarea>
+      </Box>
       {/* iOSのみキーボードの閉じるボタンを表示 */}
       {Platform.OS === 'ios' && (
         <InputAccessoryView nativeID={inputAccessoryViewID1} backgroundColor={'#F1F1F1'}>
