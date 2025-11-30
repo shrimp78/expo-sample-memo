@@ -11,7 +11,7 @@ import {
 import { db } from '@root/firebaseConfig';
 import { User } from '@models/User';
 import { COLLECTION } from '@constants/firebaseCollectionName';
-import { DEFAULT_SORT_OPTION } from '@constants/sortOptions';
+import { DEFAULT_SORT_OPTION, normalizeSortOptionId } from '@constants/sortOptions';
 
 /**
  * Firestoreからユーザー情報を取得
@@ -26,7 +26,8 @@ export const getUserByUid = async (uid: string): Promise<User | null> => {
       const userData = userDoc.data();
 
       // Firestoreにデータが無い/空の時でもアプリは常にitemSortOptionを保持
-      const itemSortOption = userData?.preferences?.itemSortOption ?? DEFAULT_SORT_OPTION;
+      const itemSortOption =
+        normalizeSortOptionId(userData?.preferences?.itemSortOption) ?? DEFAULT_SORT_OPTION;
 
       return {
         id: uid,

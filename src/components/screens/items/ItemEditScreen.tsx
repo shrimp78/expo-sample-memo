@@ -23,7 +23,7 @@ export default function ItemEditScreen() {
   const { items, setItems, isHydratedFromCache } = useItems();
   const { groups } = useGroups();
 
-  // Annivの状態と選択肢
+  // Birthday(日付)の状態と選択肢
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
   const [day, setDay] = useState<number>(1);
@@ -45,9 +45,9 @@ export default function ItemEditScreen() {
       setTitle(item.title);
       setContent(item.content ?? '');
       setSelectedGroup(groups.find(group => group.id === item.group_id) ?? null);
-      setYear(item.anniv.toDate().getFullYear());
-      setMonth(item.anniv.toDate().getMonth() + 1);
-      setDay(item.anniv.toDate().getDate());
+      setYear(item.birthday.toDate().getFullYear());
+      setMonth(item.birthday.toDate().getMonth() + 1);
+      setDay(item.birthday.toDate().getDate());
     },
     [groups]
   );
@@ -115,20 +115,26 @@ export default function ItemEditScreen() {
       Alert.alert('確認', 'タイトルを入力してください');
       return;
     }
-    // Annivの変換
+    // Birthdayの変換
     // 選択日付のUTC0時を作成して、Timestampに変換
     console.log(`year: ${year}, month: ${month}, day: ${day}`);
     const utcMidnight = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
-    const anniv = Timestamp.fromDate(utcMidnight);
+    const birthday = Timestamp.fromDate(utcMidnight);
     // Optimistic update: 画面遷移前にItemContextを更新して即時反映
     const nextItems = items.map(item =>
       item.id === id
-        ? { ...item, title, content, group_id: selectedGroup ? selectedGroup.id : null, anniv }
+        ? {
+            ...item,
+            title,
+            content,
+            group_id: selectedGroup ? selectedGroup.id : null,
+            birthday
+          }
         : item
     );
     setItems(nextItems);
     // 非同期で永続化（待たない）
-    void updateItemById(user.id, id, title, content, selectedGroup?.id as string, anniv);
+    void updateItemById(user.id, id, title, content, selectedGroup?.id as string, birthday);
     router.back();
   }, [user.id, id, title, content, selectedGroup, year, month, day, items, setItems]);
 

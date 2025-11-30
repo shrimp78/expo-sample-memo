@@ -1,5 +1,13 @@
 import React, { useState, useMemo } from 'react';
-import { Input, InputField, Textarea, TextareaInput, Text, HStack, Box } from '@gluestack-ui/themed';
+import {
+  Input,
+  InputField,
+  Textarea,
+  TextareaInput,
+  Text,
+  HStack,
+  Box
+} from '@gluestack-ui/themed';
 import {
   InputAccessoryView,
   View,
@@ -15,7 +23,7 @@ import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
 import { ITEM_TITLE_MAX_LENGTH, ITEM_CONTENT_MAX_LENGTH } from '@constants/validation';
-import { changeAnnivFormat } from '@utils/annivFormatter';
+import { changeBirthdayFormat } from '@utils/birthdayFormatter';
 
 type ItemInputFormProps = {
   title: string;
@@ -89,8 +97,8 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
   };
 
   // 経過年数を表示
-  const annivPreviewDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
-  const formattedAnniv = changeAnnivFormat(annivPreviewDate);
+  const birthdayPreviewDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
+  const formattedBirthday = changeBirthdayFormat(birthdayPreviewDate);
 
   return (
     <View>
@@ -176,13 +184,13 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
               </View>
             </TouchableOpacity>
             {/* 経過年数を表示 CreateModal用にnumberが0の場合は非表示 */}
-            {formattedAnniv.number > 0 && (
+            {formattedBirthday.number > 0 && (
               <HStack alignItems="center" space="xs" marginLeft={'$4'}>
                 <Text fontSize={'$lg'} fontWeight={'$medium'} color="#4A5054">
-                  {formattedAnniv.number}
+                  {formattedBirthday.number}
                 </Text>
                 <Text fontSize={'$lg'} fontWeight={'$medium'} color="#4A5054">
-                  {formattedAnniv.unit}
+                  {formattedBirthday.unit}
                 </Text>
               </HStack>
             )}

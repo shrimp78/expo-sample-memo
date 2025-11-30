@@ -24,7 +24,7 @@ export const saveItem = async (userId: string, item: Item): Promise<void> => {
       title: item.title,
       content: item.content,
       group_id: item.group_id,
-      anniv: item.anniv,
+      birthday: item.birthday,
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now()
     });
@@ -45,12 +45,17 @@ export const getItemById = async (userId: string, itemId: string): Promise<Item 
     const itemRef = doc(db, COLLECTION.USERS, userId, COLLECTION.ITEMS, itemId);
     const snapshot = await getDoc(itemRef);
     if (snapshot.exists()) {
+      const data = snapshot.data();
+      const birthday = data?.birthday;
+      if (!birthday) {
+        throw new Error('Invalid item data: birthday field is missing');
+      }
       return {
         id: itemId,
-        title: snapshot.data().title,
-        content: snapshot.data().content,
-        group_id: snapshot.data().group_id,
-        anniv: snapshot.data().anniv
+        title: data.title,
+        content: data.content,
+        group_id: data.group_id,
+        birthday
       };
     } else {
       console.log('アイテムが見つかりません');
@@ -76,7 +81,7 @@ export const updateItemById = async (
   title: string,
   content: string,
   group_id: string,
-  anniv: Timestamp
+  birthday: Timestamp
 ): Promise<void> => {
   try {
     const itemRef = doc(db, COLLECTION.USERS, userId, COLLECTION.ITEMS, itemId);
@@ -84,7 +89,7 @@ export const updateItemById = async (
       title,
       content,
       group_id,
-      anniv,
+      birthday,
       updatedAt: Timestamp.now()
     });
     console.log(`Item ${title} updated in Firestore for user ${userId}`);
@@ -145,7 +150,7 @@ export const getAllItemsByUserId = async (userId: string): Promise<Item[]> => {
       title: doc.data().title,
       content: doc.data().content,
       group_id: doc.data().group_id,
-      anniv: doc.data().anniv
+      birthday: doc.data().birthday
     }));
   } catch (error) {
     console.error('Error getting items from Firestore:', error);

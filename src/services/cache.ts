@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { type Item } from '@models/Item';
 import { type Group } from '@models/Group';
 import { Timestamp } from 'firebase/firestore';
-import { type SortOptionId } from '@constants/sortOptions';
+import { type SortOptionId, normalizeSortOptionId } from '@constants/sortOptions';
 
 const itemsKey = (userId: string) => `cache:items:${userId}`;
 const groupsKey = (userId: string) => `cache:groups:${userId}`;
@@ -15,19 +15,25 @@ export async function getCachedItems(userId: string): Promise<Item[] | null> {
     const parsed = JSON.parse(raw) as unknown[];
     if (!Array.isArray(parsed)) return null;
 
-    // Anniv フォーマット互換: JSONオブジェクトからTimestampに変換
-    const revived: Item[] = parsed.map((entry: any) => {
-      const { anniv, ...rest } = entry ?? {};
+    // Birthday フォーマット互換: JSONオブジェクトからTimestampに変換
+    const revived: Item[] = parsed.reduce<Item[]>((acc, entry: any) => {
+      if (!entry) return acc;
+      const { birthday, ...rest } = entry;
+      const serializedTimestamp = birthday;
 
       if (
-        anniv &&
-        typeof anniv === 'object' &&
-        typeof anniv.seconds === 'number' &&
-        typeof anniv.nanoseconds === 'number'
+        serializedTimestamp &&
+        typeof serializedTimestamp === 'object' &&
+        typeof serializedTimestamp.seconds === 'number' &&
+        typeof serializedTimestamp.nanoseconds === 'number'
       ) {
-        return { ...rest, anniv: new Timestamp(anniv.seconds, anniv.nanoseconds) };
+        acc.push({
+          ...rest,
+          birthday: new Timestamp(serializedTimestamp.seconds, serializedTimestamp.nanoseconds)
+        } as Item);
       }
-    });
+      return acc;
+    }, []);
 
     return revived;
   } catch (error) {
@@ -38,7 +44,7 @@ export async function getCachedItems(userId: string): Promise<Item[] | null> {
 
 export async function setCachedItems(userId: string, items: Item[]): Promise<void> {
   try {
-    // 注：anniv のTimestamp は JSON 直列化時にメソッドが失われるため、{ seconds: 1728000000, nanoseconds: 0 }のJSONになる
+    // 注：birthday のTimestamp は JSON 直列化時にメソッドが失われるため、{ seconds: 1728000000, nanoseconds: 0 }のJSONになる
     await AsyncStorage.setItem(itemsKey(userId), JSON.stringify(items));
   } catch (error) {
     console.warn('Failed to write items cache:', error);
@@ -101,7 +107,12 @@ export async function getCachedUserPreferences(
       'itemSortOption' in parsed &&
       typeof (parsed as { itemSortOption: unknown }).itemSortOption === 'string'
     ) {
-      return { itemSortOption: (parsed as { itemSortOption: SortOptionId }).itemSortOption };
+      const normalized = normalizeSortOptionId(
+        (parsed as { itemSortOption: unknown }).itemSortOption
+      );
+      if (normalized) {
+        return { itemSortOption: normalized };
+      }
     }
     return null;
   } catch (error) {

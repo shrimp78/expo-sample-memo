@@ -26,7 +26,7 @@ import HomeMenuModal from '@screens/home/HomeMenuModal';
 import FloatingFolderButton from '@components/common/FloatingFolderButton';
 import FloatingPlusButton from '@components/common/FloatingPlusButton';
 
-import { changeAnnivFormat } from '@utils/annivFormatter';
+import { changeBirthdayFormat } from '@utils/birthdayFormatter';
 import { type Item } from '@models/Item';
 import { SortOptionId } from '@constants/sortOptions';
 
@@ -103,10 +103,14 @@ export default function HomeIndexScreen() {
         return sorted.sort((a, b) => a.title.localeCompare(b.title));
       case 'title-desc':
         return sorted.sort((a, b) => b.title.localeCompare(a.title));
-      case 'anniv-asc':
-        return sorted.sort((a, b) => a.anniv.toDate().getTime() - b.anniv.toDate().getTime());
-      case 'anniv-desc':
-        return sorted.sort((a, b) => b.anniv.toDate().getTime() - a.anniv.toDate().getTime());
+      case 'birthday-asc':
+        return sorted.sort(
+          (a, b) => a.birthday.toDate().getTime() - b.birthday.toDate().getTime()
+        );
+      case 'birthday-desc':
+        return sorted.sort(
+          (a, b) => b.birthday.toDate().getTime() - a.birthday.toDate().getTime()
+        );
       default:
         return sorted;
     }
@@ -174,19 +178,19 @@ export default function HomeIndexScreen() {
           </View>
         )}
         renderItem={({ item }) => {
-          const formattedAnniv = changeAnnivFormat(item.anniv.toDate());
+          const formattedBirthday = changeBirthdayFormat(item.birthday.toDate());
 
           return (
             <ListItem bottomDivider onPress={() => handleItemPress(item.id)}>
               <ListItem.Content>
                 <ListItem.Title style={styles.listItemTitle}>{item.title}</ListItem.Title>
                 <ListItem.Subtitle style={styles.ListItemSubtitle} numberOfLines={3}>
-                  {item.anniv.toDate().toLocaleDateString()}
+                  {item.birthday.toDate().toLocaleDateString()}
                 </ListItem.Subtitle>
               </ListItem.Content>
               <View style={styles.yearsContainer}>
-                <Text style={styles.yearsNumber}>{formattedAnniv.number}</Text>
-                <Text style={styles.yearsLabel}>{formattedAnniv.unit}</Text>
+                <Text style={styles.yearsNumber}>{formattedBirthday.number}</Text>
+                <Text style={styles.yearsLabel}>{formattedBirthday.unit}</Text>
               </View>
               <ListItem.Chevron />
             </ListItem>

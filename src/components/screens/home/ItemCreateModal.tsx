@@ -66,10 +66,10 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
       const id = Crypto.randomUUID();
       const group_id = selectedGroup.id;
       const utcMidnight = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
-      const anniv = Timestamp.fromDate(utcMidnight);
+      const birthday = Timestamp.fromDate(utcMidnight);
 
-      await setItems([...items, { id, title, content, group_id, anniv }]);
-      void saveItem(user.id, { id, title, content, group_id, anniv });
+      await setItems([...items, { id, title, content, group_id, birthday }]);
+      void saveItem(user.id, { id, title, content, group_id, birthday });
       onClose(); // 自分で閉じる
       onSaved(); // 親に「保存完了」を通知
     } catch (e) {

@@ -7,7 +7,7 @@ type Item = {
   title: string;
   content: string | null;
   group_id: string | null;
-  anniv: Timestamp;
+  birthday: Timestamp;
 };
 
 export type { Item };
