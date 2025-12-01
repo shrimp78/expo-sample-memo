@@ -104,13 +104,9 @@ export default function HomeIndexScreen() {
       case 'title-desc':
         return sorted.sort((a, b) => b.title.localeCompare(a.title));
       case 'birthday-asc':
-        return sorted.sort(
-          (a, b) => a.birthday.toDate().getTime() - b.birthday.toDate().getTime()
-        );
+        return sorted.sort((a, b) => a.birthday.toDate().getTime() - b.birthday.toDate().getTime());
       case 'birthday-desc':
-        return sorted.sort(
-          (a, b) => b.birthday.toDate().getTime() - a.birthday.toDate().getTime()
-        );
+        return sorted.sort((a, b) => b.birthday.toDate().getTime() - a.birthday.toDate().getTime());
       default:
         return sorted;
     }

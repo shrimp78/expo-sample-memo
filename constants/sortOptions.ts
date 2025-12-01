@@ -1,4 +1,9 @@
-export const SORT_OPTION_IDS = ['title-asc', 'title-desc', 'birthday-asc', 'birthday-desc'] as const;
+export const SORT_OPTION_IDS = [
+  'title-asc',
+  'title-desc',
+  'birthday-asc',
+  'birthday-desc'
+] as const;
 export type SortOptionId = (typeof SORT_OPTION_IDS)[number];
 const sortOptionIdSet = new Set<string>(SORT_OPTION_IDS);
 
@@ -33,6 +38,7 @@ export const sortOptions: SortOption[] = [
 
 export const DEFAULT_SORT_OPTION: SortOptionId = 'title-asc';
 
+// TODO これ何のためにあるの？（ Service層で使ってたな）
 export const normalizeSortOptionId = (value: unknown): SortOptionId | null => {
   if (typeof value !== 'string') {
     return null;
