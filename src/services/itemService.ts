@@ -46,7 +46,7 @@ export const getItemById = async (userId: string, itemId: string): Promise<Item 
     const snapshot = await getDoc(itemRef);
     if (snapshot.exists()) {
       const data = snapshot.data();
-      const birthday = data?.birthday ?? data?.anniv;
+      const birthday = data?.birthday;
       if (!birthday) {
         throw new Error('Invalid item data: birthday field is missing');
       }
@@ -148,7 +148,7 @@ export const getAllItemsByUserId = async (userId: string): Promise<Item[]> => {
     return snapshot.docs
       .map(doc => {
         const data = doc.data();
-        const birthday = data?.birthday ?? data?.anniv;
+        const birthday = data?.birthday;
         if (!birthday) {
           console.warn(`Item ${doc.id} is missing birthday field`);
           return null;

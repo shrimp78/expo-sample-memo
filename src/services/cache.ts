@@ -18,18 +18,17 @@ export async function getCachedItems(userId: string): Promise<Item[] | null> {
     // Birthday フォーマット互換: JSONオブジェクトからTimestampに変換
     const revived: Item[] = parsed.reduce<Item[]>((acc, entry: any) => {
       if (!entry) return acc;
-      const { birthday, anniv, ...rest } = entry;
-      const serializedTimestamp = birthday ?? anniv;
+      const { birthday, ...rest } = entry;
 
       if (
-        serializedTimestamp &&
-        typeof serializedTimestamp === 'object' &&
-        typeof serializedTimestamp.seconds === 'number' &&
-        typeof serializedTimestamp.nanoseconds === 'number'
+        birthday &&
+        typeof birthday === 'object' &&
+        typeof birthday.seconds === 'number' &&
+        typeof birthday.nanoseconds === 'number'
       ) {
         acc.push({
           ...rest,
-          birthday: new Timestamp(serializedTimestamp.seconds, serializedTimestamp.nanoseconds)
+          birthday: new Timestamp(birthday.seconds, birthday.nanoseconds)
         } as Item);
       }
       return acc;
