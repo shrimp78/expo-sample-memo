@@ -7,7 +7,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { GroupProvider } from '@context/GroupContext';
 import { ItemProvider } from '@context/ItemContext';
 import { AuthProvider, useAuth } from '@context/AuthContext';
-import MigrationGate from '@jobs/MigrationGate';
 
 function GroupProviderGate({ children }: { children: React.ReactNode }) {
   const { isLoggedIn } = useAuth();
@@ -26,58 +25,56 @@ export default function Layout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <GluestackUIProvider config={config}>
         <AuthProvider>
-          <MigrationGate>
-            <GroupProviderGate>
-              <ItemProviderGate>
-                <Stack
-                  screenOptions={{
-                    headerBackTitle: '',
-                    headerTintColor: 'gray',
-                    headerStyle: { backgroundColor: '#F9F9F9' }
+          <GroupProviderGate>
+            <ItemProviderGate>
+              <Stack
+                screenOptions={{
+                  headerBackTitle: '',
+                  headerTintColor: 'gray',
+                  headerStyle: { backgroundColor: '#F9F9F9' }
+                }}
+              >
+                <Stack.Screen name="index" options={{ headerTitle: '' }} />
+
+                {/* 認証 */}
+                <Stack.Screen name="auth/signup" options={{ headerTitle: '' }} />
+
+                {/* オンボーディング */}
+                <Stack.Screen
+                  name="onboarding/index"
+                  options={{
+                    headerTitle: '',
+                    headerBackVisible: false
                   }}
-                >
-                  <Stack.Screen name="index" options={{ headerTitle: '' }} />
+                />
 
-                  {/* 認証 */}
-                  <Stack.Screen name="auth/signup" options={{ headerTitle: '' }} />
+                {/* ホーム */}
+                <Stack.Screen
+                  name="home/index"
+                  options={{
+                    headerTitle: '',
+                    headerBackVisible: false // ホーム画面に戻るボタンを非表示
+                  }}
+                />
+                <Stack.Screen
+                  name="home/settings"
+                  options={{
+                    headerTitle: '設定'
+                  }}
+                />
 
-                  {/* オンボーディング */}
-                  <Stack.Screen
-                    name="onboarding/index"
-                    options={{
-                      headerTitle: '',
-                      headerBackVisible: false
-                    }}
-                  />
+                {/* アイテム */}
+                <Stack.Screen name="items/[id]" options={{ headerTitle: '' }} />
 
-                  {/* ホーム */}
-                  <Stack.Screen
-                    name="home/index"
-                    options={{
-                      headerTitle: '',
-                      headerBackVisible: false // ホーム画面に戻るボタンを非表示
-                    }}
-                  />
-                  <Stack.Screen
-                    name="home/settings"
-                    options={{
-                      headerTitle: '設定'
-                    }}
-                  />
+                {/* グループ */}
+                <Stack.Screen name="groups/index" options={{ headerTitle: '' }} />
+                <Stack.Screen name="groups/[id]" options={{ headerTitle: '' }} />
 
-                  {/* アイテム */}
-                  <Stack.Screen name="items/[id]" options={{ headerTitle: '' }} />
-
-                  {/* グループ */}
-                  <Stack.Screen name="groups/index" options={{ headerTitle: '' }} />
-                  <Stack.Screen name="groups/[id]" options={{ headerTitle: '' }} />
-
-                  {/* アカウント */}
-                  <Stack.Screen name="account/index" options={{ headerTitle: '' }} />
-                </Stack>
-              </ItemProviderGate>
-            </GroupProviderGate>
-          </MigrationGate>
+                {/* アカウント */}
+                <Stack.Screen name="account/index" options={{ headerTitle: '' }} />
+              </Stack>
+            </ItemProviderGate>
+          </GroupProviderGate>
         </AuthProvider>
       </GluestackUIProvider>
     </GestureHandlerRootView>

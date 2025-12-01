@@ -6,10 +6,6 @@ export const SORT_OPTION_IDS = [
 ] as const;
 export type SortOptionId = (typeof SORT_OPTION_IDS)[number];
 const sortOptionIdSet = new Set<string>(SORT_OPTION_IDS);
-const legacySortOptionMap: Record<string, SortOptionId> = {
-  'anniv-asc': 'birthday-asc',
-  'anniv-desc': 'birthday-desc'
-};
 
 export type SortOption = {
   id: SortOptionId;
@@ -43,6 +39,7 @@ export const sortOptions: SortOption[] = [
 export const DEFAULT_SORT_OPTION: SortOptionId = 'title-asc';
 
 // 永続化済みの値をアプリ内部で扱えるIDへ正規化するために使用
+// TODO : 何やってるのかよくわからんので後でちゃんと見る
 export const normalizeSortOptionId = (value: unknown): SortOptionId | null => {
   if (typeof value !== 'string') {
     return null;
@@ -50,5 +47,5 @@ export const normalizeSortOptionId = (value: unknown): SortOptionId | null => {
   if (sortOptionIdSet.has(value)) {
     return value as SortOptionId;
   }
-  return legacySortOptionMap[value] ?? null;
+  return null;
 };
