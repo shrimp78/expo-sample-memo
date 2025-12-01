@@ -46,7 +46,7 @@ export const getItemById = async (userId: string, itemId: string): Promise<Item 
     const snapshot = await getDoc(itemRef);
     if (snapshot.exists()) {
       const data = snapshot.data();
-      const birthday = data?.birthday;
+      const birthday = data?.birthday ?? data?.anniv;
       if (!birthday) {
         throw new Error('Invalid item data: birthday field is missing');
       }
@@ -145,13 +145,23 @@ export const getAllItemsByUserId = async (userId: string): Promise<Item[]> => {
     const itemsRef = collection(db, COLLECTION.USERS, userId, COLLECTION.ITEMS);
     const snapshot = await getDocs(itemsRef);
 
-    return snapshot.docs.map(doc => ({
-      id: doc.id,
-      title: doc.data().title,
-      content: doc.data().content,
-      group_id: doc.data().group_id,
-      birthday: doc.data().birthday
-    }));
+    return snapshot.docs
+      .map(doc => {
+        const data = doc.data();
+        const birthday = data?.birthday ?? data?.anniv;
+        if (!birthday) {
+          console.warn(`Item ${doc.id} is missing birthday field`);
+          return null;
+        }
+        return {
+          id: doc.id,
+          title: data.title,
+          content: data.content,
+          group_id: data.group_id,
+          birthday
+        } as Item;
+      })
+      .filter((item): item is Item => item !== null);
   } catch (error) {
     console.error('Error getting items from Firestore:', error);
     return [];

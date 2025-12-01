@@ -13,7 +13,8 @@
       "@models/*": ["src/components/types/*"],
       "@constants/*": ["constants/*"],
       "@assets/*": ["assets/*"],
-      "@utils/*": ["src/utils/*"]
+      "@utils/*": ["src/utils/*"],
+      "@jobs/*": ["src/jobs/*"]
     }
   },
   "files.exclude": {
