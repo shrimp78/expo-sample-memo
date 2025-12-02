@@ -8,7 +8,8 @@ import {
   query,
   where,
   getDocs,
-  collection
+  collection,
+  serverTimestamp
 } from 'firebase/firestore';
 import { db } from '@root/firebaseConfig';
 import { type Item } from '@models/Item';
@@ -25,8 +26,8 @@ export const saveItem = async (userId: string, item: Item): Promise<void> => {
       content: item.content,
       group_id: item.group_id,
       birthday: item.birthday,
-      createdAt: Timestamp.now(),
-      updatedAt: Timestamp.now()
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
     });
     console.log(`Item ${item.title} saved to Firestore for user ${userId}`);
   } catch (error) {
@@ -90,7 +91,7 @@ export const updateItemById = async (
       content,
       group_id,
       birthday,
-      updatedAt: Timestamp.now()
+      updatedAt: serverTimestamp()
     });
     console.log(`Item ${title} updated in Firestore for user ${userId}`);
   } catch (error) {
