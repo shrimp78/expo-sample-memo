@@ -68,7 +68,7 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
       const utcMidnight = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
       const birthday = Timestamp.fromDate(utcMidnight);
 
-      await setItems([...items, { id, title, content, group_id, birthday }]);
+      await setItems([...items, { id, title, content, group_id, birthday }]); // ItemContextを更新
       void saveItem(user.id, { id, title, content, group_id, birthday });
       onClose(); // 自分で閉じる
       onSaved(); // 親に「保存完了」を通知
