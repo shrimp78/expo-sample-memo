@@ -26,6 +26,7 @@ export const ItemProvider: React.FC<ItemProviderProps> = ({ children }) => {
     try {
       const allItems = await getAllItemsByUserId(user.id);
       console.log('\n\n\nItemContext: Firestoreからデータを取得しました');
+      console.log(allItems);
       setItemsState(allItems);
       // リモート取得後はキャッシュを更新
       await setCachedItems(user.id, allItems);
