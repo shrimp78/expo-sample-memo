@@ -26,7 +26,7 @@ export const GroupProvider: React.FC<GroupProviderProps> = ({ children }) => {
   const loadGroups = React.useCallback(async () => {
     try {
       const allGroups = await getAllGroupsByUserId(user.id);
-      console.log('\n\n\nFirestoreからデータを取得しました');
+      console.log('\n\n\nGroupContext: Firestoreからデータを取得しました');
       console.log(allGroups);
       setGroupsState(allGroups);
       await setCachedGroups(user.id, allGroups);
