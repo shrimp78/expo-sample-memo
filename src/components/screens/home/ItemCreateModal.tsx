@@ -62,17 +62,19 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
       return;
     }
 
+    const id = Crypto.randomUUID();
     try {
-      const id = Crypto.randomUUID();
       const group_id = selectedGroup.id;
       const utcMidnight = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
       const birthday = Timestamp.fromDate(utcMidnight);
 
       await setItems([...items, { id, title, content, group_id, birthday }]); // ItemContextを更新
-      void saveItem(user.id, { id, title, content, group_id, birthday });
+      await saveItem(user.id, { id, title, content, group_id, birthday }); // TODO: え、 await にすると閉じるのに時間かからない？
       onClose(); // 自分で閉じる
       onSaved(); // 親に「保存完了」を通知
     } catch (e) {
+      // Firestoreへの保存に失敗した場合、ItemContextから追加したアイテムを削除（ロールバック）
+      setItems(items.filter(item => item.id !== id));
       Alert.alert('エラー', '保存に失敗しました');
       console.error(e);
     }
