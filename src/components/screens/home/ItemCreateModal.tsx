@@ -68,14 +68,18 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
       const utcMidnight = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
       const birthday = Timestamp.fromDate(utcMidnight);
 
-      await setItems([...items, { id, title, content, group_id, birthday }]); // ItemContextを更新
-      void saveItem(user.id, { id, title, content, group_id, birthday }); // 非同期で保存
+      await setItems([...items, { id, title, content, group_id, birthday }]); // 楽観的更新
+      saveItem(user.id, { id, title, content, group_id, birthday }).catch(error => {
+        // 後で忘れるのでメモ： この .catch は jsランタイムに登録されるので、直後で onClose() をしてModalを閉じていても
+        // エラーが発生した時点の画面で Alert が表示される。( Alertは、その時点のトップの画面の上にモーダルとして表示される)
+        console.error('Failed to save item: ', error);
+        Alert.alert('保存に失敗しました', '時間をおいてもう一度お試しください。');
+      });
+
       onClose(); // 自分で閉じる
       onSaved(); // 親に「保存完了」を通知
     } catch (e) {
-      // 失敗した場合、ItemContextから追加したアイテムを削除（ロールバック）
-      setItems(items.filter(item => item.id !== id));
-      Alert.alert('エラー', '保存に失敗しました');
+      Alert.alert('エラー', '入力内容を確認してください');
       console.error(e);
     }
   };
