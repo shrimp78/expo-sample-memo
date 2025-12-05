@@ -43,15 +43,16 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
     // 保存処理
     try {
       const groupId = Crypto.randomUUID();
-      await saveGroup(user.id, groupId, groupName, groupColor);
+      // TODO: グループはContext使ってないのだっけ。。？（groups はいつかわるんだろ）
+      saveGroup(user.id, groupId, groupName, groupColor).catch(error => {
+        console.error('Failed to save group: ', error);
+        Alert.alert('グループの保存に失敗しました', '時間をおいてもう一度お試しください。');
+      });
       onClose();
       onSaved();
     } catch (e) {
-      Alert.alert('エラー', '保存に失敗しました');
+      Alert.alert('エラー', '入力内容を確認してください');
       console.error(e);
-    } finally {
-      setGroupName('');
-      setGroupColor('#2196f3');
     }
   };
 

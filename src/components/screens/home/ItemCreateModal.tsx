@@ -73,7 +73,7 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
         // 後で忘れるのでメモ： この .catch は jsランタイムに登録されるので、直後で onClose() をしてModalを閉じていても
         // エラーが発生した時点の画面で Alert が表示される。( Alertは、その時点のトップの画面の上にモーダルとして表示される)
         console.error('Failed to save item: ', error);
-        Alert.alert('保存に失敗しました', '時間をおいてもう一度お試しください。');
+        Alert.alert('アイテムの保存に失敗しました', '時間をおいてもう一度お試しください。');
       });
 
       onClose(); // 自分で閉じる
