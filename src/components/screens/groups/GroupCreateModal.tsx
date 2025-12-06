@@ -13,6 +13,7 @@ import * as Crypto from 'expo-crypto';
 import { AntDesign } from '@expo/vector-icons';
 import { Input, InputField } from '@gluestack-ui/themed';
 import { GROUP_NAME_MAX_LENGTH } from '@constants/validation';
+import { useGroups } from '@context/GroupContext';
 import { saveGroup } from '@services/groupService';
 import { useAuthenticatedUser } from '@context/AuthContext';
 import GroupColorSelector from './GroupColorSelector';
@@ -26,8 +27,12 @@ type ItemCreateProps = {
 
 const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved }) => {
   const user = useAuthenticatedUser();
+  const { groups, setGroups } = useGroups();
   const [groupName, setGroupName] = useState('');
   const [groupColor, setGroupColor] = useState(colorOptions[0]);
+
+  // TODO: グループ名の入力が保存後にクリアされない
+  // TODO: グループ名入力時に、キーボード閉じるボタンが出てない
 
   const handleSave = async () => {
     // バリデーション
@@ -43,7 +48,14 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
     // 保存処理
     try {
       const groupId = Crypto.randomUUID();
-      // TODO: グループはContext使ってないのだっけ。。？（groups はいつかわるんだろ）
+      // position を算出
+      const newPosition =
+        groups.length === 0 ? 65536 : Math.max(...groups.map(group => group.position)) + 65536;
+
+      await setGroups([
+        ...groups,
+        { id: groupId, name: groupName, color: groupColor, position: newPosition }
+      ]);
       saveGroup(user.id, groupId, groupName, groupColor).catch(error => {
         console.error('Failed to save group: ', error);
         Alert.alert('グループの保存に失敗しました', '時間をおいてもう一度お試しください。');
