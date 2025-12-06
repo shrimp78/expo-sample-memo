@@ -56,7 +56,8 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
         ...groups,
         { id: groupId, name: groupName, color: groupColor, position: newPosition }
       ]);
-      saveGroup(user.id, groupId, groupName, groupColor).catch(error => {
+      // TODO: saveGroupでも、newPosition を渡してそれを使用して保存するようにする
+      saveGroup(user.id, groupId, groupName, groupColor, newPosition).catch(error => {
         console.error('Failed to save group: ', error);
         Alert.alert('グループの保存に失敗しました', '時間をおいてもう一度お試しください。');
       });

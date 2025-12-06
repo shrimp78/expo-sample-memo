@@ -24,22 +24,17 @@ import { COLLECTION } from '@constants/firebaseCollectionName';
  * @param groupId グループID
  * @param groupName グループ名
  * @param groupColor グループ色
+ * @param newPosition 新しいposition値
  * @returns 採用したposition値を返却
  */
 export const saveGroup = async (
   userId: string,
   groupId: string,
   groupName: string,
-  groupColor: string
+  groupColor: string,
+  newPosition: number
 ): Promise<number> => {
   try {
-    // 最大positionの取得（1件のみ）
-    const groupsRef = collection(db, COLLECTION.USERS, userId, COLLECTION.GROUPS);
-    const q = query(groupsRef, orderBy('position', 'desc'), limit(1));
-    const snapshot = await getDocs(q);
-
-    const newPosition = snapshot.empty ? 65536 : (snapshot.docs[0].data().position || 0) + 65536;
-
     const groupRef = doc(db, COLLECTION.USERS, userId, COLLECTION.GROUPS, groupId);
     await setDoc(groupRef, {
       name: groupName,
