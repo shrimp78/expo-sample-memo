@@ -32,19 +32,19 @@ export const saveGroup = async (
   groupId: string,
   groupName: string,
   groupColor: string,
-  newPosition: number
+  position: number
 ): Promise<number> => {
   try {
     const groupRef = doc(db, COLLECTION.USERS, userId, COLLECTION.GROUPS, groupId);
     await setDoc(groupRef, {
       name: groupName,
       color: groupColor,
-      position: newPosition,
+      position: position,
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now()
     });
     console.log(`Group ${groupName} created in Firestore for user ${userId}`);
-    return newPosition;
+    return position;
   } catch (error) {
     console.error('Error creating group in Firestore:', error);
     throw error;
