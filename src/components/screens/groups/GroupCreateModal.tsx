@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Alert,
   Modal,
@@ -31,8 +31,14 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
   const [groupName, setGroupName] = useState('');
   const [groupColor, setGroupColor] = useState(colorOptions[0]);
 
-  // TODO: グループ名の入力が保存後にクリアされない
   // TODO: グループ名入力時に、キーボード閉じるボタンが出てない
+
+  // モーダルが開いたら初期化
+  useEffect(() => {
+    if (!visible) return;
+    setGroupName('');
+    setGroupColor(colorOptions[0]);
+  }, [visible]);
 
   const handleSave = async () => {
     // バリデーション
@@ -56,13 +62,12 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
         ...groups,
         { id: groupId, name: groupName, color: groupColor, position: newPosition }
       ]);
-      // TODO: saveGroupでも、newPosition を渡してそれを使用して保存するようにする
       saveGroup(user.id, groupId, groupName, groupColor, newPosition).catch(error => {
         console.error('Failed to save group: ', error);
         Alert.alert('グループの保存に失敗しました', '時間をおいてもう一度お試しください。');
       });
-      onClose();
       onSaved();
+      onClose();
     } catch (e) {
       Alert.alert('エラー', '入力内容を確認してください');
       console.error(e);
