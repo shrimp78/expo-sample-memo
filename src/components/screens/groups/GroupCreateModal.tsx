@@ -7,7 +7,9 @@ import {
   TouchableOpacity,
   Button,
   KeyboardAvoidingView,
-  StyleSheet
+  StyleSheet,
+  Platform,
+  InputAccessoryView
 } from 'react-native';
 import * as Crypto from 'expo-crypto';
 import { AntDesign } from '@expo/vector-icons';
@@ -18,6 +20,7 @@ import { saveGroup } from '@services/groupService';
 import { useAuthenticatedUser } from '@context/AuthContext';
 import GroupColorSelector from './GroupColorSelector';
 import { colorOptions } from '@constants/colors';
+import KeyboardCloseButton from '@components/common/KeyboardCloseButton';
 
 type ItemCreateProps = {
   visible: boolean;
@@ -25,13 +28,13 @@ type ItemCreateProps = {
   onSaved: () => void;
 };
 
+const inputAccessoryViewID3 = 'INPUT_ACCESSORY_VIEW_ID_3';
+
 const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved }) => {
   const user = useAuthenticatedUser();
   const { groups, setGroups } = useGroups();
   const [groupName, setGroupName] = useState('');
   const [groupColor, setGroupColor] = useState(colorOptions[0]);
-
-  // TODO: グループ名入力時に、キーボード閉じるボタンが出てない
 
   // モーダルが開いたら初期化
   useEffect(() => {
@@ -107,11 +110,22 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
                       editable={true}
                       autoFocus={true}
                       maxLength={GROUP_NAME_MAX_LENGTH}
+                      inputAccessoryViewID={inputAccessoryViewID3}
                     />
                   </Input>
 
                   {/* カラーオプション */}
                   <GroupColorSelector groupColor={groupColor} onChangeGroupColor={setGroupColor} />
+
+                  {/* iOSのみキーボードの閉じるボタンを表示 */}
+                  {Platform.OS === 'ios' && (
+                    <InputAccessoryView
+                      nativeID={inputAccessoryViewID3}
+                      backgroundColor={'#F1F1F1'}
+                    >
+                      <KeyboardCloseButton />
+                    </InputAccessoryView>
+                  )}
                 </KeyboardAvoidingView>
               </View>
             </View>
