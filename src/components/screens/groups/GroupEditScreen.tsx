@@ -118,6 +118,7 @@ export default function GroupEditScreen() {
           )}
         </View>
         {/* カラーオプション */}
+        <Text style={styles.colorSelectorTitle}>グループの色を選択してください</Text>
         <View style={styles.colorSelectorContainer}>
           <GroupColorSelector groupColor={groupColor} onChangeGroupColor={setGroupColor} />
         </View>
@@ -141,6 +142,12 @@ const styles = StyleSheet.create({
   errorText: {
     fontSize: 16,
     color: '#666'
+  },
+  colorSelectorTitle: {
+    marginLeft: 16,
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 10
   },
   colorSelectorContainer: {
     flex: 1

@@ -4,6 +4,7 @@ import {
   Modal,
   TouchableWithoutFeedback,
   View,
+  Text,
   TouchableOpacity,
   Button,
   KeyboardAvoidingView,
@@ -115,6 +116,7 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
                   </Input>
 
                   {/* カラーオプション */}
+                  <Text style={styles.colorSelectorTitle}>グループの色を選択してください</Text>
                   <GroupColorSelector groupColor={groupColor} onChangeGroupColor={setGroupColor} />
 
                   {/* iOSのみキーボードの閉じるボタンを表示 */}
@@ -158,6 +160,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3, // iOS用
     shadowRadius: 8, // iOS用
     elevation: 10 // Android用
+  },
+  colorSelectorTitle: {
+    marginTop: 20,
+    marginLeft: 16,
+    fontSize: 16,
+    color: '#666',
+    marginBottom: 5
   },
   closeButton: {
     position: 'absolute',
