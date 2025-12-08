@@ -12,12 +12,21 @@ const GroupColorSelector: React.FC<GroupColorSelectorProps> = props => {
   const { groupColor, onChangeGroupColor } = props;
   return (
     <View style={styles.colorOptionsContainer}>
-      <HStack flexWrap="wrap" paddingHorizontal={'$2'} marginLeft={'$2'}>
+      <HStack
+        flexWrap="wrap"
+        paddingHorizontal={'$3'}
+        justifyContent="space-between"
+        style={styles.evenlySpacedRow}
+      >
         {colorOptions.map(color => (
           <TouchableOpacity
             key={color}
             onPress={() => onChangeGroupColor(color)}
-            style={[styles.colorOption, groupColor === color && styles.selectedColorOption]}
+            style={[
+              styles.colorOption,
+              styles.evenlySpacedOption,
+              groupColor === color && styles.selectedColorOption
+            ]}
           >
             <FontAwesome name="circle" size={32} color={color} />
           </TouchableOpacity>
@@ -37,6 +46,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginRight: 8,
     marginBottom: 8
+  },
+  evenlySpacedRow: {
+    width: '100%'
+  },
+  evenlySpacedOption: {
+    marginRight: 0
   },
   selectedColorOption: {
     backgroundColor: '#f0f0f0',
