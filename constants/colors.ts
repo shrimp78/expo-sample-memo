@@ -19,7 +19,6 @@ export const colorOptions = [
   '#795548', // Brown 500
   '#9e9e9e', // Grey 500
   '#607d8b', // Blue Grey 500
-  '#37474f', // Blue Grey 800
   '#424242', // Grey 800
   '#000000' // Black
 ];
