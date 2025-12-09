@@ -55,35 +55,6 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
     }
   }, [visible]);
 
-  // 全削除処理
-  const deleteExecute = async () => {
-    setIsLoading(true);
-    try {
-      await deleteAllItems(user.id);
-      await deleteAllGroups(user.id);
-      onRequestClose();
-      onDeletedAllItems();
-    } catch (error) {
-      Alert.alert('エラー', '削除に失敗しました');
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  // 全削除ボタン処理
-  const handleDeleteAllPress = async () => {
-    console.log('全てのアイテムを削除するが押されました');
-    onRequestClose();
-    Alert.alert('確認', '全てのアイテムを削除しますか？', [
-      {
-        text: 'キャンセル',
-        style: 'cancel'
-      },
-      { text: '削除', onPress: () => deleteExecute() }
-    ]);
-  };
-
   // アカウント設定ボタン
   const handleAccountSettingsPress = () => {
     console.log('アカウント設定が押されました');
@@ -165,9 +136,6 @@ const HomeMenuModal: React.FC<HomeMenuModalProps> = ({
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={handleSettingsPress}>
               <Text style={styles.menuText}>アプリ設定</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={handleDeleteAllPress}>
-              <Text style={styles.menuText}>全てのアイテムを削除する</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.menuItem} onPress={handleFeedbackPress}>
               <Text style={styles.menuText}>フィードバック</Text>

@@ -1,18 +1,22 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView, ScrollView, View, Text, StyleSheet, Pressable, Alert } from 'react-native';
 import { router } from 'expo-router';
-import { useAuth } from '@context/AuthContext';
+import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
 import { sortOptions, SortOptionId, DEFAULT_SORT_OPTION } from '@constants/sortOptions';
 import { useUserPreferencesStore } from '@src/store/userPreferencesStore';
+import { deleteAllItems } from '@services/itemService';
+import { deleteAllGroups } from '@services/groupService';
 
 export default function SettingsScreen() {
-  const { isLoggedIn, user } = useAuth();
+  const user = useAuthenticatedUser();
+  const { isLoggedIn } = useAuth();
   const itemSortOption = useUserPreferencesStore(state => state.itemSortOption);
   const isHydrated = useUserPreferencesStore(state => state.isHydrated);
   const isSaving = useUserPreferencesStore(state => state.isSaving);
   const hydrateFromCache = useUserPreferencesStore(state => state.hydrateFromCache);
   const updateItemSortOption = useUserPreferencesStore(state => state.updateItemSortOption);
   const currentSortOption = itemSortOption ?? DEFAULT_SORT_OPTION;
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -26,6 +30,7 @@ export default function SettingsScreen() {
     }
   }, [user?.id, isHydrated, hydrateFromCache]);
 
+  // 並び順選択ボタン処理
   const handleSelectOption = (optionId: SortOptionId) => {
     if (!user?.id || isSaving || optionId === currentSortOption) {
       return;
@@ -39,6 +44,31 @@ export default function SettingsScreen() {
   if (!isLoggedIn) {
     return null;
   }
+
+  // 全削除ボタン処理
+  const deleteExecute = async () => {
+    setIsLoading(true); // TODO: このローディング出ないんだが
+    try {
+      await deleteAllItems(user.id);
+      await deleteAllGroups(user.id);
+    } catch (error) {
+      Alert.alert('エラー', '削除に失敗しました');
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeleteAllPress = async () => {
+    console.log('全てのアイテムを削除するが押されました');
+    Alert.alert('確認', '全てのアイテムを削除しますか？', [
+      {
+        text: 'キャンセル',
+        style: 'cancel'
+      },
+      { text: '削除', onPress: () => deleteExecute() }
+    ]);
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -77,6 +107,19 @@ export default function SettingsScreen() {
             })}
           </View>
         </View>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>アイテムの削除</Text>
+          <Text style={styles.sectionSubtitle}>
+            全てのアイテムを一括で削除する事ができます。
+            この操作は取り消すことができませんのでご注意ください。
+          </Text>
+          <Pressable
+            onPress={handleDeleteAllPress}
+            style={({ pressed }) => [styles.deleteButton, pressed && styles.deleteButtonPressed]}
+          >
+            <Text style={styles.deleteButtonText}>全てのアイテムを削除する</Text>
+          </Pressable>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -94,6 +137,7 @@ const styles = StyleSheet.create({
   section: {
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
+    marginBottom: 20,
     paddingVertical: 20,
     paddingHorizontal: 20,
     shadowColor: '#0F172A',
@@ -163,5 +207,24 @@ const styles = StyleSheet.create({
   optionIndicatorSelected: {
     borderColor: '#2563EB',
     backgroundColor: '#2563EB'
+  },
+  deleteButton: {
+    backgroundColor: '#FEF2F2',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#FECACA',
+    paddingVertical: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 8
+  },
+  deleteButtonPressed: {
+    backgroundColor: '#FEE2E2',
+    opacity: 0.9
+  },
+  deleteButtonText: {
+    color: '#DC2626',
+    fontSize: 16,
+    fontWeight: '600'
   }
 });
