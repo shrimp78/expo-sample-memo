@@ -17,7 +17,7 @@ import {
   SafeAreaView,
   StyleSheet
 } from 'react-native';
-import KeyboardCloseButton from '../common/KeyboardCloseButton';
+import KeyboardCloseButton from '@components/common/KeyboardCloseButton';
 import { Group } from '@models/Group';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
