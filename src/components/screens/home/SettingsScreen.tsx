@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, ScrollView, View, Text, StyleSheet, Pressable, Alert } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, Pressable, Alert } from 'react-native';
 import { router } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
 import { sortOptions, SortOptionId, DEFAULT_SORT_OPTION } from '@constants/sortOptions';
 import { useUserPreferencesStore } from '@src/store/userPreferencesStore';
@@ -17,6 +18,7 @@ export default function SettingsScreen() {
   const updateItemSortOption = useUserPreferencesStore(state => state.updateItemSortOption);
   const currentSortOption = itemSortOption ?? DEFAULT_SORT_OPTION;
   const [isLoading, setIsLoading] = useState(false);
+  const insets = useSafeAreaInsets();
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -71,8 +73,13 @@ export default function SettingsScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+    <View style={styles.safeArea}>
+      <ScrollView
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingBottom: styles.scrollContent.paddingBottom + insets.bottom }
+        ]}
+      >
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>ホーム画面の並び順</Text>
           <Text style={styles.sectionSubtitle}>
@@ -121,7 +128,7 @@ export default function SettingsScreen() {
           </Pressable>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
