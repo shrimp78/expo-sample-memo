@@ -59,6 +59,7 @@ export default function SettingsScreen() {
       console.error(error);
     } finally {
       setIsLoading(false);
+      router.replace('/');
     }
   };
 
