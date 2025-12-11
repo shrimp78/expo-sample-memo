@@ -7,6 +7,7 @@ import { sortOptions, SortOptionId, DEFAULT_SORT_OPTION } from '@constants/sortO
 import { useUserPreferencesStore } from '@src/store/userPreferencesStore';
 import { deleteAllItems } from '@services/itemService';
 import { deleteAllGroups } from '@services/groupService';
+import ActivityIndicatorModal from '@components/common/ActivityIndicatorModal';
 
 export default function SettingsScreen() {
   const user = useAuthenticatedUser();
@@ -49,7 +50,7 @@ export default function SettingsScreen() {
 
   // 全削除ボタン処理
   const deleteExecute = async () => {
-    setIsLoading(true); // TODO: このローディング出ないんだが
+    setIsLoading(true);
     try {
       await deleteAllItems(user.id);
       await deleteAllGroups(user.id);
@@ -128,6 +129,7 @@ export default function SettingsScreen() {
           </Pressable>
         </View>
       </ScrollView>
+      <ActivityIndicatorModal isLoading={isLoading} loadingText="削除中..." />
     </View>
   );
 }
