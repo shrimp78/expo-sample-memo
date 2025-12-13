@@ -13,6 +13,7 @@ import {
   View,
   Platform,
   TouchableOpacity,
+  Switch,
   Modal,
   SafeAreaView,
   StyleSheet
@@ -69,6 +70,9 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
   // 日付選択エリアで使用するモノたち
   const [isDatePickerOpen, setDatePickerOpen] = useState(false);
   const [tempDate, setTempDate] = useState<Date>(new Date(year, month - 1, day));
+
+  // 通知設定（UIのみ。永続化はまだ行わない TODO: DBと連携する）
+  const [notifyEnabled, setNotifyEnabled] = useState(false);
 
   // y,m,d の各numberを受け取って、YYYY/MM/DD のStringを返す
   const formatSelectedDate = (y: number, m: number, d: number): string => {
@@ -251,6 +255,32 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           </Picker>
         </View>
       )}
+
+      {/* 通知設定 */}
+      <HStack
+        alignItems="center"
+        marginTop={'$1'}
+        marginBottom={'$1'}
+        marginHorizontal={'$2'}
+        height={'$10'}
+      >
+        <View style={styles.selectionSurface}>
+          <HStack alignItems="center" space="sm">
+            <Feather name="bell" size={14} color="#8E8E93" />
+            <Text fontSize={'$sm'} fontWeight={'$medium'} color="#1C1C1E">
+              通知設定
+            </Text>
+          </HStack>
+          <Switch
+            value={notifyEnabled}
+            onValueChange={setNotifyEnabled}
+            trackColor={{ false: '#D1D1D6', true: '#34C759' }}
+            thumbColor={
+              Platform.OS === 'android' ? (notifyEnabled ? '#FFFFFF' : '#FFFFFF') : undefined
+            }
+          />
+        </View>
+      </HStack>
 
       {/* 内容入力 */}
       <Box marginTop={'$3'} marginHorizontal={'$2'}>
