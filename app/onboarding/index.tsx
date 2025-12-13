@@ -94,7 +94,7 @@ export default function OnboardingScreen() {
         <View style={styles.centerContent}>
           <Text style={styles.title}>ようこそ！</Text>
           <Text style={[styles.body, { marginTop: 16 }]}>
-            まず最初のグループを作成してみましょう。
+            まず最初のグループを作成してみましょう
           </Text>
           <View style={styles.actions}>
             <TouchableOpacity
@@ -131,7 +131,7 @@ export default function OnboardingScreen() {
         <View style={{ flex: 1 }}>
           <InstructionOverlay
             text={
-              '次にアイテムを作成します。アイテム名と説明文を入力してグループを選択して保存を押してください。'
+              '次にアイテムを作成します。アイテム名と説明文を入力してグループを選択して保存を押してください'
             }
             onOk={openItemFlow}
           />
@@ -146,11 +146,10 @@ export default function OnboardingScreen() {
       {step === 4 && (
         <View style={styles.centerContent}>
           <Text style={styles.title}>DONE！</Text>
-          <Text style={styles.body}>最初のアイテムが完成しました☺️。</Text>
+          <Text style={styles.body}>最初のアイテムが完成しました☺️</Text>
           <Text style={[styles.body, { marginTop: 8 }]}>
-            グループやアイテムはいつでも編集画面から修正できます。
+            グループやアイテムはいつでも編集画面から修正できます
           </Text>
-          <Text style={[styles.body, { marginTop: 8 }]}>それでは素敵なSPDをお楽しみください。</Text>
           <View style={styles.actions}>
             <TouchableOpacity style={styles.primaryButton} onPress={finishOnboarding}>
               <Text style={styles.primaryButtonText}>OK</Text>
