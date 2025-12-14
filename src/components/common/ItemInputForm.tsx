@@ -274,6 +274,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           <Switch
             value={notifyEnabled}
             onValueChange={setNotifyEnabled}
+            style={styles.notifySwitch}
             trackColor={{ false: '#D1D1D6', true: '#34C759' }}
             thumbColor={
               Platform.OS === 'android' ? (notifyEnabled ? '#FFFFFF' : '#FFFFFF') : undefined
@@ -377,6 +378,9 @@ const styles = StyleSheet.create({
     width: 10,
     height: 10,
     borderRadius: 5
+  },
+  notifySwitch: {
+    marginRight: 10
   }
 });
 
