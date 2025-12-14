@@ -73,6 +73,13 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
 
   // 通知設定（UIのみ。永続化はまだ行わない TODO: DBと連携する）
   const [notifyEnabled, setNotifyEnabled] = useState(false);
+  const [notifyTiming, setNotifyTiming] = useState<'1h' | '1d' | '1w'>('1h');
+
+  const notifyTimingOptions: Array<{ id: '1h' | '1d' | '1w'; label: string }> = [
+    { id: '1h', label: '1時間前' },
+    { id: '1d', label: '1日前' },
+    { id: '1w', label: '1週間前' }
+  ];
 
   // y,m,d の各numberを受け取って、YYYY/MM/DD のStringを返す
   const formatSelectedDate = (y: number, m: number, d: number): string => {
@@ -271,7 +278,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
       <HStack
         alignItems="center"
         marginTop={'$2'}
-        marginBottom={'$2'}
+        marginBottom={notifyEnabled ? '$1' : '$2'}
         marginHorizontal={'$2'}
         height={'$10'}
       >
@@ -293,6 +300,33 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           />
         </View>
       </HStack>
+      {notifyEnabled && (
+        <View style={styles.notifyDetailContainer}>
+          <Text style={styles.notifyDetailTitle}>通知タイミング</Text>
+          <View style={styles.notifyOptionsSurface}>
+            {notifyTimingOptions.map(option => {
+              const isSelected = notifyTiming === option.id;
+              return (
+                <TouchableOpacity
+                  key={option.id}
+                  onPress={() => setNotifyTiming(option.id)}
+                  activeOpacity={0.8}
+                  style={[styles.notifyOptionRow, isSelected && styles.notifyOptionRowSelected]}
+                >
+                  <HStack alignItems="center" space="sm">
+                    <View style={[styles.radioOuter, isSelected && styles.radioOuterSelected]}>
+                      {isSelected && <View style={styles.radioInner} />}
+                    </View>
+                    <Text fontSize={'$sm'} fontWeight={'$medium'} color="#1C1C1E">
+                      {option.label}
+                    </Text>
+                  </HStack>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
+      )}
 
       {/* 内容入力 */}
       <View style={styles.sectionTitle}>
@@ -405,6 +439,48 @@ const styles = StyleSheet.create({
   },
   notifySwitch: {
     marginRight: 10
+  },
+  notifyDetailContainer: {
+    marginHorizontal: 12,
+    marginTop: 2,
+    marginBottom: 8
+  },
+  notifyDetailTitle: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#6B7280',
+    marginLeft: 4,
+    marginBottom: 8
+  },
+  notifyOptionsSurface: {
+    backgroundColor: '#F2F2F7',
+    borderRadius: 12,
+    overflow: 'hidden'
+  },
+  notifyOptionRow: {
+    paddingVertical: 12,
+    paddingHorizontal: 12
+  },
+  notifyOptionRowSelected: {
+    backgroundColor: '#E9ECF5'
+  },
+  radioOuter: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    borderWidth: 2,
+    borderColor: '#9CA3AF',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  radioOuterSelected: {
+    borderColor: '#2563EB'
+  },
+  radioInner: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#2563EB'
   }
 });
 
