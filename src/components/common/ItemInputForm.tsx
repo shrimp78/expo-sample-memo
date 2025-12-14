@@ -122,11 +122,15 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           />
         </Input>
       </View>
+
       {/* グループ選択エリア */}
+      <View style={styles.sectionTitle}>
+        <Text style={styles.sectionTitleText}>グループ</Text>
+      </View>
       <HStack
         alignItems="center"
         marginTop={'$2'}
-        marginBottom={'$1'}
+        marginBottom={'$2'}
         marginHorizontal={'$2'}
         height={'$10'}
       >
@@ -155,7 +159,11 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           </View>
         </TouchableOpacity>
       </HStack>
+
       {/* 年月日入力 iOSの場合は、ネイティブのホイールを出現させる */}
+      <View style={styles.sectionTitle}>
+        <Text style={styles.sectionTitleText}>日付</Text>
+      </View>
       {Platform.OS === 'ios' ? (
         <>
           <HStack
@@ -257,10 +265,13 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
       )}
 
       {/* 通知設定 */}
+      <View style={styles.sectionTitle}>
+        <Text style={styles.sectionTitleText}>通知設定</Text>
+      </View>
       <HStack
         alignItems="center"
-        marginTop={'$1'}
-        marginBottom={'$1'}
+        marginTop={'$2'}
+        marginBottom={'$2'}
         marginHorizontal={'$2'}
         height={'$10'}
       >
@@ -284,7 +295,10 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
       </HStack>
 
       {/* 内容入力 */}
-      <Box marginTop={'$3'} marginHorizontal={'$2'}>
+      <View style={styles.sectionTitle}>
+        <Text style={styles.sectionTitleText}>メモ</Text>
+      </View>
+      <Box marginTop={'$2'} marginHorizontal={'$2'}>
         <Textarea
           borderWidth={0}
           width={'$full'}
@@ -330,6 +344,16 @@ const styles = StyleSheet.create({
   },
   titleInput: {
     flex: 1
+  },
+  sectionTitle: {
+    marginTop: 14,
+    marginBottom: 4,
+    paddingHorizontal: 12
+  },
+  sectionTitleText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'gray'
   },
   datePickerOverlay: {
     flex: 1,
