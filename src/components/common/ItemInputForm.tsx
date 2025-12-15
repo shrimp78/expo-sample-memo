@@ -31,6 +31,7 @@ type ItemInputFormProps = {
   content: string;
   onChangeTitle: (text: string) => void;
   onChangeContent: (text: string) => void;
+  onFocusContent?: () => void;
   onSelectGroup: () => void;
   selectedGroup: Group | null;
   year: number;
@@ -56,6 +57,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
     content,
     onChangeTitle,
     onChangeContent,
+    onFocusContent,
     onSelectGroup,
     selectedGroup,
     year,
@@ -345,6 +347,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
             value={content}
             scrollEnabled={true}
             onChangeText={onChangeContent}
+            onFocus={onFocusContent}
             inputAccessoryViewID={inputAccessoryViewID2}
             fontSize={'$md'}
             multiline={true}

@@ -5,11 +5,13 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Text,
-  ScrollView
+  ScrollView,
+  Platform,
+  KeyboardAvoidingView
 } from 'react-native';
 import { useLocalSearchParams, useNavigation, router } from 'expo-router';
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { KeyboardAvoidingView } from '@gluestack-ui/themed';
+import { useHeaderHeight } from '@react-navigation/elements';
 import { updateItemById, getItemById } from '@services/itemService';
 import { type Group } from '@models/Group';
 import ItemInputForm from '@components/common/ItemInputForm';
@@ -23,6 +25,8 @@ import { deleteItemById } from '@services/itemService';
 export default function ItemEditScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const navigation = useNavigation();
+  const headerHeight = useHeaderHeight();
+  const scrollViewRef = useRef<ScrollView | null>(null);
   const user = useAuthenticatedUser();
   // タイトルと内容の状態
   const [title, setTitle] = useState('');
@@ -201,21 +205,27 @@ export default function ItemEditScreen() {
   return (
     <View style={styles.container}>
       <KeyboardAvoidingView
-        behavior="padding"
-        keyboardVerticalOffset={100}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={headerHeight}
         style={styles.keyboardAvoidingView}
       >
         <ScrollView
+          ref={scrollViewRef}
           keyboardShouldPersistTaps="handled" // キーボードが表示されているときもScroollView内の要素をタップできるようにする
           contentContainerStyle={styles.scrollContentContainer}
           showsVerticalScrollIndicator={false} // スクロールバーを非表示にする
           keyboardDismissMode="on-drag" // スクロール中にキーボードを閉じる
+          automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}
         >
           <ItemInputForm
             title={title}
             content={content}
             onChangeTitle={setTitle}
             onChangeContent={setContent}
+            onFocusContent={() => {
+              // Textareaフォーカス時に、入力欄がキーボードで隠れないよう下へスクロール
+              requestAnimationFrame(() => scrollViewRef.current?.scrollToEnd({ animated: true }));
+            }}
             onSelectGroup={() => setGroupModalVisible(true)}
             selectedGroup={selectedGroup}
             year={year}
@@ -265,6 +275,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   scrollContentContainer: {
+    flexGrow: 1,
     paddingBottom: 24
   },
   deleteSection: {
