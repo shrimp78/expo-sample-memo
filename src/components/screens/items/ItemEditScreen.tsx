@@ -1,4 +1,12 @@
-import { StyleSheet, Alert, View, ActivityIndicator, TouchableOpacity, Text } from 'react-native';
+import {
+  StyleSheet,
+  Alert,
+  View,
+  ActivityIndicator,
+  TouchableOpacity,
+  Text,
+  ScrollView
+} from 'react-native';
 import { useLocalSearchParams, useNavigation, router } from 'expo-router';
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { KeyboardAvoidingView } from '@gluestack-ui/themed';
@@ -192,36 +200,46 @@ export default function ItemEditScreen() {
 
   return (
     <View style={styles.container}>
-      <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={100}>
-        <ItemInputForm
-          title={title}
-          content={content}
-          onChangeTitle={setTitle}
-          onChangeContent={setContent}
-          onSelectGroup={() => setGroupModalVisible(true)}
-          selectedGroup={selectedGroup}
-          year={year}
-          month={month}
-          day={day}
-          setYear={setYear}
-          setMonth={setMonth}
-          setDay={setDay}
-          autoFocus={false}
-        />
+      <KeyboardAvoidingView
+        behavior="padding"
+        keyboardVerticalOffset={100}
+        style={styles.keyboardAvoidingView}
+      >
+        <ScrollView
+          keyboardShouldPersistTaps="handled"
+          contentContainerStyle={styles.scrollContentContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          <ItemInputForm
+            title={title}
+            content={content}
+            onChangeTitle={setTitle}
+            onChangeContent={setContent}
+            onSelectGroup={() => setGroupModalVisible(true)}
+            selectedGroup={selectedGroup}
+            year={year}
+            month={month}
+            day={day}
+            setYear={setYear}
+            setMonth={setMonth}
+            setDay={setDay}
+            autoFocus={false}
+          />
 
-        {/* 削除エリア  */}
-        <View style={styles.deleteSection}>
-          <View style={styles.separator} />
-          <TouchableOpacity
-            accessibilityLabel="アイテムを削除する"
-            accessibilityRole="button"
-            activeOpacity={0.7}
-            onPress={handleDeleteItemPress}
-            style={styles.deleteButton}
-          >
-            <Text style={styles.deleteButtonText}>アイテムを削除</Text>
-          </TouchableOpacity>
-        </View>
+          {/* 削除エリア  */}
+          <View style={styles.deleteSection}>
+            <View style={styles.separator} />
+            <TouchableOpacity
+              accessibilityLabel="アイテムを削除する"
+              accessibilityRole="button"
+              activeOpacity={0.7}
+              onPress={handleDeleteItemPress}
+              style={styles.deleteButton}
+            >
+              <Text style={styles.deleteButtonText}>アイテムを削除</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </KeyboardAvoidingView>
 
       {/* グループ選択Modal（ItemCreateModalの内部） */}
@@ -241,6 +259,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
     paddingHorizontal: 16
+  },
+  keyboardAvoidingView: {
+    flex: 1
+  },
+  scrollContentContainer: {
+    paddingBottom: 24
   },
   deleteSection: {
     marginTop: 40,
