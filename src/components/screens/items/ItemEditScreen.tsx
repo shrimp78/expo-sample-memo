@@ -206,9 +206,10 @@ export default function ItemEditScreen() {
         style={styles.keyboardAvoidingView}
       >
         <ScrollView
-          keyboardShouldPersistTaps="handled"
+          keyboardShouldPersistTaps="handled" // キーボードが表示されているときもScroollView内の要素をタップできるようにする
           contentContainerStyle={styles.scrollContentContainer}
-          showsVerticalScrollIndicator={false}
+          showsVerticalScrollIndicator={false} // スクロールバーを非表示にする
+          keyboardDismissMode="on-drag" // スクロール中にキーボードを閉じる
         >
           <ItemInputForm
             title={title}
