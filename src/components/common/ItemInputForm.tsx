@@ -75,12 +75,14 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
 
   // 通知設定（UIのみ。永続化はまだ行わない TODO: DBと連携する）
   const [notifyEnabled, setNotifyEnabled] = useState(false);
-  const [notifyTiming, setNotifyTiming] = useState<'1h' | '1d' | '1w'>('1h');
+  const [notifyTiming, setNotifyTiming] = useState<string>('1h');
 
-  const notifyTimingOptions: Array<{ id: '1h' | '1d' | '1w'; label: string }> = [
+  const notifyTimingOptions: Array<{ id: string; label: string }> = [
     { id: '1h', label: '1時間前' },
-    { id: '1d', label: '1日前' },
-    { id: '1w', label: '1週間前' }
+    { id: '24h', label: '24時間前' },
+    { id: '7d', label: '7日前' },
+    { id: '14d', label: '14日前' },
+    { id: '30d', label: '30日前' }
   ];
 
   // y,m,d の各numberを受け取って、YYYY/MM/DD のStringを返す
