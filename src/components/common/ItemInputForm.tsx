@@ -428,8 +428,8 @@ const styles = StyleSheet.create({
     marginRight: 10
   },
   notifyDetailContainer: {
-    marginHorizontal: 12,
-    marginTop: 2,
+    marginHorizontal: 8,
+    marginTop: 18,
     marginBottom: 8
   },
   notifyDetailTitle: {
