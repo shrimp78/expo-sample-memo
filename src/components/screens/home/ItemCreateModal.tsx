@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
   Modal,
   TouchableWithoutFeedback,
@@ -7,7 +7,9 @@ import {
   Button,
   KeyboardAvoidingView,
   StyleSheet,
-  Alert
+  Alert,
+  ScrollView,
+  Platform
 } from 'react-native';
 import GroupSelectModal from '@components/common/GroupSelectModal';
 import { AntDesign } from '@expo/vector-icons';
@@ -34,6 +36,7 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
   const [content, setContent] = useState('');
   const [groupModalVisible, setGroupModalVisible] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
+  const scrollViewRef = useRef<ScrollView | null>(null);
 
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
@@ -108,21 +111,36 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
                   keyboardVerticalOffset={100}
                   style={{ flex: 1 }}
                 >
-                  <ItemInputForm
-                    title={title}
-                    content={content}
-                    onChangeTitle={setTitle}
-                    onChangeContent={setContent}
-                    onSelectGroup={() => setGroupModalVisible(true)}
-                    selectedGroup={selectedGroup}
-                    year={year}
-                    month={month}
-                    day={day}
-                    setYear={setYear}
-                    setMonth={setMonth}
-                    setDay={setDay}
-                    autoFocus={true}
-                  />
+                  <ScrollView
+                    ref={scrollViewRef}
+                    keyboardShouldPersistTaps="handled"
+                    contentContainerStyle={styles.scrollContentContainer}
+                    showsVerticalScrollIndicator={false}
+                    keyboardDismissMode="on-drag"
+                    automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}
+                  >
+                    <ItemInputForm
+                      title={title}
+                      content={content}
+                      onChangeTitle={setTitle}
+                      onChangeContent={setContent}
+                      onFocusContent={() => {
+                        // Textareaフォーカス時に、入力欄がキーボードで隠れないよう下へスクロール
+                        requestAnimationFrame(() =>
+                          scrollViewRef.current?.scrollToEnd({ animated: true })
+                        );
+                      }}
+                      onSelectGroup={() => setGroupModalVisible(true)}
+                      selectedGroup={selectedGroup}
+                      year={year}
+                      month={month}
+                      day={day}
+                      setYear={setYear}
+                      setMonth={setMonth}
+                      setDay={setDay}
+                      autoFocus={true}
+                    />
+                  </ScrollView>
                 </KeyboardAvoidingView>
               </View>
             </View>
@@ -179,6 +197,10 @@ const styles = StyleSheet.create({
   inputArea: {
     marginTop: 20,
     flex: 1
+  },
+  scrollContentContainer: {
+    flexGrow: 1,
+    paddingBottom: 24
   }
 });
 
