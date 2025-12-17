@@ -210,7 +210,7 @@ export default function ItemEditScreen() {
         style={styles.keyboardAvoidingView}
       >
         <ScrollView
-          ref={scrollViewRef}
+          ref={scrollViewRef} // TODO: ナニコレ
           keyboardShouldPersistTaps="handled" // キーボードが表示されているときもScroollView内の要素をタップできるようにする
           contentContainerStyle={styles.scrollContentContainer}
           showsVerticalScrollIndicator={false} // スクロールバーを非表示にする
@@ -239,7 +239,6 @@ export default function ItemEditScreen() {
 
           {/* 削除エリア  */}
           <View style={styles.deleteSection}>
-            <View style={styles.separator} />
             <TouchableOpacity
               accessibilityLabel="アイテムを削除する"
               accessibilityRole="button"
@@ -281,11 +280,6 @@ const styles = StyleSheet.create({
   deleteSection: {
     marginTop: 40,
     marginBottom: 40
-  },
-  separator: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: '#E5E5EA',
-    marginBottom: 16
   },
   deleteButton: {
     flexDirection: 'row',
