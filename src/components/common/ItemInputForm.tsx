@@ -9,7 +9,6 @@ import {
   Box
 } from '@gluestack-ui/themed';
 import {
-  InputAccessoryView,
   View,
   Platform,
   TouchableOpacity,
@@ -18,7 +17,6 @@ import {
   SafeAreaView,
   StyleSheet
 } from 'react-native';
-import KeyboardCloseButton from '@components/common/KeyboardCloseButton';
 import { Group } from '@models/Group';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -42,9 +40,6 @@ type ItemInputFormProps = {
   setDay: (day: number) => void;
   autoFocus: boolean;
 };
-
-const inputAccessoryViewID1 = 'INPUT_ACCESSORY_VIEW_ID_1';
-const inputAccessoryViewID2 = 'INPUT_ACCESSORY_VIEW_ID_2';
 
 /**
  * アイテムの入力フォーム
@@ -124,7 +119,6 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
             placeholder="タイトル"
             value={title}
             onChangeText={onChangeTitle}
-            inputAccessoryViewID={inputAccessoryViewID1}
             fontSize={'$3xl'}
             fontWeight={'$bold'}
             editable={true}
@@ -350,7 +344,6 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
             scrollEnabled={true}
             onChangeText={onChangeContent}
             onFocus={onFocusContent}
-            inputAccessoryViewID={inputAccessoryViewID2}
             fontSize={'$md'}
             multiline={true}
             textAlignVertical="top"
@@ -359,17 +352,6 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           />
         </Textarea>
       </Box>
-      {/* iOSのみキーボードの閉じるボタンを表示 */}
-      {Platform.OS === 'ios' && (
-        <InputAccessoryView nativeID={inputAccessoryViewID1} backgroundColor={'#F1F1F1'}>
-          <KeyboardCloseButton />
-        </InputAccessoryView>
-      )}
-      {Platform.OS === 'ios' && (
-        <InputAccessoryView nativeID={inputAccessoryViewID2} backgroundColor={'#F1F1F1'}>
-          <KeyboardCloseButton />
-        </InputAccessoryView>
-      )}
     </View>
   );
 };

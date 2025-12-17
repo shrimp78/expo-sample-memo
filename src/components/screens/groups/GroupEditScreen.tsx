@@ -1,15 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Alert, Button, Platform, InputAccessoryView } from 'react-native';
+import { View, Text, StyleSheet, Alert, Button } from 'react-native';
 import { useLocalSearchParams, router, useNavigation } from 'expo-router';
 import { getGroupById, updateGroupById } from '@services/groupService';
 import { KeyboardAvoidingView, Input, InputField } from '@gluestack-ui/themed';
 import { type Group } from '@models/Group';
-import KeyboardCloseButton from '@components/common/KeyboardCloseButton';
 import GroupColorSelector from './GroupColorSelector';
 import { useAuthenticatedUser } from '@context/AuthContext';
 import { useGroups } from '@context/GroupContext';
-
-const inputAccessoryViewID = 'INPUT_ACCESSORY_VIEW_ID_GROUP';
 
 export default function GroupEditScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -103,19 +100,11 @@ export default function GroupEditScreen() {
               placeholder="グループ名"
               value={groupName}
               onChangeText={setGroupName}
-              inputAccessoryViewID={inputAccessoryViewID}
               fontSize={'$3xl'}
               fontWeight={'$bold'}
               editable={true}
             />
           </Input>
-
-          {/* iOSのみキーボードの閉じるボタンを表示 */}
-          {Platform.OS === 'ios' && (
-            <InputAccessoryView nativeID={inputAccessoryViewID} backgroundColor={'#F1F1F1'}>
-              <KeyboardCloseButton />
-            </InputAccessoryView>
-          )}
         </View>
         {/* カラーオプション */}
         <Text style={styles.colorSelectorTitle}>グループの色を選択してください</Text>

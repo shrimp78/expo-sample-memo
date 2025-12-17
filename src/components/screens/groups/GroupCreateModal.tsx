@@ -8,9 +8,7 @@ import {
   TouchableOpacity,
   Button,
   KeyboardAvoidingView,
-  StyleSheet,
-  Platform,
-  InputAccessoryView
+  StyleSheet
 } from 'react-native';
 import * as Crypto from 'expo-crypto';
 import { AntDesign } from '@expo/vector-icons';
@@ -21,15 +19,12 @@ import { saveGroup } from '@services/groupService';
 import { useAuthenticatedUser } from '@context/AuthContext';
 import GroupColorSelector from './GroupColorSelector';
 import { colorOptions } from '@constants/colors';
-import KeyboardCloseButton from '@components/common/KeyboardCloseButton';
 
 type ItemCreateProps = {
   visible: boolean;
   onClose: () => void;
   onSaved: () => void;
 };
-
-const inputAccessoryViewID3 = 'INPUT_ACCESSORY_VIEW_ID_3';
 
 const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved }) => {
   const user = useAuthenticatedUser();
@@ -111,23 +106,12 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
                       editable={true}
                       autoFocus={true}
                       maxLength={GROUP_NAME_MAX_LENGTH}
-                      inputAccessoryViewID={inputAccessoryViewID3}
                     />
                   </Input>
 
                   {/* カラーオプション */}
                   <Text style={styles.colorSelectorTitle}>グループの色を選択してください</Text>
                   <GroupColorSelector groupColor={groupColor} onChangeGroupColor={setGroupColor} />
-
-                  {/* iOSのみキーボードの閉じるボタンを表示 */}
-                  {Platform.OS === 'ios' && (
-                    <InputAccessoryView
-                      nativeID={inputAccessoryViewID3}
-                      backgroundColor={'#F1F1F1'}
-                    >
-                      <KeyboardCloseButton />
-                    </InputAccessoryView>
-                  )}
                 </KeyboardAvoidingView>
               </View>
             </View>
