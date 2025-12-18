@@ -276,7 +276,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
 
       {/* 通知設定 */}
       <View style={styles.sectionTitle}>
-        <Text style={styles.sectionTitleText}>通知設定</Text>
+        <Text style={styles.sectionTitleText}>通知</Text>
       </View>
       <HStack
         alignItems="center"
@@ -289,7 +289,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           <HStack alignItems="center" space="sm">
             <Feather name="bell" size={14} color="#8E8E93" />
             <Text fontSize={'$sm'} fontWeight={'$medium'} color="#1C1C1E">
-              通知設定
+              通知をOnにする
             </Text>
           </HStack>
           <Switch
