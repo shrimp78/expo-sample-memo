@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Input,
   InputField,
@@ -71,6 +71,11 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
   // 通知設定（UIのみ。永続化はまだ行わない TODO: DBと連携する）
   const [notifyEnabled, setNotifyEnabled] = useState(false);
   const [notifyTiming, setNotifyTiming] = useState<string>('1h');
+  useEffect(() => {
+    if (!notifyEnabled) {
+      setNotifyTiming('1h');
+    }
+  }, [notifyEnabled]);
 
   const notifyTimingOptions: Array<{ id: string; label: string }> = [
     { id: '1h', label: '1時間前' },
