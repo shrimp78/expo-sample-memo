@@ -71,6 +71,8 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
   // 通知設定（UIのみ。永続化はまだ行わない TODO: DBと連携する）
   const [notifyEnabled, setNotifyEnabled] = useState(false);
   const [notifyTiming, setNotifyTiming] = useState<string>('1h');
+  const [notifyTimingPickerOpen, setNotifyTimingPickerOpen] = useState(false);
+  const [tempNotifyTiming, setTempNotifyTiming] = useState<string>(notifyTiming);
   useEffect(() => {
     if (!notifyEnabled) {
       setNotifyTiming('1h');
@@ -306,28 +308,73 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
       {notifyEnabled && (
         <View style={styles.notifyDetailContainer}>
           <Text style={styles.notifyDetailTitle}>通知タイミング</Text>
-          <View style={styles.notifyOptionsSurface}>
-            {notifyTimingOptions.map(option => {
-              const isSelected = notifyTiming === option.id;
-              return (
-                <TouchableOpacity
-                  key={option.id}
-                  onPress={() => setNotifyTiming(option.id)}
-                  activeOpacity={0.8}
-                  style={[styles.notifyOptionRow, isSelected && styles.notifyOptionRowSelected]}
-                >
-                  <HStack alignItems="center" space="sm">
-                    <View style={[styles.radioOuter, isSelected && styles.radioOuterSelected]}>
-                      {isSelected && <View style={styles.radioInner} />}
-                    </View>
-                    <Text fontSize={'$sm'} fontWeight={'$medium'} color="#1C1C1E">
-                      {option.label}
+          <TouchableOpacity
+            onPress={() => {
+              setTempNotifyTiming(notifyTiming);
+              setNotifyTimingPickerOpen(true);
+            }}
+            activeOpacity={0.8}
+            style={styles.selectionTouchable}
+          >
+            <View style={styles.selectionSurface}>
+              <HStack alignItems="center" space="sm">
+                <Feather name="clock" size={14} color="#8E8E93" />
+                <Text fontSize={'$sm'} fontWeight={'$medium'} color="#1C1C1E">
+                  通知タイミング
+                </Text>
+              </HStack>
+              <HStack alignItems="center" space="xs">
+                <Text style={styles.notifySelectedValue}>
+                  {notifyTimingOptions.find(option => option.id === notifyTiming)?.label || ''}
+                </Text>
+                <Feather name="chevron-down" size={14} color="#8E8E93" />
+              </HStack>
+            </View>
+          </TouchableOpacity>
+
+          <Modal
+            visible={notifyTimingPickerOpen}
+            animationType="fade"
+            transparent={true}
+            onRequestClose={() => setNotifyTimingPickerOpen(false)}
+          >
+            <View style={styles.datePickerOverlay}>
+              <View style={styles.datePickerContent}>
+                <View style={styles.datePickerHeader}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setNotifyTimingPickerOpen(false);
+                      setTempNotifyTiming(notifyTiming);
+                    }}
+                  >
+                    <Text color="#007AFF" fontSize={'$md'}>
+                      キャンセル
                     </Text>
-                  </HStack>
-                </TouchableOpacity>
-              );
-            })}
-          </View>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      setNotifyTiming(tempNotifyTiming);
+                      setNotifyTimingPickerOpen(false);
+                    }}
+                  >
+                    <Text color="#007AFF" fontSize={'$md'}>
+                      完了
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+                <SafeAreaView>
+                  <Picker
+                    selectedValue={tempNotifyTiming}
+                    onValueChange={(itemValue: string) => setTempNotifyTiming(itemValue)}
+                  >
+                    {notifyTimingOptions.map(option => (
+                      <Picker.Item key={option.id} label={option.label} value={option.id} />
+                    ))}
+                  </Picker>
+                </SafeAreaView>
+              </View>
+            </View>
+          </Modal>
         </View>
       )}
 
@@ -444,35 +491,10 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     marginBottom: 8
   },
-  notifyOptionsSurface: {
-    backgroundColor: '#F2F2F7',
-    borderRadius: 12,
-    overflow: 'hidden'
-  },
-  notifyOptionRow: {
-    paddingVertical: 12,
-    paddingHorizontal: 12
-  },
-  notifyOptionRowSelected: {
-    backgroundColor: '#E9ECF5'
-  },
-  radioOuter: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    borderWidth: 2,
-    borderColor: '#9CA3AF',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-  radioOuterSelected: {
-    borderColor: '#2563EB'
-  },
-  radioInner: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#2563EB'
+  notifySelectedValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#1C1C1E'
   }
 });
 
