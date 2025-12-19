@@ -289,7 +289,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           <HStack alignItems="center" space="sm">
             <Feather name="bell" size={14} color="#8E8E93" />
             <Text fontSize={'$sm'} fontWeight={'$medium'} color="#1C1C1E">
-              通知をOnにする
+              通知をONにする
             </Text>
           </HStack>
           <Switch
