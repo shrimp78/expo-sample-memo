@@ -37,7 +37,8 @@ export default ({ config }) => {
         'expo-router',
         '@react-native-google-signin/google-signin',
         'expo-apple-authentication',
-        'expo-secure-store'
+        'expo-secure-store',
+        'expo-notifications'
       ],
       extra: {
         firebaseWebClientId: process.env.FIREBASE_WEB_CLIENT_ID,
