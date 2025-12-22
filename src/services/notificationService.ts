@@ -11,6 +11,21 @@ export async function registerForPushNotificationsAsync() {
     return null;
   }
 
+  // 現在のOSの通知設定がどのようになっているかを取得する
   const { status: existingStatus } = await Notifications.getPermissionsAsync();
   let finalStatus = existingStatus;
+
+  // 権限がまだない場合は要求可否も含めてOSにRequestする
+  // - granted: 許可
+  // - denied: 拒否された
+  // - undetermined: まだ1度もユーザーに要求していない状態(初回インストール時など)
+  if (existingStatus !== 'granted') {
+    const { status } = await Notifications.requestPermissionsAsync();
+    finalStatus = status;
+  }
+
+  if (finalStatus !== 'granted') {
+    console.log('通知権限を得られませんでした');
+    return null;
+  }
 }
