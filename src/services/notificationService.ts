@@ -30,4 +30,13 @@ export async function registerForPushNotificationsAsync() {
     console.log('通知権限を得られませんでした');
     return null;
   }
+
+  // Expo Push Token を取得（APNSの代わりにExpoの配信基盤を使う）
+  const token = (
+    await Notifications.getExpoPushTokenAsync({
+      projectId: Constants.expoConfig?.extra?.eas?.projectId
+    })
+  ).data;
+
+  return token;
 }
