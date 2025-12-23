@@ -38,5 +38,16 @@ export async function registerForPushNotificationsAsync() {
     })
   ).data;
 
+  // Android用のチャネル設定
+  // TODO: ナニコレ...
+  if (Platform.OS === 'android') {
+    Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C'
+    });
+  }
+
   return token;
 }
