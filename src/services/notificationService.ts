@@ -19,6 +19,8 @@ export async function registerForPushNotificationsAsync() {
   // - granted: 許可
   // - denied: 拒否された
   // - undetermined: まだ1度もユーザーに要求していない状態(初回インストール時など)
+  // 備考：granted 以外の場合は、再度requestする。
+  //      しかし denied の場合はOS側がダイアログを出さないという粋な仕様になっているらしい
   if (existingStatus !== 'granted') {
     const { status } = await Notifications.requestPermissionsAsync();
     finalStatus = status;
