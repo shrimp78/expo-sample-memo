@@ -9,6 +9,7 @@ type User = {
   picture?: string;
   onboardingVersion: number;
   preferences?: { itemSortOption: SortOptionId };
+  expoPushToken?: string;
 };
 
 export type { User };
