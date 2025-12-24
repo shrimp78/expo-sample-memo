@@ -9,8 +9,9 @@ import ItemCreateModal from '@screens/home/ItemCreateModal';
 import { useGroups } from '@context/GroupContext';
 import { useItems } from '@context/ItemContext';
 import { getAllItemsByUserId } from '@services/itemService';
+import { registerForPushNotificationsAsync } from '@services/notificationService';
 
-type Step = 1 | 2 | 3 | 4;
+type Step = 1 | 2 | 3 | 4 | 5;
 
 export default function OnboardingScreen() {
   const { user } = useAuth();
@@ -63,6 +64,20 @@ export default function OnboardingScreen() {
     const items = await getAllItemsByUserId(authedUser.id);
     setItems(items);
     setStep(4);
+  };
+
+  // Step 4 : 通知許可
+  const handleRequestNotification = async () => {
+    const token = await registerForPushNotificationsAsync();
+    if (token && user) {
+      // 既存のTokenを取得し存在しない場合は追加
+      const currentTokens = user.expoPushTokens || [];
+      if (!currentTokens.includes(token)) {
+        const updateTokens = [...currentTokens, token];
+        await updateUserById(user.id, { expoPushTokens: updateTokens });
+      }
+    }
+    setStep(5);
   };
 
   // Overlays for instruction text
@@ -144,6 +159,23 @@ export default function OnboardingScreen() {
       )}
 
       {step === 4 && (
+        <View style={styles.centerContent}>
+          <Text style={styles.title}>通知を受け取りますか？</Text>
+          <Text style={[styles.body, { marginTop: 16 }]}>
+            通知をONにすると、Itemの通知を受け取れるようになります。
+          </Text>
+          <View style={styles.actions}>
+            <TouchableOpacity style={styles.primaryButton} onPress={handleRequestNotification}>
+              <Text style={styles.primaryButtonText}>通知をオンにする</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.secondaryButton} onPress={() => setStep(5)}>
+              <Text style={styles.secondaryButtonText}>あとで</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
+
+      {step === 5 && (
         <View style={styles.centerContent}>
           <Text style={styles.title}>DONE！</Text>
           <Text style={styles.body}>最初のアイテムが完成しました☺️</Text>
