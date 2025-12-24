@@ -117,6 +117,13 @@ export default function SettingsScreen() {
           </View>
         </View>
         <View style={styles.section}>
+          <Text style={styles.sectionTitle}>通知設定</Text>
+          <Text style={styles.sectionSubtitle}>
+            通知をONにすると、Itemの通知を受け取れるようになります。
+          </Text>
+          // TODO: OS の通知設定を開くボタン
+        </View>
+        <View style={styles.section}>
           <Text style={styles.sectionTitle}>アイテムの削除</Text>
           <Text style={styles.sectionSubtitle}>
             全てのアイテムを一括で削除する事ができます。
