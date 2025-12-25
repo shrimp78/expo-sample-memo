@@ -7,6 +7,7 @@ import { sortOptions, SortOptionId, DEFAULT_SORT_OPTION } from '@constants/sortO
 import { useUserPreferencesStore } from '@src/store/userPreferencesStore';
 import { deleteAllItems } from '@services/itemService';
 import { deleteAllGroups } from '@services/groupService';
+import { subscribeToNotificationPermissionChange } from '@services/notificationService';
 import ActivityIndicatorModal from '@components/common/ActivityIndicatorModal';
 
 export default function SettingsScreen() {
@@ -19,7 +20,14 @@ export default function SettingsScreen() {
   const updateItemSortOption = useUserPreferencesStore(state => state.updateItemSortOption);
   const currentSortOption = itemSortOption ?? DEFAULT_SORT_OPTION;
   const [isLoading, setIsLoading] = useState(false);
+  const [hasNotificationPermission, setHasNotificationPermission] = useState<boolean | null>(null);
   const insets = useSafeAreaInsets();
+
+  // 通知権限状態の監視
+  useEffect(() => {
+    const subscription = subscribeToNotificationPermissionChange(setHasNotificationPermission);
+    return () => subscription.remove();
+  }, []);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -126,18 +134,23 @@ export default function SettingsScreen() {
             })}
           </View>
         </View>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>通知設定</Text>
-          <Text style={styles.sectionSubtitle}>
-            通知をONにすると、Itemの通知を受け取れるようになります。
-          </Text>
-          <Pressable
-            onPress={handleOpenNotificationSettings}
-            style={({ pressed }) => [styles.settingButton, pressed && styles.settingsButtonPressed]}
-          >
-            <Text style={styles.settingButtonText}>通知設定を開く</Text>
-          </Pressable>
-        </View>
+        {hasNotificationPermission === false && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>通知設定</Text>
+            <Text style={styles.sectionSubtitle}>
+              通知をONにすると、Itemの通知を受け取れるようになります。
+            </Text>
+            <Pressable
+              onPress={handleOpenNotificationSettings}
+              style={({ pressed }) => [
+                styles.settingButton,
+                pressed && styles.settingsButtonPressed
+              ]}
+            >
+              <Text style={styles.settingButtonText}>通知設定を開く</Text>
+            </Pressable>
+          </View>
+        )}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>アイテムの削除</Text>
           <Text style={styles.sectionSubtitle}>
