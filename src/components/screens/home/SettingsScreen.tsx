@@ -1,5 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Text, StyleSheet, Pressable, Alert, Linking } from 'react-native';
+import {
+  ScrollView,
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  Alert,
+  Linking,
+  Switch
+} from 'react-native';
+import * as Notifications from 'expo-notifications';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
@@ -63,6 +73,26 @@ export default function SettingsScreen() {
     } catch (error) {
       Alert.alert('エラー', '通知設定を開けませんでした');
       console.error(error);
+    }
+  };
+
+  // 通知のトグル処理（TODO：明日ここの処理を読んでいく）
+  const handleToggleNotification = async (value: boolean) => {
+    if (value) {
+      // ONにしようとした場合
+      const { status } = await Notifications.requestPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('通知設定', '通知を有効にするには、設定画面から通知を許可してください。', [
+          { text: 'キャンセル', style: 'cancel' },
+          { text: '設定を開く', onPress: handleOpenNotificationSettings }
+        ]);
+      }
+    } else {
+      // OFFにしようとした場合
+      Alert.alert('通知設定', '通知を無効にするには、設定画面から通知をオフにしてください。', [
+        { text: 'キャンセル', style: 'cancel' },
+        { text: '設定を開く', onPress: handleOpenNotificationSettings }
+      ]);
     }
   };
 
@@ -140,6 +170,18 @@ export default function SettingsScreen() {
           <Text style={styles.sectionSubtitle}>
             通知をONにすると、Itemの通知を受け取れるようになります。
           </Text>
+
+          <View style={styles.switchContainer}>
+            <Text style={styles.switchLabel}>通知を受け取る</Text>
+            <Switch
+              value={hasNotificationPermission === true}
+              onValueChange={handleToggleNotification}
+              trackColor={{ false: '#E2E8F0', true: '#3B82F6' }}
+              thumbColor={'#FFFFFF'}
+              disabled={hasNotificationPermission === null}
+            />
+          </View>
+
           {hasNotificationPermission === false && (
             <Pressable
               onPress={handleOpenNotificationSettings}
@@ -203,6 +245,20 @@ const styles = StyleSheet.create({
     color: '#64748B',
     marginTop: 6,
     marginBottom: 12
+  },
+  switchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#F1F5F9',
+    marginTop: 8
+  },
+  switchLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#0F172A'
   },
   optionList: {
     gap: 12
