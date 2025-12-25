@@ -134,12 +134,13 @@ export default function SettingsScreen() {
             })}
           </View>
         </View>
-        {hasNotificationPermission === false && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>通知設定</Text>
-            <Text style={styles.sectionSubtitle}>
-              通知をONにすると、Itemの通知を受け取れるようになります。
-            </Text>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>通知設定</Text>
+          <Text style={styles.sectionSubtitle}>
+            通知をONにすると、Itemの通知を受け取れるようになります。
+          </Text>
+          {hasNotificationPermission === false && (
             <Pressable
               onPress={handleOpenNotificationSettings}
               style={({ pressed }) => [
@@ -149,8 +150,9 @@ export default function SettingsScreen() {
             >
               <Text style={styles.settingButtonText}>通知設定を開く</Text>
             </Pressable>
-          </View>
-        )}
+          )}
+        </View>
+
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>アイテムの削除</Text>
           <Text style={styles.sectionSubtitle}>
