@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, View, Text, StyleSheet, Pressable, Alert } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, Pressable, Alert, Linking } from 'react-native';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
@@ -47,6 +47,16 @@ export default function SettingsScreen() {
   if (!isLoggedIn) {
     return null;
   }
+
+  // 通知設定の開く導線
+  const handleOpenNotificationSettings = async () => {
+    try {
+      await Linking.openSettings();
+    } catch (error) {
+      Alert.alert('エラー', '通知設定を開けませんでした');
+      console.error(error);
+    }
+  };
 
   // 全削除ボタン処理
   const deleteExecute = async () => {
@@ -121,7 +131,12 @@ export default function SettingsScreen() {
           <Text style={styles.sectionSubtitle}>
             通知をONにすると、Itemの通知を受け取れるようになります。
           </Text>
-          // TODO: OS の通知設定を開くボタン
+          <Pressable
+            onPress={handleOpenNotificationSettings}
+            style={({ pressed }) => [styles.settingButton, pressed && styles.settingsButtonPressed]}
+          >
+            <Text>通知設定を開く</Text>
+          </Pressable>
         </View>
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>アイテムの削除</Text>
@@ -225,6 +240,8 @@ const styles = StyleSheet.create({
     borderColor: '#2563EB',
     backgroundColor: '#2563EB'
   },
+  settingButton: {},
+  settingsButtonPressed: {},
   deleteButton: {
     backgroundColor: '#FEF2F2',
     borderRadius: 16,
