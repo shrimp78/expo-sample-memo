@@ -1,6 +1,41 @@
 import * as Notifications from 'expo-notifications';
-import { Platform } from 'react-native';
+import { Platform, AppState, AppStateStatus } from 'react-native';
 import Constants from 'expo-constants';
+
+/**
+ * 通知の権限状態を確認する
+ */
+export async function getNotificationPermissionStatus(): Promise<boolean> {
+  try {
+    const { status } = await Notifications.getPermissionsAsync();
+    return status === 'granted';
+  } catch (error) {
+    console.error('Error checking notification permission:', error);
+    return false;
+  }
+}
+
+/**
+ * 通知権限の状態を監視し、変更（アプリがアクティブになった際など）があった場合にコールバックを実行する
+ */
+export function subscribeToNotificationPermissionChange(onChange: (granted: boolean) => void) {
+  const check = async () => {
+    const granted = await getNotificationPermissionStatus();
+    onChange(granted);
+  };
+
+  // 初回チェック
+  void check();
+
+  // アプリの状態変更を監視
+  const subscription = AppState.addEventListener('change', (nextAppState: AppStateStatus) => {
+    if (nextAppState === 'active') {
+      void check();
+    }
+  });
+
+  return subscription;
+}
 
 /**
  * 通知の権限をリクエスト、成功した場合はExpo Push Token を返却
