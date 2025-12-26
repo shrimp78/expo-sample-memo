@@ -181,18 +181,6 @@ export default function SettingsScreen() {
               disabled={hasNotificationPermission === null}
             />
           </View>
-
-          {hasNotificationPermission === false && (
-            <Pressable
-              onPress={handleOpenNotificationSettings}
-              style={({ pressed }) => [
-                styles.settingButton,
-                pressed && styles.settingsButtonPressed
-              ]}
-            >
-              <Text style={styles.settingButtonText}>通知設定を開く</Text>
-            </Pressable>
-          )}
         </View>
 
         <View style={styles.section}>
@@ -310,24 +298,6 @@ const styles = StyleSheet.create({
   optionIndicatorSelected: {
     borderColor: '#2563EB',
     backgroundColor: '#2563EB'
-  },
-  settingButton: {
-    backgroundColor: '#EFF6FF',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#BFDBFE',
-    paddingVertical: 16,
-    alignItems: 'center',
-    marginTop: 8
-  },
-  settingsButtonPressed: {
-    backgroundColor: '#BFEAFE',
-    opacity: 0.9
-  },
-  settingButtonText: {
-    color: '#2563EB',
-    fontSize: 16,
-    fontWeight: '600'
   },
   deleteButton: {
     backgroundColor: '#FEF2F2',
