@@ -1,6 +1,7 @@
 import * as Notifications from 'expo-notifications';
 import { Platform, AppState, AppStateStatus } from 'react-native';
 import Constants from 'expo-constants';
+import { updateUserById } from '@services/userService'; // TODO : token を保存する処理を書いていく
 
 /**
  * 通知の権限状態を確認する
