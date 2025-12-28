@@ -75,7 +75,7 @@ export async function registerForPushNotificationsAsync() {
   ).data;
 
   // Android用のチャネル設定
-  // TODO: ナニコレ...
+  // Android 8.0 以降では通知毎にチャネルを設定する必要がある
   if (Platform.OS === 'android') {
     Notifications.setNotificationChannelAsync('default', {
       name: 'default',
