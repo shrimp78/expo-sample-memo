@@ -15,9 +15,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
 import { sortOptions, SortOptionId, DEFAULT_SORT_OPTION } from '@constants/sortOptions';
 import { useUserPreferencesStore } from '@src/store/userPreferencesStore';
+import { useNotificationPermissionStore } from '@src/store/notificationPermissionStore';
 import { deleteAllItems } from '@services/itemService';
 import { deleteAllGroups } from '@services/groupService';
-import { subscribeToNotificationPermissionChange } from '@services/notificationService';
 import ActivityIndicatorModal from '@components/common/ActivityIndicatorModal';
 
 export default function SettingsScreen() {
@@ -30,14 +30,10 @@ export default function SettingsScreen() {
   const updateItemSortOption = useUserPreferencesStore(state => state.updateItemSortOption);
   const currentSortOption = itemSortOption ?? DEFAULT_SORT_OPTION;
   const [isLoading, setIsLoading] = useState(false);
-  const [hasNotificationPermission, setHasNotificationPermission] = useState<boolean | null>(null);
+  const hasNotificationPermission = useNotificationPermissionStore(
+    state => state.hasNotificationPermission
+  );
   const insets = useSafeAreaInsets();
-
-  // 通知権限状態の監視
-  useEffect(() => {
-    const subscription = subscribeToNotificationPermissionChange(setHasNotificationPermission);
-    return () => subscription.remove();
-  }, []);
 
   useEffect(() => {
     if (!isLoggedIn) {
