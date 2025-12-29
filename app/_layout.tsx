@@ -7,6 +7,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { GroupProvider } from '@context/GroupContext';
 import { ItemProvider } from '@context/ItemContext';
 import { AuthProvider, useAuth } from '@context/AuthContext';
+import NotificationPermissionWatcher from '@components/common/NotificationPermissionWatcher';
 
 function GroupProviderGate({ children }: { children: React.ReactNode }) {
   const { isLoggedIn } = useAuth();
@@ -25,6 +26,7 @@ export default function Layout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <GluestackUIProvider config={config}>
         <AuthProvider>
+          <NotificationPermissionWatcher />
           <GroupProviderGate>
             <ItemProviderGate>
               <Stack
