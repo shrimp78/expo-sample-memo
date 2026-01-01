@@ -1,7 +1,8 @@
 import React from 'react';
 import { useAuth } from '@context/AuthContext';
 import { useNotificationPermissionStore } from '@src/store/notificationPermissionStore';
-
+import { registerForPushNotificationsAsync } from '@services/notificationService';
+import { updateUserById } from '@services/userService';
 /**
  * 通知権限が「許可」になっている間、Expo Push Token を取得してユーザーに保存するための常駐コンポーネント。
  * - 画面には何も描画しません
@@ -31,7 +32,17 @@ export default function ExpoPushTokenSyncWatcher() {
 
     (async () => {
       try {
+        // 権限がある前提で、registerForPushNotificationsAsyncを使ってtokenを取得する
+        const token = await registerForPushNotificationsAsync();
+        if (!token) return;
+
+        // 既存のtokenに無ければ追加して保存
+        const currentTokens = user.expoPushTokens || [];
+        if (currentTokens.includes(token)) return;
+
+        await updateUserById(user.id, { expoPushTokens: [...currentTokens, token] });
       } catch (error) {
+        console.warn('ExpoPushTokenSyncWatcher: failed to sync expo push token', error);
       } finally {
         syncRef.current = false;
       }
