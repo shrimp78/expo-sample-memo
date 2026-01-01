@@ -8,6 +8,7 @@ import { GroupProvider } from '@context/GroupContext';
 import { ItemProvider } from '@context/ItemContext';
 import { AuthProvider, useAuth } from '@context/AuthContext';
 import NotificationPermissionWatcher from '@components/common/NotificationPermissionWatcher';
+import ExpoPushTokensSyncWatcher from '@components/common/ExpoPushTokenSyncWatcher';
 
 function GroupProviderGate({ children }: { children: React.ReactNode }) {
   const { isLoggedIn } = useAuth();
@@ -27,6 +28,7 @@ export default function Layout() {
       <GluestackUIProvider config={config}>
         <AuthProvider>
           <NotificationPermissionWatcher />
+          <ExpoPushTokensSyncWatcher />
           <GroupProviderGate>
             <ItemProviderGate>
               <Stack
