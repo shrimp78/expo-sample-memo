@@ -6,7 +6,8 @@ import {
   deleteDoc,
   serverTimestamp,
   collection,
-  getDocs
+  getDocs,
+  arrayUnion
 } from 'firebase/firestore';
 import { db } from '@root/firebaseConfig';
 import { User } from '@models/User';
@@ -157,4 +158,18 @@ export const checkUserExists = async (uid: string): Promise<boolean> => {
     console.error('Error checking user existence:', error);
     throw error;
   }
+};
+
+/**
+ * ExpoPushTokenを追加する
+ * ※updateUserで配列を読み込んでから丸ごと更新していたが、複数端末操作時の競合に弱いのでServer側で管理する
+ * @param uid ユーザーID
+ * @param token ExpoPushToken
+ */
+export const addExpoPushToken = async (uid: string, token: string): Promise<void> => {
+  const userDocRef = doc(db, COLLECTION.USERS, uid);
+  await updateDoc(userDocRef, {
+    expoPushTokens: arrayUnion(token),
+    updatedAt: serverTimestamp()
+  });
 };
