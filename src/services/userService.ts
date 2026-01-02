@@ -35,7 +35,10 @@ export const getUserByUid = async (uid: string): Promise<User | null> => {
         name: userData?.name || '',
         picture: userData?.picture || undefined,
         onboardingVersion: userData?.onboardingVersion || 0,
-        preferences: { itemSortOption }
+        preferences: { itemSortOption },
+        expoPushTokens: Array.isArray(userData.Data?.expoPushTokens)
+          ? userData.Data.expoPushTokens
+          : []
       };
     }
     return null;
@@ -60,6 +63,7 @@ export const saveUser = async (user: User): Promise<void> => {
       preferences: {
         itemSortOption: user.preferences?.itemSortOption ?? DEFAULT_SORT_OPTION
       },
+      expoPushTokens: user.expoPushTokens ?? [],
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     });
