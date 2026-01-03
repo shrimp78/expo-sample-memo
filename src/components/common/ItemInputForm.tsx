@@ -39,6 +39,11 @@ type ItemInputFormProps = {
   setMonth: (month: number) => void;
   setDay: (day: number) => void;
   autoFocus: boolean;
+  // 通知設定
+  notifyEnabled: boolean;
+  notifyTiming: string;
+  onChangeNotifyEnabled: (enabled: boolean) => void;
+  onChangeNotifyTiming: (timing: string) => void;
 };
 
 /**
@@ -61,21 +66,23 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
     setYear,
     setMonth,
     setDay,
-    autoFocus
+    autoFocus,
+    notifyEnabled,
+    notifyTiming,
+    onChangeNotifyEnabled,
+    onChangeNotifyTiming
   } = props;
 
   // 日付選択エリアで使用するモノたち
   const [isDatePickerOpen, setDatePickerOpen] = useState(false);
   const [tempDate, setTempDate] = useState<Date>(new Date(year, month - 1, day));
 
-  // 通知設定（UIのみ。永続化はまだ行わない TODO: DBと連携する）
-  const [notifyEnabled, setNotifyEnabled] = useState(false);
-  const [notifyTiming, setNotifyTiming] = useState<string>('1h');
+  // 通知タイミングのPicker用一時状態
   const [notifyTimingPickerOpen, setNotifyTimingPickerOpen] = useState(false);
   const [tempNotifyTiming, setTempNotifyTiming] = useState<string>(notifyTiming);
   useEffect(() => {
     if (!notifyEnabled) {
-      setNotifyTiming('1h');
+      onChangeNotifyTiming('1h');
     }
   }, [notifyEnabled]);
 
@@ -296,7 +303,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
           </HStack>
           <Switch
             value={notifyEnabled}
-            onValueChange={setNotifyEnabled}
+            onValueChange={onChangeNotifyEnabled}
             style={styles.notifySwitch}
             trackColor={{ false: '#D1D1D6', true: '#34C759' }}
             thumbColor={
@@ -353,7 +360,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
                   </TouchableOpacity>
                   <TouchableOpacity
                     onPress={() => {
-                      setNotifyTiming(tempNotifyTiming);
+                      onChangeNotifyTiming(tempNotifyTiming);
                       setNotifyTimingPickerOpen(false);
                     }}
                   >
