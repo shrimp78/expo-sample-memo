@@ -15,7 +15,7 @@ export async function getNotificationPermission(): Promise<NotificationPermissio
   try {
     const { status } = await Notifications.getPermissionsAsync();
     const granted = status === 'granted';
-    return { status, granted };
+    return { status: status, granted: granted };
   } catch (error) {
     console.error('Error checking notification permission: ', error);
     return { status: PermissionStatus.DENIED, granted: false };
@@ -31,6 +31,56 @@ export async function getNotificationPermissionStatus(): Promise<boolean> {
     console.error('Error checking notification permission:', error);
     return false;
   }
+}
+
+/**
+ * ユーザーの操作でのみ権限リクエストをする
+ */
+export async function ensureNotificationPermissionByUserAction(): Promise<NotificationPermission> {
+  const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  if (existingStatus === 'granted') {
+    return { status: existingStatus, granted: true };
+  }
+
+  // ここだけがダイアログを出す（ユーザー操作からのみ呼ぶ想定）
+  const { status } = await Notifications.requestPermissionsAsync();
+  return { status, granted: status === 'granted' };
+}
+
+/**
+ * Android用の通知チャネル設定
+ * - Watcher側から呼んでもOK（権限ダイアログは出ません）
+ */
+export async function ensureAndroidNotificationChannel(): Promise<void> {
+  if (Platform.OS !== 'android') return;
+
+  await Notifications.setNotificationChannelAsync('default', {
+    name: 'default',
+    importance: Notifications.AndroidImportance.MAX,
+    vibrationPattern: [0, 250, 250, 250],
+    lightColor: '#FF231F7C'
+  });
+}
+
+/**
+ * Watcher用：OS上で既に権限が許可されている場合のみ、Expo Push Token を取得する（requestはしない）
+ */
+export async function getExpoPushTokenIfPermitted(): Promise<string | null> {
+  if (!Constants.isDevice) {
+    console.log('🚫通知はシミュレーターでは動作しません');
+    return null;
+  }
+
+  const { status } = await Notifications.getPermissionsAsync();
+  if (status !== PermissionStatus.GRANTED) return null;
+
+  const token = (
+    await Notifications.getExpoPushTokenAsync({
+      projectId: Constants.expoConfig?.extra?.eas?.projectId
+    })
+  ).data;
+
+  return token ?? null;
 }
 
 /**
