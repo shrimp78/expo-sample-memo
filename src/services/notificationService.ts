@@ -1,11 +1,28 @@
 import * as Notifications from 'expo-notifications';
+import { PermissionStatus } from 'expo-modules-core';
 import { Platform, AppState, AppStateStatus } from 'react-native';
 import Constants from 'expo-constants';
-import { updateUserById } from '@services/userService'; // TODO : token を保存する処理を書いていく
 
 /**
  * 通知の権限状態を確認する
  */
+export type NotificationPermission = {
+  status: Notifications.PermissionStatus; // 'granted' | 'denied' | 'undetermined'
+  granted: boolean;
+};
+
+export async function getNotificationPermission(): Promise<NotificationPermission> {
+  try {
+    const { status } = await Notifications.getPermissionsAsync();
+    const granted = status === 'granted';
+    return { status, granted };
+  } catch (error) {
+    console.error('Error checking notification permission: ', error);
+    return { status: PermissionStatus.DENIED, granted: false };
+  }
+}
+
+// TODO　: これはあとで削除する
 export async function getNotificationPermissionStatus(): Promise<boolean> {
   try {
     const { status } = await Notifications.getPermissionsAsync();
