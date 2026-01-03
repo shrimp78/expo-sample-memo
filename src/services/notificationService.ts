@@ -14,22 +14,11 @@ export type NotificationPermission = {
 export async function getNotificationPermission(): Promise<NotificationPermission> {
   try {
     const { status } = await Notifications.getPermissionsAsync();
-    const granted = status === 'granted';
-    return { status: status, granted: granted };
+    const granted = status === PermissionStatus.GRANTED;
+    return { status, granted };
   } catch (error) {
     console.error('Error checking notification permission: ', error);
     return { status: PermissionStatus.DENIED, granted: false };
-  }
-}
-
-// TODO　: これはあとで削除する
-export async function getNotificationPermissionStatus(): Promise<boolean> {
-  try {
-    const { status } = await Notifications.getPermissionsAsync();
-    return status === 'granted';
-  } catch (error) {
-    console.error('Error checking notification permission:', error);
-    return false;
   }
 }
 
@@ -88,7 +77,7 @@ export async function getExpoPushTokenIfPermitted(): Promise<string | null> {
  */
 export function subscribeToNotificationPermissionChange(onChange: (granted: boolean) => void) {
   const check = async () => {
-    const granted = await getNotificationPermissionStatus();
+    const { granted } = await getNotificationPermission();
     onChange(granted);
   };
 
@@ -114,25 +103,16 @@ export async function registerForPushNotificationsAsync() {
     return null;
   }
 
-  // 現在のOSの通知設定がどのようになっているかを取得する
-  const { status: existingStatus } = await Notifications.getPermissionsAsync();
-  let finalStatus = existingStatus;
-
-  // 権限がまだない場合は要求可否も含めてOSにRequestする
-  // - granted: 許可
-  // - denied: 拒否された
-  // - undetermined: まだ1度もユーザーに要求していない状態(初回インストール時など)
-  // 備考：granted 以外の場合は、再度requestする。
-  //      しかし denied の場合はOS側がダイアログを出さないという粋な仕様になっているらしい
-  if (existingStatus !== 'granted') {
-    const { status } = await Notifications.requestPermissionsAsync();
-    finalStatus = status;
-  }
-
-  if (finalStatus !== 'granted') {
+  // ユーザー操作の導線から呼ぶ想定：ここでのみ権限ダイアログが出る可能性がある
+  const { granted } = await ensureNotificationPermissionByUserAction();
+  if (!granted) {
     console.log('通知権限を得られませんでした');
     return null;
   }
+
+  // Android用のチャネル設定
+  // Android 8.0 以降では通知毎にチャネルを設定する必要がある
+  await ensureAndroidNotificationChannel();
 
   // Expo Push Token を取得（APNSの代わりにExpoの配信基盤を使う）
   const token = (
@@ -140,17 +120,6 @@ export async function registerForPushNotificationsAsync() {
       projectId: Constants.expoConfig?.extra?.eas?.projectId
     })
   ).data;
-
-  // Android用のチャネル設定
-  // Android 8.0 以降では通知毎にチャネルを設定する必要がある
-  if (Platform.OS === 'android') {
-    Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
-      importance: Notifications.AndroidImportance.MAX,
-      vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#FF231F7C'
-    });
-  }
 
   return token;
 }
