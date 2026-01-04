@@ -66,7 +66,11 @@ export const getItemById = async (userId: string, itemId: string): Promise<Item 
         title: data.title,
         content: data.content,
         group_id: data.group_id,
-        birthday
+        birthday,
+        notifyEnabled: data.notifyEnabled ?? false,
+        notifyTiming: data.notifyTiming ?? null,
+        nextNotifyAt: data.nextNotifyAt ?? null,
+        lastNotifiedAt: data.lastNotifiedAt ?? null
       };
     } else {
       console.log('アイテムが見つかりません');
