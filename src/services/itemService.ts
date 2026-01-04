@@ -21,11 +21,21 @@ import { COLLECTION } from '@constants/firebaseCollectionName';
 export const saveItem = async (userId: string, item: Item): Promise<void> => {
   try {
     const itemRef = doc(db, COLLECTION.USERS, userId, COLLECTION.ITEMS, item.id);
+
+    // 通知が有効な場合、次回通知予定日を計算
+    const nextNotifyAt =
+      item.notifyEnabled && item.notifyTiming
+        ? calculateNextNotifyAt(item.birthday, item.notifyTiming)
+        : null;
     await setDoc(itemRef, {
       title: item.title,
       content: item.content,
       group_id: item.group_id,
       birthday: item.birthday,
+      notifyEnabled: item.notifyEnabled,
+      notifyTiming: item.notifyTiming,
+      nextNotifyAt: nextNotifyAt,
+      lastNotifiedAt: null,
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     });
