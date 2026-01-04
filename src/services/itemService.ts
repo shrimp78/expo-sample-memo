@@ -86,7 +86,7 @@ export const getItemById = async (userId: string, itemId: string): Promise<Item 
  * アイテムをIDベースで更新
  * @param userId ユーザーID
  * @param itemId グループID
- * @param name グループ名
+ * @param title アイテム名
  * @param content コンテンツ
  * @param group_id グループID
  */
