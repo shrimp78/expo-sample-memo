@@ -89,6 +89,9 @@ export const getItemById = async (userId: string, itemId: string): Promise<Item 
  * @param title アイテム名
  * @param content コンテンツ
  * @param group_id グループID
+ * @param birthday 生年月日
+ * @param notifyEnabled 通知有効フラグ
+ * @param notifyTiming 通知タイミング
  */
 export const updateItemById = async (
   userId: string,
@@ -96,15 +99,24 @@ export const updateItemById = async (
   title: string,
   content: string,
   group_id: string,
-  birthday: Timestamp
+  birthday: Timestamp,
+  notifyEnabled: boolean,
+  notifyTiming: string | null
 ): Promise<void> => {
   try {
     const itemRef = doc(db, COLLECTION.USERS, userId, COLLECTION.ITEMS, itemId);
+    // 通知が有効な場合、次回通知予定日を計算
+    const nextNotifyAt =
+      notifyEnabled && notifyTiming ? calculateNextNotifyAt(birthday, notifyTiming) : null;
     await updateDoc(itemRef, {
       title,
       content,
       group_id,
       birthday,
+      notifyEnabled,
+      notifyTiming,
+      nextNotifyAt,
+      // TODO: ここでlastNotifyAt を更新しなくても本当に大丈夫かは追って精査する
       updatedAt: serverTimestamp()
     });
     console.log(`Item ${title} updated in Firestore for user ${userId}`);
@@ -173,7 +185,11 @@ export const getAllItemsByUserId = async (userId: string): Promise<Item[]> => {
           title: data.title,
           content: data.content,
           group_id: data.group_id,
-          birthday
+          birthday,
+          notifyEnabled: data.notifyEnabled ?? false,
+          notifyTiming: data.notifyTiming ?? null,
+          nextNotifyAt: data.nextNotifyAt ?? null,
+          lastNotifiedAt: data.lastNotifiedAt ?? null
         } as Item;
       })
       .filter((item): item is Item => item !== null);
