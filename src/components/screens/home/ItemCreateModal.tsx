@@ -76,7 +76,7 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
       const utcMidnight = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
       const birthday = Timestamp.fromDate(utcMidnight);
 
-      // TODO: なんで notifyTiming とか以外は key を省略していいのか？
+      //　Memo：notifyTiming とか以外は key を省略していいのか？　→　オブジェクトリテラルのショートハンド構文
       const newItem = {
         id,
         title,
