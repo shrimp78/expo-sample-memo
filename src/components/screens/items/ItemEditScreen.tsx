@@ -40,6 +40,10 @@ export default function ItemEditScreen() {
   const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
   const [day, setDay] = useState<number>(1);
 
+  // 通知設定
+  const [notifyEnabled, setNotifyEnabled] = useState(false);
+  const [notifyTiming, setNotifyTiming] = useState<string>('1h');
+
   // グループ選択画面のModal用
   const [groupModalVisible, setGroupModalVisible] = useState(false);
   // キャッシュに存在しない場合にFirestoreへ単体取得する際のローディング状態
@@ -60,6 +64,8 @@ export default function ItemEditScreen() {
       setYear(item.birthday.toDate().getFullYear());
       setMonth(item.birthday.toDate().getMonth() + 1);
       setDay(item.birthday.toDate().getDate());
+      setNotifyEnabled(item.notifyEnabled ?? false);
+      setNotifyTiming(item.notifyTiming ?? '1h');
     },
     [groups]
   );
@@ -146,9 +152,32 @@ export default function ItemEditScreen() {
     );
     setItems(nextItems);
     // 非同期で永続化（待たない）
-    void updateItemById(user.id, id, title, content, selectedGroup?.id as string, birthday);
+    //    void updateItemById(user.id, id, title, content, selectedGroup?.id as string, birthday);
+    void updateItemById(
+      user.id,
+      id,
+      title,
+      content,
+      selectedGroup?.id as string,
+      birthday,
+      notifyEnabled,
+      notifyEnabled ? notifyTiming : null
+    );
     router.back();
-  }, [user.id, id, title, content, selectedGroup, year, month, day, items, setItems]);
+  }, [
+    user.id,
+    id,
+    title,
+    content,
+    selectedGroup,
+    year,
+    month,
+    day,
+    notifyEnabled,
+    notifyTiming,
+    items,
+    setItems
+  ]);
 
   // TitleとContentの変更を監視
   useEffect(() => {
@@ -235,6 +264,10 @@ export default function ItemEditScreen() {
             setMonth={setMonth}
             setDay={setDay}
             autoFocus={false}
+            notifyEnabled={notifyEnabled}
+            notifyTiming={notifyTiming}
+            onChangeNotifyEnabled={setNotifyEnabled}
+            onChangeNotifyTiming={setNotifyTiming}
           />
 
           {/* 削除エリア  */}

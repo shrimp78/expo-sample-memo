@@ -42,6 +42,9 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
   const [month, setMonth] = useState<number>(new Date().getMonth() + 1);
   const [day, setDay] = useState<number>(new Date().getDate());
 
+  const [notifyEnabled, setNotifyEnabled] = useState(false);
+  const [notifyTiming, setNotifyTiming] = useState<string>('1h');
+
   // モーダルが開いたら初期化
   useEffect(() => {
     if (!visible) return;
@@ -53,6 +56,8 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
     setYear(now.getFullYear());
     setMonth(now.getMonth() + 1);
     setDay(now.getDate());
+    setNotifyEnabled(false);
+    setNotifyTiming('1h');
   }, [visible, groups]);
 
   const handleSave = async () => {
@@ -71,8 +76,21 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
       const utcMidnight = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0));
       const birthday = Timestamp.fromDate(utcMidnight);
 
-      await setItems([...items, { id, title, content, group_id, birthday }]); // 楽観的更新
-      saveItem(user.id, { id, title, content, group_id, birthday }).catch(error => {
+      // TODO: なんで notifyTiming とか以外は key を省略していいのか？
+      const newItem = {
+        id,
+        title,
+        content,
+        group_id,
+        birthday,
+        notifyEnabled,
+        notifyTiming: notifyEnabled ? notifyTiming : null,
+        nextNotifyAt: null,
+        lastNotifiedAt: null
+      };
+
+      await setItems([...items, newItem]); // 楽観的更新
+      saveItem(user.id, newItem).catch(error => {
         // 後で忘れるのでメモ： この .catch は jsランタイムに登録されるので、直後で onClose() をしてModalを閉じていても
         // エラーが発生した時点の画面で Alert が表示される。( Alertは、その時点のトップの画面の上にモーダルとして表示される)
         console.error('Failed to save item: ', error);
@@ -139,6 +157,10 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
                       setMonth={setMonth}
                       setDay={setDay}
                       autoFocus={true}
+                      notifyEnabled={notifyEnabled}
+                      notifyTiming={notifyTiming}
+                      onChangeNotifyEnabled={setNotifyEnabled}
+                      onChangeNotifyTiming={setNotifyTiming}
                     />
                   </ScrollView>
                 </KeyboardAvoidingView>
