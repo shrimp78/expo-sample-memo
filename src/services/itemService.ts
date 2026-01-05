@@ -267,3 +267,44 @@ const calculateNextNotifyAt = (birthday: Timestamp, notifyTiming: string): Times
   }
   return Timestamp.fromDate(notifyDate);
 };
+
+/**
+ * 通知が有効で、指定日時以前に通知予定のアイテムを取得（バッチ処理用）
+ * @param userId ユーザーID
+ * @param targetDate 指定日時(この日時以前に通知予定のアイテムを取得)
+ * @returns Item[] :通知予定アイテムの配列
+ */
+export const getItemsToNotify = async (userId: string, targetDate: Date): Promise<Item[]> => {
+  try {
+    const itemsRef = collection(db, COLLECTION.USERS, userId, COLLECTION.ITEMS);
+    const targetTimestamp = Timestamp.fromDate(targetDate);
+
+    // 通知が有効で次回通知予定日時が現在時コック以前のItemを取得
+    const notifyQuery = query(
+      itemsRef,
+      where('notifyEnabled', '==', true),
+      where('nextNotifyAt', '<=', targetTimestamp)
+    );
+
+    const snapshot = await getDocs(notifyQuery);
+
+    return snapshot.docs
+      .map(doc => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          title: data.title,
+          group_id: data.group_id,
+          birthday: data.birthday,
+          notifyEnabled: data.notifyEnabled,
+          notifyTiming: data.notifyTiming,
+          nextNotifyAt: data.nextNotifyAt,
+          lastNotifiedAt: data.lastNotifiedAt
+        } as Item;
+      })
+      .filter((item): item is Item => item !== null);
+  } catch (error) {
+    console.error('Error getting items to notify from Firestore:', error);
+    return [];
+  }
+};
