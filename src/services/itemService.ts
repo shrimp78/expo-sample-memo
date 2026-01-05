@@ -308,3 +308,39 @@ export const getItemsToNotify = async (userId: string, targetDate: Date): Promis
     return [];
   }
 };
+
+/**
+ * 通知送信後、次回通知予定日時を来年に更新（バッチ処理用）
+ * @param userId ユーザーID
+ * @param itemId アイテムID
+ * @param birthday 誕生日
+ * @param notifyTiming 通知タイミング
+ */
+export const updateNextNotifyAtAfterNotification = async (
+  userId: string,
+  itemId: string,
+  birthday: Timestamp,
+  notifyTiming: string
+): Promise<void> => {
+  try {
+    const itemRef = doc(db, COLLECTION.USERS, userId, COLLECTION.ITEMS, itemId);
+
+    // 来年の通知日時を計算（毎年繰り返し）
+    const nextNotifyAt = calculateNextNotifyAt(birthday, notifyTiming);
+    if (!nextNotifyAt) {
+      console.error('Failed to calculate next notify date');
+      return;
+    }
+
+    await updateDoc(itemRef, {
+      nextNotifyAt: nextNotifyAt,
+      lastNotifiedAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    });
+
+    console.log(`Next notification scheduled for item ${itemId} at ${nextNotifyAt.toDate()}`);
+  } catch (error) {
+    console.error('Error updating next notify at after notification:', error);
+    throw error;
+  }
+};
