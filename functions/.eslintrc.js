@@ -10,10 +10,12 @@ module.exports = {
     'plugin:import/warnings',
     'plugin:import/typescript',
     'google',
-    'plugin:@typescript-eslint/recommended'
+    'plugin:@typescript-eslint/recommended',
+    'prettier'
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
+    tsconfigRootDir: __dirname,
     project: ['tsconfig.json', 'tsconfig.dev.json'],
     sourceType: 'module'
   },
