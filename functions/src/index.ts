@@ -1,4 +1,4 @@
-import * as functions from 'firebase-functions';
+import * as functions from 'firebase-functions/v1';
 import * as admin from 'firebase-admin';
 
 // Firebase Admin SDKを初期化
@@ -232,7 +232,8 @@ export const testNotificationBatch = functions
 
     try {
       // sendScheduledNotifications と同じ処理を実行
-      const result = await sendScheduledNotifications.run({} as any);
+      // .run() は (data, context) の2つの引数を必要とします
+      const result = await sendScheduledNotifications.run({} as any, {} as any);
 
       res.status(200).json({
         success: true,
