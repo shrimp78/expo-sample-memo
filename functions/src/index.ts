@@ -6,6 +6,9 @@ admin.initializeApp();
 
 /**
  * 通知タイミングから次回通知予定日時を計算（毎年繰り返し）
+ * @param {admin.firestore.Timestamp} birthday 誕生日
+ * @param {string} notifyTiming 通知タイミング
+ * @return {admin.firestore.Timestamp | null} 次回通知予定日時
  */
 function calculateNextNotifyAt(
   birthday: admin.firestore.Timestamp,
@@ -15,7 +18,7 @@ function calculateNextNotifyAt(
   const now = new Date();
 
   // 今年の誕生日（午前9時）を取得
-  let nextBirthday = new Date(
+  const nextBirthday = new Date(
     now.getFullYear(),
     birthdayDate.getMonth(),
     birthdayDate.getDate(),
@@ -58,6 +61,11 @@ function calculateNextNotifyAt(
 
 /**
  * Expo Push通知を送信
+ * @param {string} expoPushToken Expo Push Token
+ * @param {string} title 通知タイトル
+ * @param {string} body 通知本文
+ * @param {any} data 追加データ
+ * @return {Promise<void>}
  */
 async function sendPushNotification(
   expoPushToken: string,
@@ -78,9 +86,9 @@ async function sendPushNotification(
     headers: {
       Accept: 'application/json',
       'Accept-encoding': 'gzip, deflate',
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
-    body: JSON.stringify(message),
+    body: JSON.stringify(message)
   });
 
   if (!response.ok) {
