@@ -25,8 +25,7 @@ module.exports = {
   ],
   plugins: ['@typescript-eslint', 'import'],
   rules: {
-    quotes: ['error', 'single'],
-    'import/no-unresolved': 0,
-    indent: ['error', 2]
+    'import/no-unresolved': 0
+    // indent や quotes などの見た目に関するルールは、prettier に任せるためここでは定義しません
   }
 };
