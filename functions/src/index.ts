@@ -162,7 +162,8 @@ export const sendScheduledNotifications = functions
               await sendPushNotification(
                 expoPushToken,
                 `${itemData.title} のリマインダー`,
-                `もうすぐ ${itemData.title} の日です！`,
+                `もうすぐ ${itemData.birthday.toDate().toLocaleDateString()} です！`,
+                // TODO: この通知タイプを吟味する
                 {
                   itemId,
                   userId,
