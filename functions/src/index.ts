@@ -64,14 +64,14 @@ function calculateNextNotifyAt(
  * @param {string} expoPushToken Expo Push Token
  * @param {string} title 通知タイトル
  * @param {string} body 通知本文
- * @param {any} data 追加データ
+ * @param {Record<string, unknown>} data 追加データ
  * @return {Promise<void>}
  */
 async function sendPushNotification(
   expoPushToken: string,
   title: string,
   body: string,
-  data?: any
+  data?: Record<string, unknown>
 ): Promise<void> {
   const message = {
     to: expoPushToken,
@@ -101,14 +101,13 @@ async function sendPushNotification(
 }
 
 /**
- * 毎時間実行される通知バッチ処理
- * スケジュール: 毎時0分に実行
+ * 定期実行関数（スケジュール通知送信）
  */
 export const sendScheduledNotifications = functions
   .region('asia-northeast1') // 東京リージョン
   .runWith({
     timeoutSeconds: 540, // 9分（最大実行時間）
-    memory: '256MB' // メモリ割り当て
+    memory: '256MB'
   })
   .pubsub.schedule('0 * * * *') // 毎時0分に実行（Cron形式）
   .timeZone('Asia/Tokyo') // 日本時間
