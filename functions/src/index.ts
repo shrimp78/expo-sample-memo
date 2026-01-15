@@ -172,6 +172,7 @@ export const sendScheduledNotifications = functions
           );
 
           console.log(`✓ Notification sent for item ${itemId}`);
+          totalNotificationsSent++;
 
           // 4. 次回通知日時を来年に更新
           const birthday = itemData.birthday as admin.firestore.Timestamp;
@@ -188,7 +189,6 @@ export const sendScheduledNotifications = functions
             console.log(
               `✓ Updated nextNotifyAt for item ${itemId} to ${nextNotifyAt.toDate().toISOString()}`
             );
-            totalNotificationsSent++;
           } else {
             console.error(`✗ Failed to calculate next notify date for item ${itemId}`);
             totalErrors++;
