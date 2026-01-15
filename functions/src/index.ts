@@ -111,7 +111,7 @@ export const sendScheduledNotifications = functions
   })
   .pubsub.schedule('0 * * * *') // 毎時0分に実行（Cron形式）
   .timeZone('Asia/Tokyo') // 日本時間
-  .onRun(async context => {
+  .onRun(async _context => {
     console.log('=== Starting scheduled notification batch ===');
     console.log('Execution time:', new Date().toISOString());
 
@@ -119,90 +119,83 @@ export const sendScheduledNotifications = functions
     const db = admin.firestore();
 
     try {
-      // 全ユーザーを取得
-      const usersSnapshot = await db.collection('users').get();
-      console.log(`Total users: ${usersSnapshot.size}`);
+      // 1. 全ユーザーの items サブコレクションを横断して、通知が必要なアイテムを一気に取得する
+      // コレクショングループのIndexが必要になる
+      const itemsSnapshot = await db
+        .collectionGroup('items')
+        .where('notifyEnabled', '==', true)
+        .where('nextNotifyAt', '<=', admin.firestore.Timestamp.fromDate(now))
+        .get();
+
+      console.log(`Found ${itemsSnapshot.size} items to notify across all users`);
 
       let totalNotificationsSent = 0;
       let totalErrors = 0;
 
-      // 各ユーザーごとに通知対象のItemをチェック
-      for (const userDoc of usersSnapshot.docs) {
-        const userId = userDoc.id;
-        const userData = userDoc.data();
-        const expoPushToken = userData.expoPushToken;
+      // 取得した各アイテムに対して処理を行う
+      for (const itemDoc of itemsSnapshot.docs) {
+        const itemId = itemDoc.id;
+        const itemData = itemDoc.data();
 
-        if (!expoPushToken) {
-          console.log(`User ${userId}: No push token, skipping...`);
+        // 2. Itemのデータの親のDocumentからUserを取得
+        // itemDoc.ref.parent は「items」コレクション、その parent が「user」ドキュメント
+        const userRef = itemDoc.ref.parent.parent;
+        if (!userRef) {
+          console.error(`✗ Could not find user for item ${itemId}`);
+          totalErrors++;
           continue;
         }
 
-        console.log(`User ${userId}: Checking for notifications...`);
+        const userId = userRef.id;
 
         try {
-          // 通知対象のItemを取得
-          const itemsRef = db.collection('users').doc(userId).collection('items');
-          const notifyQuery = itemsRef
-            .where('notifyEnabled', '==', true)
-            .where('nextNotifyAt', '<=', admin.firestore.Timestamp.fromDate(now));
+          const userDoc = await userRef.get();
+          const userData = userDoc.data();
+          const expoPushToken = userData?.expoPushToken;
 
-          const itemsSnapshot = await notifyQuery.get();
-          console.log(`User ${userId}: Found ${itemsSnapshot.size} items to notify`);
-
-          // 各Itemに対して通知を送信
-          for (const itemDoc of itemsSnapshot.docs) {
-            const itemId = itemDoc.id;
-            const itemData = itemDoc.data();
-
-            try {
-              console.log(`Processing item ${itemId}: ${itemData.title}`);
-
-              // プッシュ通知を送信
-              await sendPushNotification(
-                expoPushToken,
-                `${itemData.title} のリマインダー`,
-                `もうすぐ ${itemData.birthday.toDate().toLocaleDateString()} です！`,
-                // TODO: この通知タイプを吟味する
-                {
-                  itemId,
-                  userId,
-                  type: 'birthday_reminder'
-                }
-              );
-
-              console.log(`✓ Notification sent for item ${itemId}`);
-
-              // 次回通知日時を来年に更新
-              const birthday = itemData.birthday as admin.firestore.Timestamp;
-              const notifyTiming = itemData.notifyTiming as string;
-
-              const nextNotifyAt = calculateNextNotifyAt(birthday, notifyTiming);
-
-              if (nextNotifyAt) {
-                await itemDoc.ref.update({
-                  nextNotifyAt,
-                  lastNotifiedAt: admin.firestore.FieldValue.serverTimestamp(),
-                  updatedAt: admin.firestore.FieldValue.serverTimestamp()
-                });
-
-                console.log(
-                  `✓ Updated nextNotifyAt for item ${itemId} to ${nextNotifyAt.toDate().toISOString()}`
-                );
-                totalNotificationsSent++;
-              } else {
-                console.error(`✗ Failed to calculate next notify date for item ${itemId}`);
-                totalErrors++;
-              }
-            } catch (itemError) {
-              console.error(`✗ Error processing item ${itemId}:`, itemError);
-              totalErrors++;
-              // 個別のエラーは記録して続行
-            }
+          if (!expoPushToken) {
+            console.log(`User ${userId}: No push token, skipping notification for item ${itemId}`);
+            continue;
           }
-        } catch (userError) {
-          console.error(`✗ Error processing user ${userId}:`, userError);
+
+          // 3. Pushを送信
+          await sendPushNotification(
+            expoPushToken,
+            `${itemData.title} のリマインダー`,
+            `もうすぐ ${itemData.birthday.toDate().toLocaleDateString()} です！`,
+            // TODO: この通知タイプを吟味する
+            {
+              itemId,
+              userId,
+              type: 'birthday_reminder'
+            }
+          );
+
+          console.log(`✓ Notification sent for item ${itemId}`);
+
+          // 4. 次回通知日時を来年に更新
+          const birthday = itemData.birthday as admin.firestore.Timestamp;
+          const notifyTiming = itemData.notifyTiming as string;
+          const nextNotifyAt = calculateNextNotifyAt(birthday, notifyTiming);
+
+          if (nextNotifyAt) {
+            await itemDoc.ref.update({
+              nextNotifyAt,
+              lastNotifiedAt: admin.firestore.FieldValue.serverTimestamp(),
+              updatedAt: admin.firestore.FieldValue.serverTimestamp()
+            });
+
+            console.log(
+              `✓ Updated nextNotifyAt for item ${itemId} to ${nextNotifyAt.toDate().toISOString()}`
+            );
+            totalNotificationsSent++;
+          } else {
+            console.error(`✗ Failed to calculate next notify date for item ${itemId}`);
+            totalErrors++;
+          }
+        } catch (error) {
+          console.error(`✗ Error processing item ${itemId}:`, error);
           totalErrors++;
-          // ユーザー単位のエラーは記録して続行
         }
       }
 
