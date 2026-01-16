@@ -111,7 +111,7 @@ export const sendScheduledNotifications = functions
   })
   .pubsub.schedule('0 * * * *') // 毎時0分に実行（Cron形式）
   .timeZone('Asia/Tokyo') // 日本時間
-  .onRun(async _context => {
+  .onRun(async () => {
     console.log('=== Starting scheduled notification batch ===');
     console.log('Execution time:', new Date().toISOString());
 
@@ -226,7 +226,7 @@ export const testNotificationBatch = functions
     try {
       // sendScheduledNotifications と同じ処理を実行
       // .run() は (data, context) の2つの引数を必要とします
-      const result = await sendScheduledNotifications.run({} as any, {} as any);
+      const result = await sendScheduledNotifications.run({}, {});
 
       res.status(200).json({
         success: true,
