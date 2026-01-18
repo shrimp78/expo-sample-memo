@@ -38,8 +38,15 @@ export default ({ config }) => {
         '@react-native-google-signin/google-signin',
         'expo-apple-authentication',
         'expo-secure-store',
-        'expo-notifications'
+        'expo-notifications',
+        'expo-updates'
       ],
+      updates: {
+        url: 'https://u.expo.dev/6be47e36-1646-485e-8975-68daf92001cf'
+      },
+      runtimeVersion: {
+        policy: 'appVersion'
+      },
       extra: {
         firebaseWebClientId: process.env.FIREBASE_WEB_CLIENT_ID,
         firebase: {
