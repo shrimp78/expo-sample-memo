@@ -105,7 +105,7 @@ export const updateItemById = async (
 ): Promise<void> => {
   try {
     const itemRef = doc(db, COLLECTION.USERS, userId, COLLECTION.ITEMS, itemId);
-    // 通知が有効な場合、次回通知予定日を計算
+    // 通知が有効な場合、次回通知予定日を計算（通知設定日時が変わる場合もあるので）
     const nextNotifyAt =
       notifyEnabled && notifyTiming ? calculateNextNotifyAt(birthday, notifyTiming) : null;
     await updateDoc(itemRef, {
@@ -116,7 +116,6 @@ export const updateItemById = async (
       notifyEnabled,
       notifyTiming,
       nextNotifyAt,
-      // TODO: ここでlastNotifyAt を更新しなくても本当に大丈夫かは追って精査する
       updatedAt: serverTimestamp()
     });
     console.log(`Item ${title} updated in Firestore for user ${userId}`);
