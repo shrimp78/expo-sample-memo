@@ -130,7 +130,7 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
       <View style={styles.titleRow}>
         <Input borderWidth={0} style={styles.titleInput}>
           <InputField
-            placeholder="タイトル"
+            placeholder="名前"
             value={title}
             onChangeText={onChangeTitle}
             fontSize={'$3xl'}

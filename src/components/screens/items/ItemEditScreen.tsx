@@ -28,7 +28,7 @@ export default function ItemEditScreen() {
   const headerHeight = useHeaderHeight();
   const scrollViewRef = useRef<ScrollView | null>(null);
   const user = useAuthenticatedUser();
-  // タイトルと内容の状態
+  // 名前と内容の状態
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
@@ -130,7 +130,7 @@ export default function ItemEditScreen() {
   const handleSaveItemPress = useCallback(async () => {
     // Validation
     if (!title) {
-      Alert.alert('確認', 'タイトルを入力してください');
+      Alert.alert('確認', '名前を入力してください');
       return;
     }
     // Birthdayの変換
