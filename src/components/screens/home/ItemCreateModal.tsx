@@ -32,7 +32,7 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
   const user = useAuthenticatedUser();
   const { groups } = useGroups();
   const { items, setItems } = useItems();
-  const [title, setTitle] = useState('');
+  const [name, setName] = useState('');
   const [content, setContent] = useState('');
   const [groupModalVisible, setGroupModalVisible] = useState(false);
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
@@ -48,7 +48,7 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
   // モーダルが開いたら初期化
   useEffect(() => {
     if (!visible) return;
-    setTitle('');
+    setName('');
     setContent('');
     setGroupModalVisible(false);
     setSelectedGroup(groups.length === 1 ? groups[0] : null);
@@ -61,8 +61,8 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
   }, [visible, groups]);
 
   const handleSave = async () => {
-    if (!title) {
-      Alert.alert('確認', 'タイトルを入力してください');
+    if (!name) {
+      Alert.alert('確認', '名前を入力してください');
       return;
     }
     if (!selectedGroup) {
@@ -79,7 +79,7 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
       //　Memo：notifyTiming とか以外は key を省略していいのか？　→　オブジェクトリテラルのショートハンド構文
       const newItem = {
         id,
-        title,
+        name,
         content,
         group_id,
         birthday,
@@ -138,9 +138,9 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
                     automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}
                   >
                     <ItemInputForm
-                      title={title}
+                      name={name}
                       content={content}
-                      onChangeTitle={setTitle}
+                      onChangeName={setName}
                       onChangeContent={setContent}
                       onFocusContent={() => {
                         // Textareaフォーカス時に、入力欄がキーボードで隠れないよう下へスクロール

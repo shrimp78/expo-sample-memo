@@ -28,7 +28,7 @@ export const saveItem = async (userId: string, item: Item): Promise<void> => {
         ? calculateNextNotifyAt(item.birthday, item.notifyTiming)
         : null;
     await setDoc(itemRef, {
-      title: item.title,
+      name: item.name,
       content: item.content,
       group_id: item.group_id,
       birthday: item.birthday,
@@ -39,7 +39,7 @@ export const saveItem = async (userId: string, item: Item): Promise<void> => {
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     });
-    console.log(`Item ${item.title} saved to Firestore for user ${userId}`);
+    console.log(`Item ${item.name} saved to Firestore for user ${userId}`);
   } catch (error) {
     console.error('Error saving item to Firestore:', error);
     throw error;
@@ -63,7 +63,7 @@ export const getItemById = async (userId: string, itemId: string): Promise<Item 
       }
       return {
         id: itemId,
-        title: data.title,
+        name: data.name,
         content: data.content,
         group_id: data.group_id,
         birthday,
@@ -86,7 +86,7 @@ export const getItemById = async (userId: string, itemId: string): Promise<Item 
  * アイテムをIDベースで更新
  * @param userId ユーザーID
  * @param itemId グループID
- * @param title アイテム名
+ * @param name アイテム名
  * @param content コンテンツ
  * @param group_id グループID
  * @param birthday 生年月日
@@ -96,7 +96,7 @@ export const getItemById = async (userId: string, itemId: string): Promise<Item 
 export const updateItemById = async (
   userId: string,
   itemId: string,
-  title: string,
+  name: string,
   content: string,
   group_id: string,
   birthday: Timestamp,
@@ -109,7 +109,7 @@ export const updateItemById = async (
     const nextNotifyAt =
       notifyEnabled && notifyTiming ? calculateNextNotifyAt(birthday, notifyTiming) : null;
     await updateDoc(itemRef, {
-      title,
+      name,
       content,
       group_id,
       birthday,
@@ -118,7 +118,7 @@ export const updateItemById = async (
       nextNotifyAt,
       updatedAt: serverTimestamp()
     });
-    console.log(`Item ${title} updated in Firestore for user ${userId}`);
+    console.log(`Item ${name} updated in Firestore for user ${userId}`);
   } catch (error) {
     console.error('Error updating item in Firestore:', error);
     throw error;
@@ -181,7 +181,7 @@ export const getAllItemsByUserId = async (userId: string): Promise<Item[]> => {
         }
         return {
           id: doc.id,
-          title: data.title,
+          name: data.name,
           content: data.content,
           group_id: data.group_id,
           birthday,

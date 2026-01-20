@@ -29,7 +29,7 @@ export default function ItemEditScreen() {
   const scrollViewRef = useRef<ScrollView | null>(null);
   const user = useAuthenticatedUser();
   // 名前と内容の状態
-  const [title, setTitle] = useState('');
+  const [name, setName] = useState('');
   const [content, setContent] = useState('');
   const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
   const { items, setItems, isHydratedFromCache } = useItems();
@@ -58,7 +58,7 @@ export default function ItemEditScreen() {
   // Itemデータを入力フォームへ反映する共通処理
   const applyItemToForm = useCallback(
     (item: (typeof items)[number]) => {
-      setTitle(item.title);
+      setName(item.name);
       setContent(item.content ?? '');
       setSelectedGroup(groups.find(group => group.id === item.group_id) ?? null);
       setYear(item.birthday.toDate().getFullYear());
@@ -129,7 +129,7 @@ export default function ItemEditScreen() {
   // 保存ボタン押下時の処理
   const handleSaveItemPress = useCallback(async () => {
     // Validation
-    if (!title) {
+    if (!name) {
       Alert.alert('確認', '名前を入力してください');
       return;
     }
@@ -143,7 +143,7 @@ export default function ItemEditScreen() {
       item.id === id
         ? {
             ...item,
-            title,
+            name,
             content,
             group_id: selectedGroup ? selectedGroup.id : null,
             birthday
@@ -152,11 +152,11 @@ export default function ItemEditScreen() {
     );
     setItems(nextItems);
     // 非同期で永続化（待たない）
-    //    void updateItemById(user.id, id, title, content, selectedGroup?.id as string, birthday);
+    //    void updateItemById(user.id, id, name, content, selectedGroup?.id as string, birthday);
     void updateItemById(
       user.id,
       id,
-      title,
+      name,
       content,
       selectedGroup?.id as string,
       birthday,
@@ -167,7 +167,7 @@ export default function ItemEditScreen() {
   }, [
     user.id,
     id,
-    title,
+    name,
     content,
     selectedGroup,
     year,
@@ -179,7 +179,7 @@ export default function ItemEditScreen() {
     setItems
   ]);
 
-  // TitleとContentの変更を監視
+  // NameとContentの変更を監視
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => {
@@ -247,9 +247,9 @@ export default function ItemEditScreen() {
           automaticallyAdjustKeyboardInsets={Platform.OS === 'ios'}
         >
           <ItemInputForm
-            title={title}
+            name={name}
             content={content}
-            onChangeTitle={setTitle}
+            onChangeName={setName}
             onChangeContent={setContent}
             onFocusContent={() => {
               // Textareaフォーカス時に、入力欄がキーボードで隠れないよう下へスクロール

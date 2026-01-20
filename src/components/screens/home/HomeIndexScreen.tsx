@@ -100,9 +100,9 @@ export default function HomeIndexScreen() {
     const sorted = [...list];
     switch (option) {
       case 'title-asc':
-        return sorted.sort((a, b) => a.title.localeCompare(b.title));
+        return sorted.sort((a, b) => a.name.localeCompare(b.name));
       case 'title-desc':
-        return sorted.sort((a, b) => b.title.localeCompare(a.title));
+        return sorted.sort((a, b) => b.name.localeCompare(a.name));
       case 'birthday-asc':
         return sorted.sort((a, b) => a.birthday.toDate().getTime() - b.birthday.toDate().getTime());
       case 'birthday-desc':
@@ -179,7 +179,7 @@ export default function HomeIndexScreen() {
           return (
             <ListItem bottomDivider onPress={() => handleItemPress(item.id)}>
               <ListItem.Content>
-                <ListItem.Title style={styles.listItemTitle}>{item.title}</ListItem.Title>
+                <ListItem.Title style={styles.listItemTitle}>{item.name}</ListItem.Title>
                 <ListItem.Subtitle style={styles.ListItemSubtitle} numberOfLines={3}>
                   {item.birthday.toDate().toLocaleDateString()}
                 </ListItem.Subtitle>

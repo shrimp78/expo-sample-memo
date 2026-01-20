@@ -4,7 +4,7 @@ import type { Timestamp } from 'firebase/firestore';
  */
 type Item = {
   id: string;
-  title: string;
+  name: string;
   content: string | null;
   group_id: string | null;
   birthday: Timestamp;

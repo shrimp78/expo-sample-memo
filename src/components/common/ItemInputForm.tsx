@@ -25,9 +25,9 @@ import { ITEM_TITLE_MAX_LENGTH, ITEM_CONTENT_MAX_LENGTH } from '@constants/valid
 import { changeBirthdayFormat } from '@utils/birthdayFormatter';
 
 type ItemInputFormProps = {
-  title: string;
+  name: string;
   content: string;
-  onChangeTitle: (text: string) => void;
+  onChangeName: (text: string) => void;
   onChangeContent: (text: string) => void;
   onFocusContent?: () => void;
   onSelectGroup: () => void;
@@ -53,9 +53,9 @@ type ItemInputFormProps = {
  */
 const ItemInputForm: React.FC<ItemInputFormProps> = props => {
   const {
-    title,
+    name,
     content,
-    onChangeTitle,
+    onChangeName,
     onChangeContent,
     onFocusContent,
     onSelectGroup,
@@ -131,8 +131,8 @@ const ItemInputForm: React.FC<ItemInputFormProps> = props => {
         <Input borderWidth={0} style={styles.titleInput}>
           <InputField
             placeholder="名前"
-            value={title}
-            onChangeText={onChangeTitle}
+            value={name}
+            onChangeText={onChangeName}
             fontSize={'$3xl'}
             fontWeight={'$bold'}
             editable={true}

@@ -16,13 +16,13 @@ export type SortOption = {
 export const sortOptions: SortOption[] = [
   {
     id: 'title-asc',
-    label: 'タイトル A → Z',
-    description: 'タイトルをアルファベット順（昇順）で表示します。'
+    label: '名前 A → Z',
+    description: '名前をアルファベット順（昇順）で表示します。'
   },
   {
     id: 'title-desc',
-    label: 'タイトル Z → A',
-    description: 'タイトルをアルファベット順（降順）で表示します。'
+    label: '名前 Z → A',
+    description: '名前をアルファベット順（降順）で表示します。'
   },
   {
     id: 'birthday-asc',
@@ -39,11 +39,11 @@ export const sortOptions: SortOption[] = [
 export const DEFAULT_SORT_OPTION: SortOptionId = 'title-asc';
 
 // 永続化済みの値をアプリ内部で扱えるIDへ正規化するために使用
-// TODO : 何やってるのかよくわからんので後でちゃんと見る
 export const normalizeSortOptionId = (value: unknown): SortOptionId | null => {
   if (typeof value !== 'string') {
     return null;
   }
+  // 有効なIDのセットに含まれているかをチェックし、含まれていればSortOptionId型にキャストして返す
   if (sortOptionIdSet.has(value)) {
     return value as SortOptionId;
   }
