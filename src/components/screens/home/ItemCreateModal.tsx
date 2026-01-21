@@ -95,6 +95,7 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
         // エラーが発生した時点の画面で Alert が表示される。( Alertは、その時点のトップの画面の上にモーダルとして表示される)
         console.error('Failed to save item: ', error);
         Alert.alert('アイテムの保存に失敗しました', '時間をおいてもう一度お試しください。');
+        // TODO: Cacheに入ってしまっているので、削除するかリロードするかなんかする
       });
 
       onClose(); // 自分で閉じる
