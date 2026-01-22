@@ -164,7 +164,7 @@ export default function SettingsScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>通知設定</Text>
           <Text style={styles.sectionSubtitle}>
-            通知をONにすると、Itemの通知を受け取れるようになります。
+            誕生日が近づくとのPush通知を受け取れるようになります。
           </Text>
 
           <View style={styles.switchContainer}>

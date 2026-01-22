@@ -162,7 +162,7 @@ export default function OnboardingScreen() {
         <View style={styles.centerContent}>
           <Text style={styles.title}>通知を受け取りますか？</Text>
           <Text style={[styles.body, { marginTop: 16 }]}>
-            通知をONにすると、Itemの通知を受け取れるようになります。
+            誕生日が近づくとのPush通知を受け取れるようになります。
           </Text>
           <View style={styles.actions}>
             <TouchableOpacity style={styles.primaryButton} onPress={handleRequestNotification}>
