@@ -19,6 +19,7 @@ import { useAuthenticatedUser } from '@context/AuthContext';
 export default function GroupIndexScreen() {
   const { groups, loadGroups, setGroups } = useGroups();
   const [isReorderMode, setIsReorderMode] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [groupCreateModalVisible, setGroupCreateModalVisible] = useState(false);
   const user = useAuthenticatedUser();
 
@@ -28,6 +29,16 @@ export default function GroupIndexScreen() {
       loadGroups();
     }, [loadGroups])
   );
+
+  // Pull to refresh の処理
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await loadGroups();
+    } finally {
+      setRefreshing(false);
+    }
+  }, [loadGroups]);
 
   // ドラッグ操作時の処理
   const handleDragEnd = async ({ data, from, to }: { data: Group[]; from: number; to: number }) => {
@@ -136,6 +147,8 @@ export default function GroupIndexScreen() {
         data={groups}
         onDragEnd={handleDragEnd}
         keyExtractor={item => item.id}
+        refreshing={refreshing}
+        onRefresh={isReorderMode ? undefined : onRefresh}
         renderItem={({ item, drag }) => (
           <RenderGroupItem
             item={item}
