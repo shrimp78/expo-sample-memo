@@ -37,7 +37,7 @@ export default function HomeIndexScreen() {
   const itemSortOption =
     useUserPreferencesStore(state => state.itemSortOption) ?? DEFAULT_SORT_OPTION; // もしnullならデフォルト値を設定
   console.log('itemSortOption', itemSortOption);
-
+  const [refreshing, setRefreshing] = useState(false);
   const [createModalVisible, setCreateModalVisible] = useState(false);
   const toggleCreateModal = () => {
     setCreateModalVisible(!createModalVisible);
@@ -88,6 +88,16 @@ export default function HomeIndexScreen() {
       toggleCreateModal();
     }
   };
+
+  // Pull to refresh の処理
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await Promise.all([loadItems(), loadGroups()]);
+    } finally {
+      setRefreshing(false);
+    }
+  }, [loadItems, loadGroups]);
 
   // アイテムが押された時の処理
   const handleItemPress = (itemId: string) => {
@@ -167,6 +177,8 @@ export default function HomeIndexScreen() {
       <SectionList
         sections={sections}
         keyExtractor={item => item.id}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
         renderSectionHeader={({ section }) => (
           <View>
             <Text style={[styles.groupName, { color: section.color }]}>{section.title}</Text>
