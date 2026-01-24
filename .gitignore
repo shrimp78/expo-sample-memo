@@ -51,6 +51,7 @@ android/app/build/
 
 # Firebase config files (contain sensitive information)
 GoogleService-Info.plist
+GoogleService-Info.dev.plist
 google-services.json
 
 # Firebase logs
