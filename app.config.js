@@ -1,9 +1,12 @@
-import 'dotenv/config';
+import 'dotenv';
 import fs from 'fs';
 import path from 'path';
 
 const APP_VARIANT = process.env.APP_VARIANT || 'development';
 const IS_PROD = APP_VARIANT === 'production';
+
+const envFile = IS_PROD ? '.env.production' : '.env.development';
+dotenv.config({ path: path.resolve(__dirname, envFile) });
 
 /**
  * PlistのXML文字列から特定のキーの値を抽出するヘルパー
@@ -43,23 +46,28 @@ export default ({ config }) => {
   const projectIdFromPlist = getValueFromPlist(plistContent, 'PROJECT_ID');
   const firebaseConfig = {
     apiKey: getValueFromPlist(plistContent, 'API_KEY') || process.env.FIREBASE_API_KEY,
-    authDomain: projectIdFromPlist ? `${projectIdFromPlist}.firebaseapp.com` : process.env.FIREBASE_AUTH_DOMAIN,
+    authDomain: projectIdFromPlist
+      ? `${projectIdFromPlist}.firebaseapp.com`
+      : process.env.FIREBASE_AUTH_DOMAIN,
     databaseURL: process.env.FIREBASE_DATABASE_URL,
     projectId: projectIdFromPlist || process.env.FIREBASE_PROJECT_ID,
-    storageBucket: getValueFromPlist(plistContent, 'STORAGE_BUCKET') || process.env.FIREBASE_STORAGE_BUCKET,
-    messagingSenderId: getValueFromPlist(plistContent, 'GCM_SENDER_ID') || process.env.FIREBASE_MESSAGING_SENDER_ID,
+    storageBucket:
+      getValueFromPlist(plistContent, 'STORAGE_BUCKET') || process.env.FIREBASE_STORAGE_BUCKET,
+    messagingSenderId:
+      getValueFromPlist(plistContent, 'GCM_SENDER_ID') || process.env.FIREBASE_MESSAGING_SENDER_ID,
     appIdIos: getValueFromPlist(plistContent, 'GOOGLE_APP_ID') || process.env.FIREBASE_APP_ID_IOS,
-    appIdAndroid: process.env.FIREBASE_APP_ID_ANDROID,
+    appIdAndroid: process.env.FIREBASE_APP_ID_ANDROID
   };
 
   return {
     ...config,
     expo: {
-      name: APP_VARIANT === 'production' 
-        ? 'EXPO_SAMPLE_MEMO' 
-        : APP_VARIANT === 'preview'
-          ? 'EXPO_SAMPLE_MEMO (Preview)'
-          : 'EXPO_SAMPLE_MEMO (Dev)',
+      name:
+        APP_VARIANT === 'production'
+          ? 'EXPO_SAMPLE_MEMO'
+          : APP_VARIANT === 'preview'
+            ? 'EXPO_SAMPLE_MEMO (Preview)'
+            : 'EXPO_SAMPLE_MEMO (Dev)',
       slug: 'EXPO_SAMPLE_MEMO',
       version: '1.0.0',
       orientation: 'portrait',
