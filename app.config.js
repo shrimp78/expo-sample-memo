@@ -55,7 +55,11 @@ export default ({ config }) => {
   return {
     ...config,
     expo: {
-      name: IS_PROD ? 'EXPO_SAMPLE_MEMO' : 'EXPO_SAMPLE_MEMO (Dev)',
+      name: APP_VARIANT === 'production' 
+        ? 'EXPO_SAMPLE_MEMO' 
+        : APP_VARIANT === 'preview'
+          ? 'EXPO_SAMPLE_MEMO (Preview)'
+          : 'EXPO_SAMPLE_MEMO (Dev)',
       slug: 'EXPO_SAMPLE_MEMO',
       version: '1.0.0',
       orientation: 'portrait',
