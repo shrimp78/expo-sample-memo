@@ -1,0 +1,78 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // 許可フィールドのみ許す
+    function hasOnlyKeys(map, allowed) {
+      return map.keys().hasOnly(allowed);
+    }
+
+    // Itemsの検証（上限値は例）
+    function validItemData(data) {
+      return data.name is string
+        && data.name.size() > 0
+        && data.name.size() <= 30
+        && (!('content' in data) || data.content == null || (data.content is string && data.content.size() <= 100))
+        && (!('group_id' in data) || data.group_id == null || (data.group_id is string && data.group_id.size() <= 128))
+        && data.birthday is timestamp
+        && (!('notifyEnabled' in data) || data.notifyEnabled is bool)
+        && (!('notifyTiming' in data) || data.notifyTiming == null || data.notifyTiming is string)
+        && (!('nextNotifyAt' in data) || data.nextNotifyAt == null || data.nextNotifyAt is timestamp)
+        && (!('lastNotifiedAt' in data) || data.lastNotifiedAt == null || data.lastNotifiedAt is timestamp)
+        && hasOnlyKeys(
+        	data,
+          [
+          	'name',
+            'content',
+            'group_id',
+            'birthday',
+            'notifyEnabled',
+        		'notifyTiming',
+		        'nextNotifyAt',
+		        'lastNotifiedAt',
+            'createdAt',
+            'updatedAt'
+          ]
+        );
+    }
+
+    // Groupsの検証（上限値は例）
+    function validGroupData(data) {
+      return data.name is string
+        && data.name.size() > 0
+        && data.name.size() <= 30
+        && data.color is string
+        && data.color.matches('^#[0-9A-Fa-f]{6}$')
+        && data.position is number
+        && hasOnlyKeys(data, ['name', 'color', 'position', 'createdAt', 'updatedAt']);
+    }
+
+    match /users/{userId} {
+      // ユーザードキュメント自体: 自分のみ
+      allow read, write: if isOwner(userId);
+
+      // Items
+      match /items/{itemId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && validItemData(request.resource.data);
+        allow update: if isOwner(userId) && validItemData(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+
+      // Groups
+      match /groups/{groupId} {
+        allow read: if isOwner(userId);
+        allow create: if isOwner(userId) && validGroupData(request.resource.data);
+        allow update: if isOwner(userId) && validGroupData(request.resource.data);
+        allow delete: if isOwner(userId);
+      }
+    }
+  }
+}
