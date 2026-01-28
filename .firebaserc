@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "spd-app-3808b"
-  }
+    "default": "spd-app-3808b",
+    "development": "spd-app-dev-c28d9"
+  },
+  "targets": {},
+  "etags": {}
 }
