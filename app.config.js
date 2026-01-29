@@ -82,7 +82,10 @@ export default ({ config }) => {
       },
       ios: {
         supportsTablet: true,
-        bundleIdentifier: IS_PROD ? 'com.shrimp78.spd-app' : 'com.shrimp78.spdapp.dev',
+        // NOTE: Bundle Identifier は英数字とドットのみ（ハイフン不可）
+        bundleIdentifier: IS_PROD ? 'com.shrimp78.spdapp' : 'com.shrimp78.spdapp.dev',
+        // 提出のたびに増やす必要がある（production は eas.json の autoIncrement 推奨）
+        buildNumber: '1',
         googleServicesFile: `./${plistFilename}`,
         usesAppleSignIn: true
       },
@@ -91,7 +94,8 @@ export default ({ config }) => {
           foregroundImage: './assets/adaptive-icon.png',
           backgroundColor: '#ffffff'
         },
-        package: IS_PROD ? 'com.shrimp78.spdapp' : 'com.shrimp78.spdapp.dev'
+        package: IS_PROD ? 'com.shrimp78.spdapp' : 'com.shrimp78.spdapp.dev',
+        versionCode: 1
       },
       web: {
         favicon: './assets/favicon.png'

@@ -1,7 +1,7 @@
 {
   "cli": {
     "version": ">= 16.17.3",
-    "appVersionSource": "remote"
+    "appVersionSource": "local"
   },
   "build": {
     "development": {
@@ -26,6 +26,7 @@
     },
     "production": {
       "autoIncrement": true,
+      "distribution": "store",
       "channel": "production",
       "env": { "APP_VARIANT": "production" }
     }
