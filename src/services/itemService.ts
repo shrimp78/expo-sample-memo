@@ -9,11 +9,13 @@ import {
   where,
   getDocs,
   collection,
-  serverTimestamp
+  serverTimestamp,
+  getCountFromServer
 } from 'firebase/firestore';
 import { db } from '@root/firebaseConfig';
 import { type Item } from '@models/Item';
 import { COLLECTION } from '@constants/firebaseCollectionName';
+import { DATA_LIMITS } from '@constants/dataLimits';
 
 /**
  * Itemをユーザーのサブコレクションに保存
@@ -199,7 +201,7 @@ export const getAllItemsByUserId = async (userId: string): Promise<Item[]> => {
 };
 
 /**
- * ユーザーの持っているグループ数をカウント
+ * グループの持っているアイテム数をカウント
  * @param userId ユーザーID
  * @param groupId グループID
  */
@@ -265,4 +267,30 @@ const calculateNextNotifyAt = (birthday: Timestamp, notifyTiming: string): Times
     notifyDate.setFullYear(notifyDate.getFullYear() + 1);
   }
   return Timestamp.fromDate(notifyDate);
+};
+
+/**
+ * ユーザーがアイテムを作成できるかどうかを判定
+ * @param userId ユーザーID
+ * @returns boolean
+ */
+export const canCreateItem = async (userId: string): Promise<boolean> => {
+  const count = await getItemCountByUserId(userId);
+  return count < DATA_LIMITS.FREE.MAX_ITEMS;
+};
+
+/**
+ * ユーザーの全アイテム数をカウント
+ * @param userId ユーザーID
+ * @returns 保有アイテム数
+ */
+export const getItemCountByUserId = async (userId: string): Promise<number> => {
+  try {
+    const itemsRef = collection(db, COLLECTION.USERS, userId, COLLECTION.ITEMS);
+    const snapshot = await getCountFromServer(itemsRef);
+    return snapshot.data().count;
+  } catch (error) {
+    console.error('Error getting item count:', error);
+    return 0;
+  }
 };

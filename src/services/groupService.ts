@@ -10,11 +10,12 @@ import {
   getDocs,
   collection,
   where,
-  limit
+  getCountFromServer
 } from 'firebase/firestore';
 import { db } from '@root/firebaseConfig';
 import { type Group } from '@models/Group';
 import { COLLECTION } from '@constants/firebaseCollectionName';
+import { DATA_LIMITS } from '@constants/dataLimits';
 
 /**
  * グループの新規作成（positionはサービス側で自動計算）
@@ -237,5 +238,31 @@ export const updateGroupPosition = async (userId: string, groupId: string, posit
   } catch (error) {
     console.error('Error updating group position in Firestore:', error);
     throw error;
+  }
+};
+
+/**
+ * ユーザーがグループを作成できるかどうかを判定
+ * @param userId ユーザーID
+ * @returns boolean
+ */
+export const canCreateGroup = async (userId: string): Promise<boolean> => {
+  const count = await getGroupCountByUserId(userId);
+  return count < DATA_LIMITS.FREE.MAX_GROUPS;
+};
+
+/**
+ * ユーザーの全グループ数をカウント
+ * @param userId ユーザーID
+ * @returns 保有グループ数
+ */
+export const getGroupCountByUserId = async (userId: string): Promise<number> => {
+  try {
+    const groupsRef = collection(db, COLLECTION.USERS, userId, COLLECTION.GROUPS);
+    const snapshot = await getCountFromServer(groupsRef);
+    return snapshot.data().count;
+  } catch (error) {
+    console.error('Error getting group count:', error);
+    return 0;
   }
 };
