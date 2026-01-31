@@ -69,8 +69,15 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
       Alert.alert('確認', 'グループを選択してください');
       return;
     }
-    if (!canCreateItem(user.id)) {
-      Alert.alert('上限に達しています', '現在作成できるアイテム数は15個までです。');
+
+    const canCreate = await canCreateItem(user.id);
+    if (!canCreate) {
+      Alert.alert('上限に達しています', '現在作成できるアイテム数は15個までです。', [
+        {
+          text: 'OK',
+          onPress: () => onClose()
+        }
+      ]);
       return;
     }
 

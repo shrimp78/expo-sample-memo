@@ -247,7 +247,11 @@ export const updateGroupPosition = async (userId: string, groupId: string, posit
  * @returns boolean
  */
 export const canCreateGroup = async (userId: string): Promise<boolean> => {
+  console.log('判定するにだよ！！');
   const count = await getGroupCountByUserId(userId);
+  console.log('count', count);
+  const result = count < DATA_LIMITS.FREE.MAX_GROUPS;
+  console.log('result', result);
   return count < DATA_LIMITS.FREE.MAX_GROUPS;
 };
 

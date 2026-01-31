@@ -49,8 +49,15 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
       Alert.alert('確認', 'グループの色を選択してください');
       return;
     }
-    if (!canCreateGroup(user.id)) {
-      Alert.alert('上限に達しています', '現在作成できるグループ数は10個までです。');
+
+    const canCreate = await canCreateGroup(user.id);
+    if (!canCreate) {
+      Alert.alert('上限に達しています', '現在作成できるグループ数は10個までです。', [
+        {
+          text: 'OK',
+          onPress: () => onClose()
+        }
+      ]);
       return;
     }
 
