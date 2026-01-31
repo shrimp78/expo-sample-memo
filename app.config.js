@@ -69,7 +69,7 @@ export default ({ config }) => {
             ? 'EXPO_SAMPLE_MEMO (Preview)'
             : 'EXPO_SAMPLE_MEMO (Dev)',
       slug: 'EXPO_SAMPLE_MEMO',
-      version: '1.0.0',
+      version: '1.0.0', //アプリのバージョン（ユーザーに見えるバージョンにもなる）
       orientation: 'portrait',
       icon: './assets/icon.png',
       userInterfaceStyle: 'light',
