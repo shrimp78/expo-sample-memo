@@ -15,7 +15,7 @@ import { AntDesign } from '@expo/vector-icons';
 import { Input, InputField } from '@gluestack-ui/themed';
 import { GROUP_NAME_MAX_LENGTH } from '@constants/validation';
 import { useGroups } from '@context/GroupContext';
-import { saveGroup } from '@services/groupService';
+import { saveGroup, canCreateGroup } from '@services/groupService';
 import { useAuthenticatedUser } from '@context/AuthContext';
 import GroupColorSelector from './GroupColorSelector';
 import { colorOptions } from '@constants/colors';
@@ -47,6 +47,10 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
     }
     if (!groupColor) {
       Alert.alert('確認', 'グループの色を選択してください');
+      return;
+    }
+    if (!canCreateGroup(user.id)) {
+      Alert.alert('上限に達しています', '現在作成できるグループ数は10個までです。');
       return;
     }
 

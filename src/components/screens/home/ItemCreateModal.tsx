@@ -18,7 +18,7 @@ import { useAuthenticatedUser } from '@context/AuthContext';
 import { useGroups } from '@context/GroupContext';
 import { type Group } from '@models/Group';
 import * as Crypto from 'expo-crypto';
-import { saveItem } from '@services/itemService';
+import { saveItem, canCreateItem } from '@services/itemService';
 import { Timestamp } from 'firebase/firestore';
 import { useItems } from '@context/ItemContext';
 
@@ -67,6 +67,10 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
     }
     if (!selectedGroup) {
       Alert.alert('確認', 'グループを選択してください');
+      return;
+    }
+    if (!canCreateItem(user.id)) {
+      Alert.alert('上限に達しています', '現在作成できるアイテム数は15個までです。');
       return;
     }
 
