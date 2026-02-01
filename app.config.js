@@ -8,6 +8,9 @@ const IS_PROD = APP_VARIANT === 'production';
 const envFile = IS_PROD ? '.env.production' : '.env.development';
 dotenv.config({ path: path.resolve(__dirname, envFile) });
 
+const IOS_BUILD_NUMBER = process.env.IOS_BUILD_NUMBER || '1';
+const ANDROID_VERSION_CODE = Number.parseInt(process.env.ANDROID_VERSION_CODE || '1', 10) || 1;
+
 /**
  * PlistのXML文字列から特定のキーの値を抽出するヘルパー
  */
@@ -22,25 +25,30 @@ export default ({ config }) => {
   // 環境に応じた設定
   const plistFilename = IS_PROD ? 'GoogleService-Info.plist' : 'GoogleService-Info.dev.plist';
   const plistSecretName = IS_PROD ? 'GOOGLE_SERVICE_INFO_PLIST' : 'GOOGLE_SERVICE_INFO_PLIST_DEV';
+  const plistSecretValue = process.env[plistSecretName];
 
   // Plistの中身を取得
   let plistContent = '';
   const localPlistPath = path.resolve(__dirname, plistFilename);
 
-  if (process.env[plistSecretName]) {
+  if (plistSecretValue) {
     // EAS Secretsから取得（パスが渡されている場合は読み込み、中身が直接入っている場合はそのまま使用）
-    const secretValue = process.env[plistSecretName];
-    if (secretValue.startsWith('/')) {
-      if (fs.existsSync(secretValue)) {
-        plistContent = fs.readFileSync(secretValue, 'utf8');
+    if (plistSecretValue.startsWith('/')) {
+      if (fs.existsSync(plistSecretValue)) {
+        plistContent = fs.readFileSync(plistSecretValue, 'utf8');
       }
     } else {
-      plistContent = secretValue;
+      plistContent = plistSecretValue;
     }
   } else if (fs.existsSync(localPlistPath)) {
     // ローカルファイルから取得
     plistContent = fs.readFileSync(localPlistPath, 'utf8');
   }
+
+  // iOSのGoogleService-Info.plistは、EASのFile環境変数で「ビルダー上の絶対パス」が渡せる。
+  // その場合はローカル相対パスではなく、その絶対パスを参照する。
+  const googleServicesFile =
+    plistSecretValue && plistSecretValue.startsWith('/') ? plistSecretValue : `./${plistFilename}`;
 
   // Plistから値を抽出
   const projectIdFromPlist = getValueFromPlist(plistContent, 'PROJECT_ID');
@@ -84,9 +92,13 @@ export default ({ config }) => {
         supportsTablet: true,
         // NOTE: Bundle Identifier は英数字とドットのみ（ハイフン不可）
         bundleIdentifier: IS_PROD ? 'com.shrimp78.spdapp' : 'com.shrimp78.spdapp.dev',
-        // 提出のたびに増やす必要がある（production は eas.json の autoIncrement 推奨）
-        buildNumber: '1',
-        googleServicesFile: `./${plistFilename}`,
+        // app.config.js（動的設定）では eas.json の autoIncrement が使えないため、必要なら手動/CIで管理する
+        buildNumber: IOS_BUILD_NUMBER,
+        googleServicesFile,
+        infoPlist: {
+          // EASの質問「標準/免除暗号化のみ使用」への回答をInfo.plistへ反映
+          ITSAppUsesNonExemptEncryption: false
+        },
         usesAppleSignIn: true
       },
       android: {
@@ -95,7 +107,7 @@ export default ({ config }) => {
           backgroundColor: '#ffffff'
         },
         package: IS_PROD ? 'com.shrimp78.spdapp' : 'com.shrimp78.spdapp.dev',
-        versionCode: 1
+        versionCode: ANDROID_VERSION_CODE
       },
       web: {
         favicon: './assets/favicon.png'
