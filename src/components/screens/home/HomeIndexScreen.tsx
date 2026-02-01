@@ -19,6 +19,7 @@ import { useItems } from '@context/ItemContext';
 import { useAuth } from '@context/AuthContext';
 import { useUserPreferencesStore } from '@src/store/userPreferencesStore';
 import { DEFAULT_SORT_OPTION } from '@constants/sortOptions';
+import { DATA_LIMITS } from '@constants/dataLimits';
 
 // 新規作成モーダル用
 import ItemCreateModal from '@screens/home/ItemCreateModal';
@@ -72,6 +73,10 @@ export default function HomeIndexScreen() {
   // アイテムの新規作成
   const handleAddItemPress = () => {
     console.log('アイテムの新規作成が押されました');
+    if (items.length >= DATA_LIMITS.FREE.MAX_ITEMS) {
+      Alert.alert('確認', `現在作成できるアイテム数は${DATA_LIMITS.FREE.MAX_ITEMS}個までです。`);
+      return;
+    }
     if (groups.length === 0) {
       Alert.alert(
         '注意',

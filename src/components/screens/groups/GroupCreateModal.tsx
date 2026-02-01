@@ -19,6 +19,7 @@ import { saveGroup, canCreateGroup } from '@services/groupService';
 import { useAuthenticatedUser } from '@context/AuthContext';
 import GroupColorSelector from './GroupColorSelector';
 import { colorOptions } from '@constants/colors';
+import { DATA_LIMITS } from '@constants/dataLimits';
 
 type ItemCreateProps = {
   visible: boolean;
@@ -52,12 +53,16 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
 
     const canCreate = await canCreateGroup(user.id);
     if (!canCreate) {
-      Alert.alert('上限に達しています', '現在作成できるグループ数は10個までです。', [
-        {
-          text: 'OK',
-          onPress: () => onClose()
-        }
-      ]);
+      Alert.alert(
+        '上限に達しています',
+        `現在作成できるグループ数は${DATA_LIMITS.FREE.MAX_GROUPS}個までです。`,
+        [
+          {
+            text: 'OK',
+            onPress: () => onClose()
+          }
+        ]
+      );
       return;
     }
 

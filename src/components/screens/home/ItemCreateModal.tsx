@@ -21,6 +21,7 @@ import * as Crypto from 'expo-crypto';
 import { saveItem, canCreateItem } from '@services/itemService';
 import { Timestamp } from 'firebase/firestore';
 import { useItems } from '@context/ItemContext';
+import { DATA_LIMITS } from '@constants/dataLimits';
 
 type ItemCreateProps = {
   visible: boolean;
@@ -71,13 +72,18 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
     }
 
     const canCreate = await canCreateItem(user.id);
+    // handleAddItemPressで防いでいるが、念の為のチェック（こっちはServer側の数を見ているのでより正確）
     if (!canCreate) {
-      Alert.alert('上限に達しています', '現在作成できるアイテム数は15個までです。', [
-        {
-          text: 'OK',
-          onPress: () => onClose()
-        }
-      ]);
+      Alert.alert(
+        '上限に達しています',
+        `現在作成できるアイテム数は${DATA_LIMITS.FREE.MAX_ITEMS}個までです。`,
+        [
+          {
+            text: 'OK',
+            onPress: () => onClose()
+          }
+        ]
+      );
       return;
     }
 

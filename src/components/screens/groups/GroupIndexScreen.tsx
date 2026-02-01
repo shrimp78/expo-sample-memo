@@ -15,6 +15,7 @@ import {
 } from '@services/groupService';
 import { countItemsByGroupId } from '@services/itemService';
 import { useAuthenticatedUser } from '@context/AuthContext';
+import { DATA_LIMITS } from '@constants/dataLimits';
 
 export default function GroupIndexScreen() {
   const { groups, loadGroups, setGroups } = useGroups();
@@ -67,6 +68,10 @@ export default function GroupIndexScreen() {
 
   // グループ追加に関連する項目
   const addGroupPress = () => {
+    if (groups.length >= DATA_LIMITS.FREE.MAX_GROUPS) {
+      Alert.alert('確認', `現在作成できるグループ数は${DATA_LIMITS.FREE.MAX_GROUPS}個までです。`);
+      return;
+    }
     setGroupCreateModalVisible(true);
   };
 
