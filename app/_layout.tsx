@@ -52,6 +52,14 @@ export default function Layout() {
                   }}
                 />
 
+                {/* 開発用 */}
+                <Stack.Screen
+                  name="dev/onboarding"
+                  options={{
+                    headerTitle: 'Onboarding (Dev)'
+                  }}
+                />
+
                 {/* ホーム */}
                 <Stack.Screen
                   name="home/index"

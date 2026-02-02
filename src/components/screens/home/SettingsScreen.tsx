@@ -192,6 +192,21 @@ export default function SettingsScreen() {
             <Text style={styles.deleteButtonText}>全てのアイテムを削除する</Text>
           </Pressable>
         </View>
+
+        {__DEV__ && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>開発用</Text>
+            <Text style={styles.sectionSubtitle}>
+              デバッグのため、オンボーディング画面を直接開けます。
+            </Text>
+            <Pressable
+              onPress={() => router.push('/dev/onboarding')}
+              style={({ pressed }) => [styles.devButton, pressed && styles.devButtonPressed]}
+            >
+              <Text style={styles.devButtonText}>オンボーディングを開く</Text>
+            </Pressable>
+          </View>
+        )}
       </ScrollView>
       <ActivityIndicatorModal isLoading={isLoading} loadingText="削除中..." />
     </View>
@@ -311,6 +326,25 @@ const styles = StyleSheet.create({
   },
   deleteButtonText: {
     color: '#DC2626',
+    fontSize: 16,
+    fontWeight: '600'
+  },
+  devButton: {
+    backgroundColor: '#EFF6FF',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#BFDBFE',
+    paddingVertical: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 8
+  },
+  devButtonPressed: {
+    backgroundColor: '#DBEAFE',
+    opacity: 0.9
+  },
+  devButtonText: {
+    color: '#1D4ED8',
     fontSize: 16,
     fontWeight: '600'
   }

@@ -13,7 +13,15 @@ import { registerForPushNotificationsAsync } from '@services/notificationService
 
 type Step = 1 | 2 | 3 | 4 | 5;
 
-export default function OnboardingScreen() {
+type Props = {
+  /**
+   * 開発中のプレビュー用
+   * trueの場合はUserのonboardingVersionを更新しない
+   */
+  previewMode?: boolean;
+};
+
+export default function OnboardingScreen({ previewMode = false }: Props) {
   const { user } = useAuth();
   const authedUser = useAuthenticatedUser();
   const { loadGroups } = useGroups();
@@ -31,7 +39,9 @@ export default function OnboardingScreen() {
   const finishOnboarding = async () => {
     try {
       if (!user) return;
-      await updateUserById(user.id, { onboardingVersion: ONBOARDING_VERSION });
+      if (!previewMode) {
+        await updateUserById(user.id, { onboardingVersion: ONBOARDING_VERSION });
+      }
     } catch (e) {
       console.warn('onboardingVersion 更新に失敗しましたが続行します', e);
     } finally {
