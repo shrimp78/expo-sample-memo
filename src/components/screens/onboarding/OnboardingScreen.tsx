@@ -148,6 +148,7 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
             visible={groupCreateModalVisible}
             onClose={() => setGroupCreateModalVisible(false)}
             onSaved={handleGroupSaved}
+            dismissable={false}
           />
         </View>
       )}
