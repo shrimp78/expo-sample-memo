@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Feather } from '@expo/vector-icons';
 import { useAuth, useAuthenticatedUser } from '@context/AuthContext';
 import { updateUserById } from '@services/userService';
 import { ONBOARDING_VERSION } from '@constants/onboarding';
@@ -12,6 +14,7 @@ import { getAllItemsByUserId } from '@services/itemService';
 import { registerForPushNotificationsAsync } from '@services/notificationService';
 
 type Step = 1 | 2 | 3 | 4 | 5;
+const TOTAL_STEPS = 5;
 
 type Props = {
   /**
@@ -26,9 +29,9 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
   const authedUser = useAuthenticatedUser();
   const { loadGroups } = useGroups();
   const { setItems } = useItems();
+  const insets = useSafeAreaInsets();
 
   const [step, setStep] = useState<Step>(1);
-  const [overlayVisible, setOverlayVisible] = useState<boolean>(true);
 
   // Group modal state
   const [groupCreateModalVisible, setGroupCreateModalVisible] = useState(false);
@@ -62,7 +65,6 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
   const handleGroupSaved = async () => {
     await loadGroups();
     setStep(3);
-    setOverlayVisible(true); // Step3の説明を表示
   };
 
   // Step 3 helpers (Item)
@@ -90,59 +92,134 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
     setStep(5);
   };
 
-  // Overlays for instruction text
-  const InstructionOverlay = ({ text, onOk }: { text: string; onOk: () => void }) => {
-    if (!overlayVisible) return null;
-    return (
-      <View style={styles.overlayContainer} pointerEvents="box-none">
-        <View style={styles.overlayWrap}>
-          <View style={styles.overlayCard}>
-            <Text style={styles.overlayText}>{text}</Text>
-            <TouchableOpacity
-              style={styles.overlayOk}
-              onPress={() => {
-                setOverlayVisible(false);
-                setTimeout(onOk, 0);
-              }}
-            >
-              <Text style={styles.overlayOkText}>OK</Text>
-            </TouchableOpacity>
+  const canGoBack = step > 1 && step < 5 && !groupCreateModalVisible && !itemCreateModalVisible;
+
+  const TopBar = () => (
+    <View style={[styles.topBar, { paddingTop: insets.top + 8 }]}>
+      <View style={styles.topBarSide}>
+        {canGoBack ? (
+          <TouchableOpacity
+            onPress={() => setStep(prev => (prev > 1 ? ((prev - 1) as Step) : prev))}
+            style={styles.topBarIconButton}
+            accessibilityRole="button"
+            accessibilityLabel="戻る"
+          >
+            <Feather name="chevron-left" size={22} color={stylesVars.textPrimary} />
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.topBarPlaceholder} />
+        )}
+      </View>
+      <View style={styles.topBarSideRight}>
+        <View style={styles.topBarPlaceholder} />
+      </View>
+    </View>
+  );
+
+  const StepDots = ({ current }: { current: number }) => (
+    <View style={styles.dotsRow} accessibilityLabel={`ステップ ${current} / ${TOTAL_STEPS}`}>
+      {Array.from({ length: TOTAL_STEPS }).map((_, i) => {
+        const active = i + 1 === current;
+        return <View key={i} style={[styles.dot, active && styles.dotActive]} />;
+      })}
+    </View>
+  );
+
+  const PrimaryCta = ({
+    label,
+    onPress
+  }: {
+    label: string;
+    onPress: () => void;
+  }) => (
+    <TouchableOpacity
+      style={styles.primaryCta}
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+    >
+      <Text style={styles.primaryCtaText}>{label}</Text>
+    </TouchableOpacity>
+  );
+
+  const SecondaryLink = ({ label, onPress }: { label: string; onPress: () => void }) => (
+    <TouchableOpacity
+      style={styles.secondaryLink}
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+    >
+      <Text style={styles.secondaryLinkText}>{label}</Text>
+    </TouchableOpacity>
+  );
+
+  const Page = ({
+    iconName,
+    title,
+    body,
+    note,
+    primaryLabel,
+    primaryPress,
+    secondaryLabel,
+    secondaryPress
+  }: {
+    iconName: React.ComponentProps<typeof Feather>['name'];
+    title: string;
+    body: string;
+    note?: string;
+    primaryLabel: string;
+    primaryPress: () => void;
+    secondaryLabel?: string;
+    secondaryPress?: () => void;
+  }) => (
+    <View style={styles.page}>
+      <TopBar />
+      <View style={styles.pageContent}>
+        <View style={styles.illustrationWrap}>
+          <View style={styles.illustrationCircle}>
+            <Feather name={iconName} size={32} color={stylesVars.primary} />
           </View>
         </View>
+        <Text style={styles.pageTitle}>{title}</Text>
+        <Text style={styles.pageBody}>{body}</Text>
+        {note ? <Text style={styles.pageNote}>{note}</Text> : null}
       </View>
-    );
-  };
+
+      <View style={[styles.bottomArea, { paddingBottom: 18 + insets.bottom }]}>
+        <PrimaryCta label={primaryLabel} onPress={primaryPress} />
+        {secondaryLabel && secondaryPress ? (
+          <SecondaryLink label={secondaryLabel} onPress={secondaryPress} />
+        ) : null}
+        <StepDots current={step} />
+      </View>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
       {step === 1 && (
-        <View style={styles.centerContent}>
-          <Text style={styles.title}>ようこそ！</Text>
-          <Text style={[styles.body, { marginTop: 16 }]}>
-            まず最初のグループを作成してみましょう
-          </Text>
-          <View style={styles.actions}>
-            <TouchableOpacity
-              style={styles.primaryButton}
-              onPress={() => {
-                setOverlayVisible(true); // Step2に入る直前に一度だけ表示
-                setStep(2);
-              }}
-            >
-              <Text style={styles.primaryButtonText}>作ってみる</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.secondaryButton} onPress={handleSkip}>
-              <Text style={styles.secondaryButtonText}>あとで</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <Page
+          iconName="star"
+          title="ようこそ！"
+          body="まず最初のグループを作成してみましょう。"
+          note="※あとから設定画面でいつでも確認できます。"
+          primaryLabel="次へ"
+          primaryPress={() => setStep(2)}
+          secondaryLabel="あとで"
+          secondaryPress={handleSkip}
+        />
       )}
 
       {step === 2 && (
         <View style={{ flex: 1 }}>
-          <InstructionOverlay
-            text={'グループ名を入力後、お好みのカラーを選択して保存を押してください。'}
-            onOk={openGroupFlow}
+          <Page
+            iconName="folder"
+            title="最初のグループを作成"
+            body="グループ名を入力して、好きなカラーを選んで保存してください。"
+            primaryLabel="グループを作成する"
+            primaryPress={openGroupFlow}
+            secondaryLabel="あとで"
+            secondaryPress={handleSkip}
           />
           <GroupCreateModal
             visible={groupCreateModalVisible}
@@ -155,130 +232,196 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
 
       {step === 3 && (
         <View style={{ flex: 1 }}>
-          <InstructionOverlay
-            text={
-              '次にアイテムを作成します。アイテム名と説明文を入力してグループを選択して保存を押してください'
-            }
-            onOk={openItemFlow}
+          <Page
+            iconName="plus-circle"
+            title="最初のアイテムを作成"
+            body="アイテム名と説明文を入力し、グループを選択して保存してください。"
+            primaryLabel="アイテムを作成する"
+            primaryPress={openItemFlow}
+            secondaryLabel="あとで"
+            secondaryPress={handleSkip}
           />
           <ItemCreateModal
             visible={itemCreateModalVisible}
             onClose={() => setItemCreateModalVisible(false)}
             onSaved={handleItemSaved}
+            dismissable={false}
           />
         </View>
       )}
 
       {step === 4 && (
-        <View style={styles.centerContent}>
-          <Text style={styles.title}>通知を受け取りますか？</Text>
-          <Text style={[styles.body, { marginTop: 16 }]}>
-            誕生日が近づくとのPush通知を受け取れるようになります。
-          </Text>
-          <View style={styles.actions}>
-            <TouchableOpacity style={styles.primaryButton} onPress={handleRequestNotification}>
-              <Text style={styles.primaryButtonText}>通知をオンにする</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.secondaryButton} onPress={() => setStep(5)}>
-              <Text style={styles.secondaryButtonText}>あとで</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <Page
+          iconName="bell"
+          title="通知を受け取りますか？"
+          body="誕生日が近づくとPush通知でお知らせします。"
+          primaryLabel="通知をオンにする"
+          primaryPress={handleRequestNotification}
+          secondaryLabel="あとで"
+          secondaryPress={() => setStep(5)}
+        />
       )}
 
       {step === 5 && (
-        <View style={styles.centerContent}>
-          <Text style={styles.title}>DONE！</Text>
-          <Text style={styles.body}>最初のアイテムが完成しました☺️</Text>
-          <Text style={[styles.body, { marginTop: 8 }]}>
-            グループやアイテムはいつでも編集画面から修正できます
-          </Text>
-          <View style={styles.actions}>
-            <TouchableOpacity style={styles.primaryButton} onPress={finishOnboarding}>
-              <Text style={styles.primaryButtonText}>OK</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <Page
+          iconName="check"
+          title="DONE！"
+          body="最初のアイテムが完成しました。"
+          note="グループやアイテムはいつでも編集画面から修正できます。"
+          primaryLabel="はじめる"
+          primaryPress={finishOnboarding}
+        />
       )}
     </View>
   );
 }
 
+const stylesVars = {
+  bg: '#F6F7FB',
+  card: '#FFFFFF',
+  textPrimary: '#0F172A',
+  textSecondary: '#64748B',
+  textMuted: '#94A3B8',
+  primary: '#0EA5E9',
+  primaryDark: '#0284C7',
+  dotInactive: '#E2E8F0'
+} as const;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: stylesVars.bg
   },
-  centerContent: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 24
+  page: {
+    flex: 1
   },
-  title: {
-    fontSize: 28,
-    fontWeight: '700'
-  },
-  body: {
-    fontSize: 16,
-    textAlign: 'center'
-  },
-  actions: {
+  topBar: {
     flexDirection: 'row',
-    gap: 12,
-    marginTop: 24
-  },
-  primaryButton: {
-    backgroundColor: '#2196f3',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 8
+    paddingBottom: 8
   },
-  primaryButtonText: {
-    color: 'white',
-    fontWeight: '600'
+  topBarSide: {
+    minWidth: 80,
+    alignItems: 'flex-start'
   },
-  secondaryButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 12
+  topBarSideRight: {
+    minWidth: 80,
+    alignItems: 'flex-end'
   },
-  secondaryButtonText: {
-    color: '#2196f3',
-    fontWeight: '600'
-  },
-  overlayContainer: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    bottom: 0,
-    left: 0,
-    zIndex: 1000
-  },
-  overlayWrap: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.6)',
+  topBarIconButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 24
+    backgroundColor: 'rgba(255,255,255,0.8)'
   },
-  overlayCard: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 20,
-    width: '100%'
+  topBarPlaceholder: {
+    width: 40,
+    height: 40
   },
-  overlayText: {
-    fontSize: 16,
-    marginBottom: 12,
-    textAlign: 'left'
-  },
-  overlayOk: {
-    alignSelf: 'flex-end',
-    paddingHorizontal: 16,
+  skipButton: {
+    paddingHorizontal: 10,
     paddingVertical: 8
   },
-  overlayOkText: {
-    color: '#2196f3',
-    fontWeight: '600'
+  skipButtonText: {
+    color: stylesVars.textMuted,
+    fontSize: 12,
+    fontWeight: '700',
+    letterSpacing: 0.6
+  },
+  pageContent: {
+    flex: 1,
+    paddingHorizontal: 28,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  illustrationWrap: {
+    marginBottom: 18
+  },
+  illustrationCircle: {
+    width: 92,
+    height: 92,
+    borderRadius: 46,
+    backgroundColor: stylesVars.card,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.08,
+    shadowRadius: 18,
+    elevation: 4
+  },
+  pageTitle: {
+    fontSize: 24,
+    fontWeight: '800',
+    color: stylesVars.textPrimary,
+    textAlign: 'center'
+  },
+  pageBody: {
+    marginTop: 12,
+    fontSize: 15,
+    lineHeight: 22,
+    color: stylesVars.textSecondary,
+    textAlign: 'center'
+  },
+  pageNote: {
+    marginTop: 12,
+    fontSize: 12,
+    lineHeight: 18,
+    color: stylesVars.textMuted,
+    textAlign: 'center'
+  },
+  bottomArea: {
+    paddingHorizontal: 22,
+    paddingTop: 10
+  },
+  primaryCta: {
+    backgroundColor: stylesVars.primary,
+    borderRadius: 999,
+    paddingVertical: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: stylesVars.primaryDark,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.18,
+    shadowRadius: 18,
+    elevation: 4
+  },
+  primaryCtaText: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: '800',
+    letterSpacing: 0.2
+  },
+  secondaryLink: {
+    marginTop: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 8
+  },
+  secondaryLinkText: {
+    color: stylesVars.textMuted,
+    fontSize: 13,
+    fontWeight: '700'
+  },
+  dotsRow: {
+    marginTop: 8,
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  dot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
+    backgroundColor: stylesVars.dotInactive
+  },
+  dotActive: {
+    width: 18,
+    backgroundColor: stylesVars.primary
   }
 });

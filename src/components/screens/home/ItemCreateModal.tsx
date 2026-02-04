@@ -27,9 +27,18 @@ type ItemCreateProps = {
   visible: boolean;
   onClose: () => void;
   onSaved: () => void; //保存後に親に通知する
+  /**
+   * false の場合、Xボタン/背景タップ/戻る操作で閉じない（オンボーディング等で使用）
+   */
+  dismissable?: boolean;
 };
 
-const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved }) => {
+const ItemCreateModal: React.FC<ItemCreateProps> = ({
+  visible,
+  onClose,
+  onSaved,
+  dismissable = true
+}) => {
   const user = useAuthenticatedUser();
   const { groups } = useGroups();
   const { items, setItems } = useItems();
@@ -124,8 +133,13 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
   };
 
   return (
-    <Modal animationType="slide" transparent={true} visible={visible} onRequestClose={onClose}>
-      <TouchableWithoutFeedback onPress={onClose}>
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      onRequestClose={dismissable ? onClose : () => {}}
+    >
+      <TouchableWithoutFeedback onPress={dismissable ? onClose : undefined}>
         <View style={styles.createModalOverlay}>
           <TouchableWithoutFeedback
             onPress={() => {
@@ -133,9 +147,11 @@ const ItemCreateModal: React.FC<ItemCreateProps> = ({ visible, onClose, onSaved 
             }}
           >
             <View style={styles.createModalContent}>
-              <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-                <AntDesign name="closecircleo" size={24} color="#808080" />
-              </TouchableOpacity>
+              {dismissable && (
+                <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+                  <AntDesign name="closecircleo" size={24} color="#808080" />
+                </TouchableOpacity>
+              )}
 
               <View style={styles.saveButtonArea}>
                 <Button title="保存" onPress={handleSave} />
