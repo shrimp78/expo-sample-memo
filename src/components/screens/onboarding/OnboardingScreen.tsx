@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -35,9 +35,12 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
 
   // Group modal state
   const [groupCreateModalVisible, setGroupCreateModalVisible] = useState(false);
+  const [groupSavedFeedbackVisible, setGroupSavedFeedbackVisible] = useState(false);
+  const pendingGroupSavedFeedbackRef = useRef(false);
 
   // Item modal state
   const [itemCreateModalVisible, setItemCreateModalVisible] = useState(false);
+  const [itemSavedFeedbackVisible, setItemSavedFeedbackVisible] = useState(false);
 
   const finishOnboarding = async () => {
     try {
@@ -63,8 +66,12 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
     setGroupCreateModalVisible(true);
   };
   const handleGroupSaved = async () => {
-    await loadGroups();
-    setStep(3);
+    // グループ作成モーダルが閉じた直後に「完了モーダル」を出したいので、
+    // 表示タイミングは groupCreateModalVisible が false になった瞬間に行う
+    pendingGroupSavedFeedbackRef.current = true;
+
+    // 同期は裏で行う（UIでのフィードバックは出さない）
+    void loadGroups();
   };
 
   // Step 3 helpers (Item)
@@ -73,9 +80,15 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
     setItemCreateModalVisible(true);
   };
   const handleItemSaved = async () => {
-    const items = await getAllItemsByUserId(authedUser.id);
-    setItems(items);
-    setStep(4);
+    // モーダルが閉じた直後に完了フィードバックを出す（同期は裏で）
+    setItemCreateModalVisible(false);
+    setItemSavedFeedbackVisible(true);
+
+    void getAllItemsByUserId(authedUser.id)
+      .then(items => setItems(items))
+      .catch(() => {
+        // 失敗してもオンボーディングは続行（必要なら後で再読込される）
+      });
   };
 
   // Step 4 : 通知許可
@@ -92,7 +105,25 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
     setStep(5);
   };
 
-  const canGoBack = step > 1 && step < 5 && !groupCreateModalVisible && !itemCreateModalVisible;
+  const handleGroupModalClose = () => {
+    setGroupCreateModalVisible(false);
+    if (pendingGroupSavedFeedbackRef.current) {
+      pendingGroupSavedFeedbackRef.current = false;
+      setGroupSavedFeedbackVisible(true);
+    }
+  };
+
+  const handleItemModalClose = () => {
+    setItemCreateModalVisible(false);
+  };
+
+  const canGoBack =
+    step > 1 &&
+    step < 5 &&
+    !groupCreateModalVisible &&
+    !itemCreateModalVisible &&
+    !groupSavedFeedbackVisible &&
+    !itemSavedFeedbackVisible;
 
   const TopBar = () => (
     <View style={[styles.topBar, { paddingTop: insets.top + 8 }]}>
@@ -127,10 +158,12 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
 
   const PrimaryCta = ({
     label,
-    onPress
+    onPress,
+    disabled = false
   }: {
     label: string;
     onPress: () => void;
+    disabled?: boolean;
   }) => (
     <TouchableOpacity
       style={styles.primaryCta}
@@ -195,6 +228,78 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
     </View>
   );
 
+  const GroupSavedFeedback = () => {
+    if (!groupSavedFeedbackVisible) return null;
+    return (
+      <View style={styles.feedbackOverlay} pointerEvents="auto">
+        <View style={styles.feedbackBackdrop} />
+        <View style={styles.feedbackCardWrap}>
+          <View style={styles.feedbackCard}>
+            <View style={styles.feedbackIconCircle}>
+              <Feather name="check" size={22} color={stylesVars.primary} />
+            </View>
+            <Text style={styles.feedbackTitle}>グループ作成完了！</Text>
+            <Text style={styles.feedbackBody}>
+              お疲れ様です。次は最初のアイテムを作成しましょう。
+            </Text>
+            <View style={styles.feedbackActions}>
+              <PrimaryCta
+                label="次へ"
+                onPress={() => {
+                  setGroupSavedFeedbackVisible(false);
+                  setStep(3);
+                }}
+              />
+              <SecondaryLink
+                label="あとで"
+                onPress={() => {
+                  setGroupSavedFeedbackVisible(false);
+                  handleSkip();
+                }}
+              />
+            </View>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
+  const ItemSavedFeedback = () => {
+    if (!itemSavedFeedbackVisible) return null;
+    return (
+      <View style={styles.feedbackOverlay} pointerEvents="auto">
+        <View style={styles.feedbackBackdrop} />
+        <View style={styles.feedbackCardWrap}>
+          <View style={styles.feedbackCard}>
+            <View style={styles.feedbackIconCircle}>
+              <Feather name="check" size={22} color={stylesVars.primary} />
+            </View>
+            <Text style={styles.feedbackTitle}>アイテム作成完了！</Text>
+            <Text style={styles.feedbackBody}>
+              お疲れ様です。次は通知設定を行うと、誕生日が近づいたらお知らせできます。
+            </Text>
+            <View style={styles.feedbackActions}>
+              <PrimaryCta
+                label="次へ"
+                onPress={() => {
+                  setItemSavedFeedbackVisible(false);
+                  setStep(4);
+                }}
+              />
+              <SecondaryLink
+                label="あとで"
+                onPress={() => {
+                  setItemSavedFeedbackVisible(false);
+                  setStep(5);
+                }}
+              />
+            </View>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       {step === 1 && (
@@ -223,10 +328,11 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
           />
           <GroupCreateModal
             visible={groupCreateModalVisible}
-            onClose={() => setGroupCreateModalVisible(false)}
+            onClose={handleGroupModalClose}
             onSaved={handleGroupSaved}
             dismissable={false}
           />
+          <GroupSavedFeedback />
         </View>
       )}
 
@@ -243,10 +349,11 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
           />
           <ItemCreateModal
             visible={itemCreateModalVisible}
-            onClose={() => setItemCreateModalVisible(false)}
+            onClose={handleItemModalClose}
             onSaved={handleItemSaved}
             dismissable={false}
           />
+          <ItemSavedFeedback />
         </View>
       )}
 
@@ -423,5 +530,62 @@ const styles = StyleSheet.create({
   dotActive: {
     width: 18,
     backgroundColor: stylesVars.primary
+  },
+  feedbackOverlay: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
+    zIndex: 1000
+  },
+  feedbackBackdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(15, 23, 42, 0.22)'
+  },
+  feedbackCardWrap: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 22
+  },
+  feedbackCard: {
+    width: '100%',
+    maxWidth: 420,
+    backgroundColor: stylesVars.card,
+    borderRadius: 20,
+    paddingHorizontal: 18,
+    paddingVertical: 18,
+    shadowColor: '#0F172A',
+    shadowOffset: { width: 0, height: 14 },
+    shadowOpacity: 0.12,
+    shadowRadius: 22,
+    elevation: 6
+  },
+  feedbackIconCircle: {
+    alignSelf: 'center',
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#E0F2FE',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10
+  },
+  feedbackTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: stylesVars.textPrimary,
+    textAlign: 'center'
+  },
+  feedbackBody: {
+    marginTop: 8,
+    fontSize: 14,
+    lineHeight: 20,
+    color: stylesVars.textSecondary,
+    textAlign: 'center'
+  },
+  feedbackActions: {
+    marginTop: 14
   }
 });
