@@ -304,10 +304,11 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
     <View style={styles.container}>
       {step === 1 && (
         <Page
-          iconName="star"
+          iconName="star" // TODO:アイコンを変更しておく
           title="ようこそ！"
-          body="まず最初のグループを作成してみましょう。"
-          note="※あとから設定画面でいつでも確認できます。"
+          body={
+            'このアプリでは、色んな人の誕生日を管理できます。\n誕生日はグループで管理するので、まず最初のグループを作成してみましょう。\nグループは名前と色を選択します。\nグループ設定であとからいつでも変更可能です！'
+          }
           primaryLabel="次へ"
           primaryPress={() => setStep(2)}
           secondaryLabel="あとで"
