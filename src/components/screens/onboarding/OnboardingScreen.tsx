@@ -239,22 +239,13 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
               <Feather name="check" size={22} color={stylesVars.primary} />
             </View>
             <Text style={styles.feedbackTitle}>グループ作成完了！</Text>
-            <Text style={styles.feedbackBody}>
-              お疲れ様です。次は最初のアイテムを作成しましょう。
-            </Text>
+            <Text style={styles.feedbackBody}>次は最初のメンバーを作成しましょう。</Text>
             <View style={styles.feedbackActions}>
               <PrimaryCta
                 label="次へ"
                 onPress={() => {
                   setGroupSavedFeedbackVisible(false);
                   setStep(3);
-                }}
-              />
-              <SecondaryLink
-                label="あとで"
-                onPress={() => {
-                  setGroupSavedFeedbackVisible(false);
-                  handleSkip();
                 }}
               />
             </View>
@@ -274,9 +265,9 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
             <View style={styles.feedbackIconCircle}>
               <Feather name="check" size={22} color={stylesVars.primary} />
             </View>
-            <Text style={styles.feedbackTitle}>アイテム作成完了！</Text>
+            <Text style={styles.feedbackTitle}>完了！</Text>
             <Text style={styles.feedbackBody}>
-              お疲れ様です。次は通知設定を行うと、誕生日が近づいたらお知らせできます。
+              お疲れ様でした。次は通知設定を行うと、誕生日が近づいたらお知らせできます。
             </Text>
             <View style={styles.feedbackActions}>
               <PrimaryCta
@@ -306,9 +297,7 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
         <Page
           iconName="star" // TODO:アイコンを変更しておく
           title="ようこそ！"
-          body={
-            'このアプリでは、色んな人の誕生日を管理できます。\n誕生日はグループで管理するので、まず最初のグループを作成してみましょう。\nグループは名前と色を選択します。\nグループ設定であとからいつでも変更可能です！'
-          }
+          body={`このアプリでは、色んな人の誕生日を管理します\n\n誕生日を家族や友人のグループで管理できます\n指定した期間に通知でお知らせもできます`}
           primaryLabel="次へ"
           primaryPress={() => setStep(2)}
           secondaryLabel="あとで"
@@ -321,7 +310,7 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
           <Page
             iconName="folder"
             title="最初のグループを作成"
-            body="グループ名を入力して、好きなカラーを選んで保存してください。"
+            body={`メンバーの管理には必ずグループが必要になります\nまず最初のグループを作ってみましょう！\n\nグループは家族や特定のお友達のグループなど好きな名前にしてみましょう\nグループ設定で後かいつでもら変更できます`}
             primaryLabel="グループを作成する"
             primaryPress={openGroupFlow}
             secondaryLabel="あとで"
@@ -340,10 +329,10 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
       {step === 3 && (
         <View style={{ flex: 1 }}>
           <Page
-            iconName="plus-circle"
-            title="最初のアイテムを作成"
-            body="アイテム名と説明文を入力し、グループを選択して保存してください。"
-            primaryLabel="アイテムを作成する"
+            iconName="user"
+            title="最初のメンバーを作成"
+            body={`名前と誕生日を入力し、グループを選択して保存してください\n\nこちらも後からいつでも変更可能です!`}
+            primaryLabel="作成する"
             primaryPress={openItemFlow}
             secondaryLabel="あとで"
             secondaryPress={handleSkip}
