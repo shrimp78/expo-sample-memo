@@ -446,13 +446,15 @@ const styles = StyleSheet.create({
     elevation: 4
   },
   pageTitle: {
+    marginTop: 16,
+    marginBottom: 16,
     fontSize: 24,
     fontWeight: '800',
     color: stylesVars.textPrimary,
     textAlign: 'center'
   },
   pageBody: {
-    marginTop: 12,
+    marginTop: 16,
     fontSize: 15,
     lineHeight: 22,
     color: stylesVars.textSecondary,
@@ -482,13 +484,14 @@ const styles = StyleSheet.create({
   },
   secondaryLink: {
     marginTop: 10,
+    marginBottom: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 8
+    paddingVertical: 16
   },
   secondaryLinkText: {
     color: stylesVars.textMuted,
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: '700'
   },
   dotsRow: {
