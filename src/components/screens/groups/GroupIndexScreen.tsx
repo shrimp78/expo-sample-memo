@@ -89,7 +89,7 @@ export default function GroupIndexScreen() {
 
       if (itemCount === 0) {
         // アイテムが0件の場合
-        Alert.alert('確認', '削除しますが、よろしいですか？', [
+        Alert.alert('グループ削除', 'このグループを削除しますか？', [
           {
             text: 'キャンセル',
             style: 'cancel'
