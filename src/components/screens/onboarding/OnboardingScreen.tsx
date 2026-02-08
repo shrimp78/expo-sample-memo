@@ -215,7 +215,6 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
         </View>
         <Text style={styles.pageTitle}>{title}</Text>
         <Text style={styles.pageBody}>{body}</Text>
-        {note ? <Text style={styles.pageNote}>{note}</Text> : null}
       </View>
 
       <View style={[styles.bottomArea, { paddingBottom: 18 + insets.bottom }]}>
@@ -239,7 +238,9 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
               <Feather name="check" size={22} color={stylesVars.primary} />
             </View>
             <Text style={styles.feedbackTitle}>グループ作成完了！</Text>
-            <Text style={styles.feedbackBody}>次は最初のメンバーを作成しましょう。</Text>
+            <Text style={styles.feedbackBody}>
+              お疲れ様でした {'\n'} 次はメンバーを作成しましょう
+            </Text>
             <View style={styles.feedbackActions}>
               <PrimaryCta
                 label="次へ"
@@ -267,7 +268,7 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
             </View>
             <Text style={styles.feedbackTitle}>完了！</Text>
             <Text style={styles.feedbackBody}>
-              お疲れ様でした。次は通知設定を行うと、誕生日が近づいたらお知らせできます。
+              お疲れ様でした {'\n'} メンバーはホーム画面からいつでも確認できます
             </Text>
             <View style={styles.feedbackActions}>
               <PrimaryCta
@@ -275,13 +276,6 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
                 onPress={() => {
                   setItemSavedFeedbackVisible(false);
                   setStep(4);
-                }}
-              />
-              <SecondaryLink
-                label="あとで"
-                onPress={() => {
-                  setItemSavedFeedbackVisible(false);
-                  setStep(5);
                 }}
               />
             </View>
@@ -295,9 +289,9 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
     <View style={styles.container}>
       {step === 1 && (
         <Page
-          iconName="star" // TODO:アイコンを変更しておく
+          iconName="calendar" // TODO:アイコンを変更しておく
           title="ようこそ！"
-          body={`このアプリでは、色んな人の誕生日を管理します\n\n誕生日を家族や友人のグループで管理できます\n指定した期間に通知でお知らせもできます`}
+          body={`このアプリでは誕生日をグループで管理します\n誕生日が近づいたら通知でお知らせもできます\n\n最初の設定を開始しましょう！`}
           primaryLabel="次へ"
           primaryPress={() => setStep(2)}
           secondaryLabel="あとで"
@@ -310,7 +304,7 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
           <Page
             iconName="folder"
             title="最初のグループを作成"
-            body={`メンバーの管理には必ずグループが必要になります\nまず最初のグループを作ってみましょう！\n\nグループは家族や特定のお友達のグループなど好きな名前にしてみましょう\nグループ設定で後かいつでもら変更できます`}
+            body={`家族や特定のお友達のグループなど\n好きな名前にしてみましょう\n\n名前は設定かいつでもら変更できます`}
             primaryLabel="グループを作成する"
             primaryPress={openGroupFlow}
             secondaryLabel="あとで"
@@ -331,8 +325,8 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
           <Page
             iconName="user"
             title="最初のメンバーを作成"
-            body={`名前と誕生日を入力し、グループを選択して保存してください\n\nこちらも後からいつでも変更可能です!`}
-            primaryLabel="作成する"
+            body={`グループができたので早速メンバーを登録しましょう\nこちらも後からいつでも変更可能です!`}
+            primaryLabel="メンバーを登録する"
             primaryPress={openItemFlow}
             secondaryLabel="あとで"
             secondaryPress={handleSkip}
@@ -350,8 +344,8 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
       {step === 4 && (
         <Page
           iconName="bell"
-          title="通知を受け取りますか？"
-          body="誕生日が近づくとPush通知でお知らせします。"
+          title="誕生日を通知でお知らせ"
+          body={`誕生日を事前に通知で受け取るためには、通知設定の許可をOnにします`}
           primaryLabel="通知をオンにする"
           primaryPress={handleRequestNotification}
           secondaryLabel="あとで"
@@ -363,7 +357,7 @@ export default function OnboardingScreen({ previewMode = false }: Props) {
         <Page
           iconName="check"
           title="DONE！"
-          body="最初のアイテムが完成しました。"
+          body={`以上で設定は完了です！\n困ったらいつでもサポートにお問い合わせください`}
           note="グループやアイテムはいつでも編集画面から修正できます。"
           primaryLabel="はじめる"
           primaryPress={finishOnboarding}
@@ -462,13 +456,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 22,
     color: stylesVars.textSecondary,
-    textAlign: 'center'
-  },
-  pageNote: {
-    marginTop: 12,
-    fontSize: 12,
-    lineHeight: 18,
-    color: stylesVars.textMuted,
     textAlign: 'center'
   },
   bottomArea: {
